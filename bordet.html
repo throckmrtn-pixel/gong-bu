@@ -1,0 +1,790 @@
+<title>gong-bu bordet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+/* Layout: ett hovedpanel i midten, svevende sidepaneler utenfor,
+   koblingslinjer imellom. Faller til én spalte på smal skjerm. */
+
+/* --- GLØD er standard. Alle tokens defineres her først. ------- */
+:root {
+  --bakgrunn: url("bg-lys-bred.webp");
+  --veil: rgba(40,46,102,.50);
+  --grunn-1: #66729F;  --grunn-2: #74689E;  --grunn-3: #4F7694;
+  --band-1: #DCE8FF;   --band-2: #F6DCF2;   --band-3: #CFF2F6;
+  --band-kjerne: #FFFFFF;
+  --frynse-1: #CDE6FF; --frynse-2: #F7D4EC;
+  --band-styrke: .88;  --band-glod: .55;
+  --blekk: #FFFFFF;    --blekk-2: #E4EAFF;  --blekk-3: #CBD6F4;
+  --glass:      rgba(34,46,95,.46);
+  --glass-tynn: rgba(34,46,95,.26);
+  --glass-topp: rgba(255,255,255,.62);
+  --kant: rgba(226,236,255,.36);
+  --kast: 0 1px 2px -1px rgba(24,32,70,.34), 0 22px 42px -24px rgba(24,32,70,.62);
+  --skrim: rgba(18,26,62,.30);
+  --tekstskygge: 0 1px 14px rgba(16,24,58,.55);
+  --orb-kjerne: #FFFFFF; --orb-fyll: #BBD2FA; --orb-rim: #4A5CA8; --orb-glod: #DCE8FF;
+  color-scheme: dark;
+
+  --vis: "Space Grotesk", "Helvetica Neue", sans-serif;
+  --brod: Inter, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --r: 22px;
+}
+
+/* --- LYS ------------------------------------------------------ */
+:root[data-tema="lys"] {
+  --bakgrunn: url("bg-lys-bred.webp");
+  --veil: rgba(255,255,255,.30);
+  --grunn-1: #E4EAFA;  --grunn-2: #E9E3F6;  --grunn-3: #F3F0FA;
+  --band-1: #A9BFF5;   --band-2: #F0CFE4;   --band-3: #BCE6E8;
+  --frynse-1: #B6D2FF; --frynse-2: #F6CBE2;
+  --band-styrke: .80;  --band-glod: .44;
+  --blekk: #1B2135;    --blekk-2: #414A68;  --blekk-3: #5A6283;
+  --glass:      rgba(255,255,255,.80);
+  --glass-tynn: rgba(255,255,255,.52);
+  --glass-topp: rgba(255,255,255,1);
+  --kant: rgba(90,102,160,.17);
+  --kast: 0 1px 2px -1px rgba(52,64,120,.18), 0 20px 36px -22px rgba(52,64,120,.48);
+  --skrim: rgba(255,255,255,0);
+  --tekstskygge: none;
+  --orb-fyll: #9FB6F2; --orb-rim: #5C6CC4; --orb-glod: #A9BFF5;
+  color-scheme: light;
+}
+
+/* --- MØRK ----------------------------------------------------- */
+:root[data-tema="mork"] {
+  --bakgrunn: url("bg-mork-bred.webp");
+  --veil: rgba(7,11,24,.34);
+  --grunn-1: #0D1326;  --grunn-2: #151C38;  --grunn-3: #090D1C;
+  --band-1: #5FD8F0;   --band-2: #D98FF0;   --band-3: #8FA0FF;
+  --frynse-1: #6FE6FF; --frynse-2: #DE86F3;
+  --band-styrke: .92;  --band-glod: .72;
+  --blekk: #EDF1FF;    --blekk-2: #BAC4E6;  --blekk-3: #96A1C8;
+  --glass:      rgba(12,18,40,.66);
+  --glass-tynn: rgba(12,18,40,.46);
+  --glass-topp: rgba(214,228,255,.42);
+  --kant: rgba(176,196,255,.22);
+  --kast: 0 1px 2px -1px rgba(0,0,0,.5), 0 22px 44px -24px rgba(0,0,0,.7);
+  --skrim: rgba(0,0,0,0);
+  --tekstskygge: 0 1px 16px rgba(0,0,0,.5);
+  --orb-fyll: #7FA8F0; --orb-rim: #2B3B72; --orb-glod: #6FC8EC;
+  color-scheme: dark;
+}
+
+/* Før skriptet rekker å velge: følg maskinens innstilling. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-tema]) {
+    --bakgrunn: url("bg-lys-bred.webp");
+    --veil: rgba(255,255,255,.30);
+    --grunn-1: #E4EAFA;  --grunn-2: #E9E3F6;  --grunn-3: #F3F0FA;
+    --band-1: #A9BFF5;   --band-2: #F0CFE4;   --band-3: #BCE6E8;
+    --frynse-1: #B6D2FF; --frynse-2: #F6CBE2;
+    --band-styrke: .80;  --band-glod: .44;
+    --blekk: #1B2135;    --blekk-2: #414A68;  --blekk-3: #5A6283;
+    --glass: rgba(255,255,255,.80); --glass-tynn: rgba(255,255,255,.52);
+    --glass-topp: rgba(255,255,255,1); --kant: rgba(90,102,160,.17);
+    --skrim: rgba(255,255,255,0); --tekstskygge: none;
+    --orb-fyll: #9FB6F2; --orb-rim: #5C6CC4; --orb-glod: #A9BFF5;
+    color-scheme: light;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body { min-height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--brod);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--blekk);
+  background: linear-gradient(168deg, var(--grunn-1) 0%, var(--grunn-2) 52%, var(--grunn-3) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible { outline: 2px solid var(--blekk); outline-offset: 3px; border-radius: 10px; }
+
+/* ============================================================
+   SCENEN — strømmende lys bak glasset
+   ============================================================ */
+.scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.scene .foto {
+  position: absolute; inset: -3%;
+  background-image: var(--bakgrunn);
+  background-size: cover;
+  background-position: center;
+  animation: sig 46s ease-in-out infinite alternate;
+}
+@keyframes sig {
+  from { transform: scale(1)    translate(0, 0) }
+  to   { transform: scale(1.06) translate(-1.1%, .9%) }
+}
+.scene .skrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--skrim), transparent 56%), var(--veil);
+}
+.scene .korn {
+  position: absolute; inset: 0; mix-blend-mode: overlay; opacity: .16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   SIDA
+   ============================================================ */
+.ark {
+  position: relative;
+  z-index: 1;
+  max-width: 1420px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 22px 40px;
+}
+
+.sidetopp {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.merke { display: flex; align-items: baseline; gap: 9px; }
+.merke .ko { font-family: var(--vis); font-weight: 700; font-size: 17px; opacity: .8; }
+.merke b { font-family: var(--vis); font-weight: 600; font-size: 19px; letter-spacing: -.03em; }
+
+.temavelger { display: flex; gap: 6px; }
+.temavelger button {
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--kant);
+  background: var(--glass-tynn);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: var(--blekk-2);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .15s, background .15s, border-color .15s;
+}
+.temavelger button:hover { color: var(--blekk); }
+.temavelger button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--band-kjerne) 16%, transparent);
+  border-color: color-mix(in srgb, var(--band-kjerne) 34%, transparent);
+  color: var(--blekk);
+  font-weight: 700;
+}
+
+/* ============================================================
+   BORDET
+   ============================================================ */
+.bord { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.hovedpanel { order: 1; }
+.side--v    { order: 2; }
+.side--h    { order: 3; }
+
+.side { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+
+@media (min-width: 1120px) {
+  .bord { grid-template-columns: 212px minmax(0, 1fr) 212px; gap: 46px; }
+  .side--v { order: 1; }
+  .hovedpanel { order: 2; }
+  .side--h { order: 3; }
+  .side { display: flex; flex-direction: column; justify-content: space-between; padding: 8px 0 26px; }
+}
+
+.koblinger { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.koblinger path { fill: none; stroke: color-mix(in srgb, var(--band-kjerne) 46%, transparent); stroke-width: 1.2; }
+.koblinger .ytre { fill: var(--orb-glod); opacity: .45; }
+.koblinger .indre { fill: var(--band-kjerne); }
+
+/* ---- glassflater ---- */
+.panel, .sveve, .hovedpanel {
+  position: relative;
+  border-radius: var(--r);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(26px) saturate(1.5);
+  backdrop-filter: blur(26px) saturate(1.5);
+  border: 1px solid var(--kant);
+  box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
+}
+.hovedpanel {
+  display: flex;
+  flex-direction: column;
+  border-radius: 26px;
+  padding: 20px;
+  background: var(--glass-tynn);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  backdrop-filter: blur(30px) saturate(1.5);
+}
+.sveve { padding: 14px; }
+.panel { padding: 14px; }
+
+/* ---- topplinja i hovedpanelet ---- */
+.bordtopp { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-bottom: 16px; }
+.bordtopp h1 {
+  margin: 0;
+  font-family: var(--vis);
+  font-size: clamp(19px, 2.4vw, 25px);
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.verktoy { display: flex; gap: 8px; flex-shrink: 0; }
+.verktoy button {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--kant);
+  background: var(--glass-tynn);
+  color: var(--blekk-2);
+  cursor: pointer;
+}
+.verktoy button:hover { color: var(--blekk); }
+
+/* ---- rutenettet ---- */
+.rutenett { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 13px; }
+@media (min-width: 780px) {
+  .rutenett { grid-template-columns: 1.16fr 1fr 0.94fr; grid-template-rows: 190px minmax(0, 1fr); }
+  .r-fremdrift { grid-column: 1 / 3; grid-row: 1; }
+  .r-logg      { grid-column: 1; grid-row: 2; }
+  .r-analyse   { grid-column: 2; grid-row: 2; }
+  .r-hoyre     { grid-column: 3; grid-row: 1 / 3; }
+}
+.r-hoyre { display: flex; flex-direction: column; gap: 13px; min-height: 0; }
+
+.etikett {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--blekk-3);
+  margin: 0;
+}
+.korttittel {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 0 11px;
+  font-family: var(--vis);
+  font-weight: 600; font-size: 13.5px; letter-spacing: -.015em;
+  color: var(--blekk);
+}
+.korttittel svg { flex-shrink: 0; opacity: .85; }
+.tall { font-family: var(--vis); font-weight: 300; letter-spacing: -.045em; line-height: 1; margin: 0; }
+
+/* ---- fremdrift ---- */
+.maaler { display: flex; align-items: stretch; gap: 14px; flex: 1; min-height: 120px; }
+.kurve { flex: 1; min-width: 0; height: 100%; }
+.soyle { width: 44px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.soyle .roret {
+  position: relative; width: 15px; flex: 1; min-height: 40px;
+  border-radius: 999px; overflow: hidden;
+  background: var(--glass-tynn); border: 1px solid var(--kant);
+}
+.soyle .roret i {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  border-radius: 999px;
+  background: linear-gradient(0deg, var(--orb-fyll), var(--orb-glod) 70%, var(--band-kjerne));
+  box-shadow: 0 0 14px -2px var(--orb-glod);
+}
+.soyle b { font-family: var(--vis); font-weight: 400; font-size: 17px; letter-spacing: -.03em; }
+
+/* ---- loggen ---- */
+.logg { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+.logg li {
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 0;
+  font-family: var(--mono); font-size: 10.5px; color: var(--blekk-2);
+}
+.logg li i { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; background: var(--orb-glod); box-shadow: 0 0 6px var(--orb-glod); }
+.logg li.fersk i { animation: puls 2.4s ease-in-out infinite; }
+@keyframes puls { 0%,100% { transform: scale(1); opacity: 1 } 50% { transform: scale(1.6); opacity: .55 } }
+.logg li.svak i { background: var(--blekk-3); box-shadow: none; opacity: .55; }
+.logg li .navn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.logg li .nar { margin-left: auto; color: var(--blekk-3); flex-shrink: 0; }
+
+/* ---- små tall ---- */
+.minirad { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.mini { border-radius: 12px; padding: 9px 10px; background: var(--glass-tynn); border: 1px solid var(--kant); }
+.mini b { display: block; font-family: var(--vis); font-weight: 400; font-size: 18px; letter-spacing: -.03em; line-height: 1.1; }
+.mini span { font-size: 9.5px; color: var(--blekk-3); }
+
+/* ---- notatflisene ---- */
+.flis {
+  position: relative; flex: 1; min-height: 92px; margin: 0;
+  border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--kant); background: var(--glass-tynn);
+  display: flex; align-items: center; justify-content: center;
+}
+.flis svg { width: 100%; height: 100%; display: block; }
+.flis figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 16px 10px 7px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--glass) 94%, transparent));
+}
+
+/* ---- knappen ---- */
+.hovedknapp {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 46px; width: 100%;
+  border: 1px solid rgba(255,255,255,.9);
+  border-radius: 999px;
+  background: linear-gradient(168deg,
+    color-mix(in srgb, var(--orb-glod) 78%, white), color-mix(in srgb, var(--orb-fyll) 88%, white) 58%, var(--orb-fyll));
+  color: #16203C;
+  font-family: var(--vis); font-weight: 600; font-size: 15px;
+  text-decoration: none; cursor: pointer;
+  box-shadow: inset 0 1px 0 #fff, 0 0 26px -6px var(--orb-glod), var(--kast);
+  transition: transform .16s cubic-bezier(.22,.61,.36,1);
+}
+.hovedknapp:active { transform: translateY(1px) scale(.994); }
+
+/* ---- sidepanelenes småting ---- */
+.signal { display: flex; align-items: flex-end; gap: 3px; height: 16px; }
+.signal i { width: 4px; border-radius: 1px; background: var(--orb-glod); box-shadow: 0 0 6px -1px var(--orb-glod); }
+.signal i:nth-child(1){height:5px} .signal i:nth-child(2){height:8px}
+.signal i:nth-child(3){height:11px} .signal i:nth-child(4){height:14px}
+.signal i.av { background: var(--blekk-3); box-shadow: none; opacity: .4 }
+
+.boble {
+  border-radius: 13px 13px 13px 4px;
+  padding: 8px 11px;
+  background: var(--glass-tynn);
+  border: 1px solid var(--kant);
+  font-size: 11.5px; line-height: 1.4; color: var(--blekk-2);
+}
+
+.orb { position: relative; width: 100%; height: 110px; }
+.orb svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.orb .kule { animation: puster 5.5s ease-in-out infinite; transform-origin: 120px 118px; }
+.orb .halo { animation: pulser 5.5s ease-in-out infinite; transform-origin: 120px 118px; }
+.orb .ringlys { animation: baneloep 9s linear infinite; }
+.orb .oye { animation: blunk 7.5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+.orb .krus ellipse { animation: krusning 6s ease-out infinite; transform-origin: 120px 206px; }
+.orb .krus ellipse:nth-child(2) { animation-delay: -2s }
+.orb .krus ellipse:nth-child(3) { animation-delay: -4s }
+@keyframes puster { 0%,100%{transform:scale(1)} 50%{transform:scale(1.022)} }
+@keyframes pulser { 0%,100%{opacity:.72;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
+@keyframes baneloep { from{stroke-dashoffset:412} to{stroke-dashoffset:0} }
+@keyframes blunk { 0%,92%,100%{transform:scaleY(1)} 95%{transform:scaleY(.08)} }
+@keyframes krusning { 0%{transform:scale(.72);opacity:0} 22%{opacity:.7} 100%{transform:scale(1.3);opacity:0} }
+
+.bunntekst {
+  margin: 26px auto 0;
+  max-width: 64ch;
+  width: fit-content;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--glass-tynn);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--kant);
+  color: var(--blekk-3);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+</style>
+
+<div class="scene" aria-hidden="true"></div>
+
+<div class="ark">
+
+  <header class="sidetopp">
+    <div class="merke">
+      <span class="ko">공부</span>
+      <b>gong-bu</b>
+      <span class="etikett" style="margin-left:4px">Bordet</span>
+    </div>
+    <div class="temavelger" role="group" aria-label="Velg tema">
+      <button type="button" data-tema="lys"  aria-pressed="false">Lys</button>
+      <button type="button" data-tema="mork" aria-pressed="false">Mørk</button>
+      <button type="button" data-tema="glo"  aria-pressed="true">Glød</button>
+    </div>
+  </header>
+
+  <div class="bord">
+    <svg class="koblinger" id="koblinger" aria-hidden="true"></svg>
+
+    <!-- ====== VENSTRE: hvor innholdet kommer fra ====== -->
+    <aside class="side side--v">
+      <section class="sveve" data-kobling="v">
+        <p class="etikett" style="line-height:1.5">Vault-<br>tilkobling</p>
+        <svg viewBox="0 0 90 54" style="width:100%;height:auto;margin:10px 0 8px" aria-hidden="true">
+          <path d="M45 6 L63 22 L52 48 L38 48 L27 22 Z" fill="none" stroke="var(--blekk-2)" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M45 6 L45 48 M27 22 L63 22" stroke="var(--blekk-3)" stroke-width="1" opacity=".7"/>
+          <g stroke="var(--orb-glod)" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".9">
+            <path d="M70 18a12 12 0 0 1 0 18"/><path d="M76 12a20 20 0 0 1 0 30"/>
+          </g>
+        </svg>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <span class="etikett">Synket</span>
+          <span class="signal" aria-hidden="true"><i></i><i></i><i></i><i class="av"></i></span>
+        </div>
+      </section>
+
+      <section class="sveve" data-kobling="v">
+        <p class="etikett" style="margin-bottom:8px">Kua</p>
+        <div class="orb" data-sinn="rolig" role="img" aria-label="Studiekompisen"></div>
+        <p class="boble" style="margin:8px 0 0">Du blandet hash og signatur i går. Ta de to sammen?</p>
+      </section>
+    </aside>
+
+    <!-- ====== MIDTEN: arbeidsflaten ====== -->
+    <main class="hovedpanel">
+      <header class="bordtopp">
+        <div>
+          <p class="etikett" style="margin-bottom:5px">IN1020 · 공부</p>
+          <h1>Datasikkerhet og nettverk</h1>
+        </div>
+        <div class="verktoy">
+          <button type="button" aria-label="Varsler">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          </button>
+          <button type="button" aria-label="Meny">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="rutenett">
+
+        <section class="panel r-fremdrift" style="display:flex;flex-direction:column">
+          <p class="korttittel">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l5-6 4 3 5-7 4 4"/></svg>
+            Fremdrift
+            <span class="etikett" style="margin-left:auto">Siste 14 dager</span>
+          </p>
+          <div class="maaler">
+            <svg class="kurve" viewBox="0 0 420 118" preserveAspectRatio="none" role="img" aria-label="Andel begreper som sitter, fra 41 prosent for fjorten dager siden til 62 prosent i dag">
+              <defs>
+                <linearGradient id="flate" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="var(--orb-glod)" stop-opacity=".42"/>
+                  <stop offset="1" stop-color="var(--orb-glod)" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="linje" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="var(--frynse-1)"/>
+                  <stop offset=".55" stop-color="var(--band-kjerne)"/>
+                  <stop offset="1" stop-color="var(--orb-glod)"/>
+                </linearGradient>
+              </defs>
+              <g stroke="var(--kant)" stroke-width="1"><path d="M0 26h420M0 60h420M0 94h420"/></g>
+              <path d="M0 96 C 48 90, 76 74, 120 76 S 196 55, 246 46 S 330 36, 420 21 L420 118 L0 118 Z" fill="url(#flate)"/>
+              <path d="M0 96 C 48 90, 76 74, 120 76 S 196 55, 246 46 S 330 36, 420 21"
+                    fill="none" stroke="url(#linje)" stroke-width="2.4" stroke-linecap="round"/>
+              <circle cx="420" cy="21" r="4" fill="var(--band-kjerne)"/>
+            </svg>
+            <div class="soyle">
+              <b>62%</b>
+              <div class="roret"><i style="height:62%"></i></div>
+              <span class="etikett" style="font-size:8px">Sitter</span>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px">
+            <span class="etikett">22. okt</span><span class="etikett">29. okt</span><span class="etikett">5. nov</span>
+          </div>
+        </section>
+
+        <section class="panel r-logg" style="display:flex;flex-direction:column;min-height:0">
+          <p class="korttittel">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg>
+            Gjennomgang
+          </p>
+          <ul class="logg">
+            <li class="fersk"><i></i><span class="navn">Symmetrisk kryptering</span><span class="nar">09:14</span></li>
+            <li><i></i><span class="navn">TLS-håndtrykk</span><span class="nar">09:11</span></li>
+            <li class="svak"><i></i><span class="navn">Hashfunksjon</span><span class="nar">09:08</span></li>
+            <li><i></i><span class="navn">Sertifikatkjede</span><span class="nar">09:04</span></li>
+            <li><i></i><span class="navn">Konfidensialitet</span><span class="nar">08:59</span></li>
+            <li class="svak"><i></i><span class="navn">Digital signatur</span><span class="nar">08:55</span></li>
+            <li><i></i><span class="navn">PKI</span><span class="nar">08:51</span></li>
+            <li><i></i><span class="navn">ARP-oppslag</span><span class="nar">08:46</span></li>
+            <li><i></i><span class="navn">Asymmetrisk kryptering</span><span class="nar">08:41</span></li>
+            <li class="svak"><i></i><span class="navn">UDP vs TCP</span><span class="nar">08:37</span></li>
+            <li><i></i><span class="navn">DNS-oppslag</span><span class="nar">08:32</span></li>
+            <li><i></i><span class="navn">Integritet</span><span class="nar">08:28</span></li>
+          </ul>
+        </section>
+
+        <section class="panel r-analyse" style="display:flex;flex-direction:column;min-height:0">
+          <p class="korttittel">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20v-4"/></svg>
+            Hva glipper
+          </p>
+          <svg viewBox="0 0 220 56" preserveAspectRatio="none" style="width:100%;height:56px;display:block" role="img" aria-label="Bomrate for to begrepsgrupper over tid">
+            <g stroke="var(--kant)" stroke-width="1"><path d="M0 18h220M0 38h220"/></g>
+            <path d="M0 44 C 26 40, 40 16, 66 22 S 108 44, 134 30 S 182 10, 220 16" fill="none" stroke="var(--frynse-2)" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+            <path d="M0 50 C 30 48, 46 34, 72 38 S 120 50, 148 42 S 190 30, 220 34" fill="none" stroke="var(--frynse-1)" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          </svg>
+          <svg viewBox="0 0 220 44" preserveAspectRatio="none" style="width:100%;flex:1;min-height:44px;display:block;margin-top:8px" aria-hidden="true">
+            <g fill="var(--orb-glod)" opacity=".85">
+              <rect x="2" y="26" width="9" height="18" rx="2"/><rect x="18" y="18" width="9" height="26" rx="2"/>
+              <rect x="34" y="30" width="9" height="14" rx="2"/><rect x="50" y="10" width="9" height="34" rx="2"/>
+              <rect x="66" y="22" width="9" height="22" rx="2"/><rect x="82" y="32" width="9" height="12" rx="2"/>
+              <rect x="98" y="16" width="9" height="28" rx="2"/><rect x="114" y="28" width="9" height="16" rx="2"/>
+              <rect x="130" y="8" width="9" height="36" rx="2" fill="var(--band-kjerne)"/>
+              <rect x="146" y="24" width="9" height="20" rx="2"/><rect x="162" y="34" width="9" height="10" rx="2"/>
+              <rect x="178" y="20" width="9" height="24" rx="2"/><rect x="194" y="30" width="9" height="14" rx="2"/>
+            </g>
+          </svg>
+          <div class="minirad" style="margin-top:auto;padding-top:9px">
+            <div class="mini"><b>4/7</b><span>Hashfunksjon</span></div>
+            <div class="mini"><b>3/6</b><span>UDP</span></div>
+          </div>
+        </section>
+
+        <div class="r-hoyre">
+          <button type="button" class="hovedknapp" id="startknapp">Start økt</button>
+          <section class="panel" style="display:flex;flex-direction:column;gap:9px;flex:1;min-height:0">
+            <p class="korttittel" style="margin-bottom:0">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+              Notater
+            </p>
+            <figure class="flis">
+              <svg viewBox="0 0 160 96" aria-hidden="true">
+                <g stroke="var(--kant)" stroke-width="1" fill="none"><path d="M40 30h32M88 30h32M56 30v34M104 30v34"/></g>
+                <g fill="var(--orb-glod)" opacity=".9">
+                  <circle cx="40" cy="30" r="5"/><circle cx="80" cy="30" r="7"/><circle cx="120" cy="30" r="5"/>
+                  <circle cx="56" cy="64" r="4"/><circle cx="104" cy="64" r="4"/>
+                </g>
+                <circle cx="80" cy="30" r="12" fill="none" stroke="var(--band-kjerne)" stroke-width="1" opacity=".5"/>
+              </svg>
+              <figcaption>Nettverk.md</figcaption>
+            </figure>
+            <figure class="flis">
+              <svg viewBox="0 0 160 96" aria-hidden="true">
+                <rect x="36" y="38" width="46" height="34" rx="5" fill="none" stroke="var(--blekk-2)" stroke-width="1.6"/>
+                <path d="M48 38v-9a11 11 0 0 1 22 0v9" fill="none" stroke="var(--blekk-2)" stroke-width="1.6"/>
+                <circle cx="59" cy="54" r="4" fill="var(--orb-glod)"/>
+                <path d="M96 55h34M124 49l6 6-6 6" fill="none" stroke="var(--orb-glod)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <figcaption>Kryptering.md</figcaption>
+            </figure>
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ====== HØYRE: tid, og det som venter ====== -->
+    <aside class="side side--h">
+      <section class="sveve" data-kobling="h">
+        <p class="etikett">Eksamen</p>
+        <p class="tall" id="dager" style="font-size:40px;margin:10px 0 4px">–</p>
+        <p class="etikett" id="dagerTekst">dager igjen</p>
+        <div style="height:4px;border-radius:2px;margin-top:11px;background:var(--glass-tynn);border:1px solid var(--kant);overflow:hidden">
+          <i id="semesterlinje" style="display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orb-fyll),var(--orb-glod));transition:width .8s ease"></i>
+        </div>
+      </section>
+
+      <section class="sveve" data-kobling="h">
+        <p class="etikett" style="margin-bottom:10px">Forfalt</p>
+        <p class="tall" style="font-size:34px;margin:0 0 10px">12</p>
+        <ul class="logg">
+          <li><i></i><span class="navn">Hashfunksjon</span></li>
+          <li><i></i><span class="navn">Digital signatur</span></li>
+          <li class="svak"><i></i><span class="navn">DHCP</span></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <p class="bunntekst">Statisk utforskning. Tallene er eksempeldata — bortsett fra nedtellingen, som regner fra dagens dato mot 15. desember.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==========================================================
+     1 · TEMA
+     Tre temaer. Startvalget følger maskinens innstilling, med
+     mindre leseren har valgt noe selv tidligere.
+     ========================================================== */
+  var rot = document.documentElement;
+  var temaknapper = [].slice.call(document.querySelectorAll('.temavelger button'));
+
+  function settTema(t, lagre) {
+    rot.dataset.tema = t;
+    temaknapper.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.tema === t)); });
+    if (lagre) { try { localStorage.setItem('gongbu-tema', t); } catch (e) {} }
+  }
+
+  var valgt = null;
+  try { valgt = localStorage.getItem('gongbu-tema'); } catch (e) {}
+  if (!valgt) {
+    var vertstema = rot.getAttribute('data-theme');
+    var mork = vertstema ? vertstema === 'dark'
+             : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    valgt = mork ? 'mork' : 'lys';
+  }
+  settTema(valgt, false);
+
+  temaknapper.forEach(function (b) {
+    b.addEventListener('click', function () { settTema(b.dataset.tema, true); });
+  });
+
+  /* ==========================================================
+     2 · SCENEN
+     Bakgrunnen er fotoet; temaet bestemmer hvilket. Over det
+     ligger en flat demping som gjør teksten lesbar, og et korn
+     som tar bort det digitale preget.
+     ========================================================== */
+  document.querySelector('.scene').innerHTML =
+    '<div class="foto"></div><div class="skrim"></div><div class="korn"></div>';
+
+  /* ==========================================================
+     3 · ORBEN
+     ========================================================== */
+  var ORB = [
+'<svg viewBox="0 0 240 240"><defs>',
+'<radialGradient id="o-halo"><stop offset="0" stop-color="var(--orb-glod)" stop-opacity=".85"/>',
+'<stop offset=".45" stop-color="var(--orb-glod)" stop-opacity=".35"/>',
+'<stop offset="1" stop-color="var(--orb-glod)" stop-opacity="0"/></radialGradient>',
+'<radialGradient id="o-fyll" cx=".36" cy=".3" r=".86"><stop offset="0" stop-color="var(--orb-kjerne)"/>',
+'<stop offset=".34" stop-color="var(--orb-fyll)"/><stop offset=".82" stop-color="var(--orb-rim)"/>',
+'<stop offset="1" stop-color="var(--orb-rim)"/></radialGradient>',
+'<linearGradient id="o-rim" x1="0" y1="1" x2=".4" y2="0">',
+'<stop offset="0" stop-color="var(--orb-kjerne)" stop-opacity=".95"/>',
+'<stop offset=".45" stop-color="var(--orb-kjerne)" stop-opacity=".18"/>',
+'<stop offset="1" stop-color="var(--orb-kjerne)" stop-opacity=".7"/></linearGradient>',
+'<linearGradient id="o-ring" x1="0" y1="0" x2="1" y2="0.4">',
+'<stop offset="0" stop-color="var(--orb-glod)" stop-opacity=".2"/>',
+'<stop offset=".18" stop-color="var(--orb-glod)" stop-opacity=".9"/>',
+'<stop offset=".5" stop-color="var(--orb-kjerne)"/>',
+'<stop offset=".82" stop-color="var(--orb-fyll)" stop-opacity=".9"/>',
+'<stop offset="1" stop-color="var(--orb-fyll)" stop-opacity=".2"/></linearGradient>',
+'<linearGradient id="o-ring2" x1="1" y1="0" x2="0" y2="0.5">',
+'<stop offset="0" stop-color="var(--frynse-1)" stop-opacity="0"/>',
+'<stop offset=".3" stop-color="var(--frynse-1)" stop-opacity=".75"/>',
+'<stop offset=".62" stop-color="var(--orb-kjerne)" stop-opacity=".9"/>',
+'<stop offset="1" stop-color="var(--frynse-2)" stop-opacity="0"/></linearGradient>',
+'<filter id="o-oye" x="-200%" y="-120%" width="500%" height="340%"><feGaussianBlur stdDeviation="2.6" result="b"/>',
+'<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>',
+'<filter id="o-mykt" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>',
+'<clipPath id="o-ned"><rect x="2" y="118" width="236" height="52"/></clipPath>',
+'<clipPath id="o-ned2"><rect x="2" y="118" width="236" height="46"/></clipPath></defs>',
+'<circle class="halo" cx="120" cy="118" r="76" fill="url(#o-halo)"/>',
+'<g transform="rotate(24 120 118)"><ellipse cx="120" cy="118" rx="84" ry="19" fill="none" stroke="url(#o-ring2)" stroke-width="1.6" opacity=".6"/></g>',
+'<g transform="rotate(-16 120 118)"><ellipse cx="120" cy="118" rx="94" ry="28" fill="none" stroke="url(#o-ring)" stroke-width="2.4" opacity=".8"/>',
+'<ellipse class="ringlys" cx="120" cy="118" rx="94" ry="28" fill="none" stroke="var(--band-kjerne)" stroke-width="3" stroke-linecap="round" stroke-dasharray="30 382" opacity=".5"/></g>',
+'<g class="kule"><circle cx="120" cy="118" r="52" fill="url(#o-fyll)"/>',
+'<circle cx="120" cy="118" r="51.2" fill="none" stroke="url(#o-rim)" stroke-width="1.6"/>',
+'<ellipse cx="101" cy="96" rx="19" ry="13" fill="var(--orb-kjerne)" opacity=".5" transform="rotate(-28 101 96)" filter="url(#o-mykt)"/>',
+'<g filter="url(#o-oye)"><rect class="oye" x="105" y="108" width="4.6" height="19" rx="2.3" fill="var(--orb-kjerne)"/>',
+'<rect class="oye" x="130.4" y="108" width="4.6" height="19" rx="2.3" fill="var(--orb-kjerne)"/></g></g>',
+'<g transform="rotate(-16 120 118)"><ellipse clip-path="url(#o-ned)" cx="120" cy="118" rx="94" ry="28" fill="none" stroke="url(#o-ring)" stroke-width="2.6"/>',
+'<ellipse class="ringlys" clip-path="url(#o-ned)" cx="120" cy="118" rx="94" ry="28" fill="none" stroke="var(--band-kjerne)" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="30 382"/></g>',
+'<g transform="rotate(24 120 118)"><ellipse clip-path="url(#o-ned2)" cx="120" cy="118" rx="84" ry="19" fill="none" stroke="url(#o-ring2)" stroke-width="1.8" opacity=".9"/></g>',
+'<g class="krus"><ellipse cx="120" cy="200" rx="40" ry="6" fill="none" stroke="var(--band-kjerne)" stroke-width="1.4" opacity=".55"/>',
+'<ellipse cx="120" cy="206" rx="62" ry="9" fill="none" stroke="var(--band-kjerne)" stroke-width="1.1" opacity=".34"/>',
+'<ellipse cx="120" cy="213" rx="84" ry="12" fill="none" stroke="var(--band-kjerne)" stroke-width="0.9" opacity=".18"/></g>',
+'<ellipse cx="120" cy="204" rx="58" ry="9" fill="url(#o-halo)" filter="url(#o-mykt)"/></svg>'
+  ].join('');
+  [].forEach.call(document.querySelectorAll('.orb'), function (o) { o.innerHTML = ORB; });
+
+  /* ==========================================================
+     4 · NEDTELLINGEN
+     Regnes fra dagens dato, så panelet aldri lyver.
+     ========================================================== */
+  var EKSAMEN = new Date(2026, 11, 15);      // 15. desember
+  var START   = new Date(2026, 7, 17);       // semesterstart
+  var naa = new Date(); naa.setHours(0, 0, 0, 0);
+  var dag = 86400000;
+  var igjen = Math.max(0, Math.round((EKSAMEN - naa) / dag));
+  var andel = Math.min(100, Math.max(0, ((naa - START) / (EKSAMEN - START)) * 100));
+
+  document.getElementById('dager').textContent = igjen;
+  document.getElementById('dagerTekst').textContent = igjen === 1 ? 'dag igjen' : 'dager igjen';
+  requestAnimationFrame(function () {
+    document.getElementById('semesterlinje').style.width = andel.toFixed(1) + '%';
+  });
+
+  /* ==========================================================
+     5 · KOBLINGSLINJENE
+     Tegnes ut fra hvor panelene faktisk havner, ikke fra faste
+     tall, og bare når trespaltene er i bruk.
+     ========================================================== */
+  var bredSkjerm = window.matchMedia('(min-width: 1120px)');
+
+  function albue(x1, y1, x2, y2) {
+    var r = 9;
+    var sx = x2 > x1 ? 1 : -1, sy = y2 > y1 ? 1 : -1;
+    if (Math.abs(y2 - y1) < r * 2) return 'M' + x1 + ' ' + y1 + 'H' + x2;
+    return 'M' + x1 + ' ' + y1 + 'H' + (x2 - sx * r)
+         + 'Q' + x2 + ' ' + y1 + ' ' + x2 + ' ' + (y1 + sy * r) + 'V' + y2;
+  }
+  function prikk(x, y, r) {
+    return '<circle class="ytre" cx="' + x + '" cy="' + y + '" r="' + (r * 2.6) + '"/>'
+         + '<circle class="indre" cx="' + x + '" cy="' + y + '" r="' + r + '"/>';
+  }
+
+  function tegnKoblinger() {
+    var svg = document.getElementById('koblinger');
+    if (!bredSkjerm.matches) { svg.innerHTML = ''; return; }
+
+    var bord = document.querySelector('.bord');
+    var hoved = document.querySelector('.hovedpanel');
+    var b = bord.getBoundingClientRect();
+    var h = hoved.getBoundingClientRect();
+    var ut = [];
+
+    [['v', .40], ['h', .48]].forEach(function (par) {
+      var paneler = bord.querySelectorAll('[data-kobling="' + par[0] + '"]');
+      if (!paneler.length) return;
+      var venstre = par[0] === 'v';
+      var hovedX = (venstre ? h.left : h.right) - b.left;
+      var knuteY = h.top - b.top + h.height * par[1];
+
+      var kant = venstre ? -Infinity : Infinity;
+      [].forEach.call(paneler, function (p) {
+        var r = p.getBoundingClientRect();
+        var x = (venstre ? r.right : r.left) - b.left;
+        kant = venstre ? Math.max(kant, x) : Math.min(kant, x);
+      });
+      var knuteX = (kant + hovedX) / 2;
+
+      [].forEach.call(paneler, function (p) {
+        var r = p.getBoundingClientRect();
+        var px = (venstre ? r.right : r.left) - b.left;
+        var py = r.top - b.top + r.height / 2;
+        ut.push('<path d="' + albue(px, py, knuteX, knuteY) + '"/>', prikk(px, py, 2.6));
+      });
+      ut.push('<path d="M' + knuteX + ' ' + knuteY + 'H' + hovedX + '"/>',
+              prikk(knuteX, knuteY, 3.6), prikk(hovedX, knuteY, 2.6));
+    });
+
+    svg.setAttribute('viewBox', '0 0 ' + b.width + ' ' + b.height);
+    svg.innerHTML = ut.join('');
+  }
+
+  tegnKoblinger();
+  window.addEventListener('resize', tegnKoblinger);
+  if (bredSkjerm.addEventListener) bredSkjerm.addEventListener('change', tegnKoblinger);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(tegnKoblinger);
+
+  /* 6 · knappen — orben våkner når du starter */
+  document.getElementById('startknapp').addEventListener('click', function () {
+    var orb = document.querySelector('.orb');
+    orb.dataset.sinn = orb.dataset.sinn === 'jobber' ? 'rolig' : 'jobber';
+    var ringer = orb.querySelectorAll('.ringlys');
+    [].forEach.call(ringer, function (r) {
+      r.style.animationDuration = orb.dataset.sinn === 'jobber' ? '4s' : '9s';
+    });
+    this.textContent = orb.dataset.sinn === 'jobber' ? 'Økt i gang' : 'Start økt';
+  });
+})();
+</script>

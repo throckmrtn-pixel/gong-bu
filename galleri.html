@@ -1,0 +1,345 @@
+<title>gong-bu skjermer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+/* Layout: et verkstedbord. Alle skjermene oppe samtidig, i rad,
+   med ett tema som gjelder alle. Trykk på en for å se den stor. */
+
+:root {
+  --ark:   #ECEEF6;
+  --flate: #FFFFFF;
+  --tekst: #171B29;
+  --tekst-2: #525A75;
+  --linje: rgba(90,102,160,.20);
+  --aksent: #44489C;
+  --ramme-1: #FAFBFF; --ramme-2: #C9CEE2; --ramme-3: #8E94AE;
+  --sl: 0 1px 2px -1px rgba(30,40,90,.2), -10px 28px 46px -24px rgba(30,40,90,.45);
+
+  --vis: "Space Grotesk", "Helvetica Neue", sans-serif;
+  --brod: Inter, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ark:   #0C0F19;
+    --flate: #161A27;
+    --tekst: #EDF0F8;
+    --tekst-2: #9AA3C0;
+    --linje: rgba(170,185,235,.18);
+    --aksent: #AFC0FA;
+    --ramme-1: #3A4057; --ramme-2: #22273A; --ramme-3: #10131E;
+    --sl: 0 1px 2px -1px rgba(0,0,0,.6), -10px 28px 46px -24px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ark:   #0C0F19;
+  --flate: #161A27;
+  --tekst: #EDF0F8;
+  --tekst-2: #9AA3C0;
+  --linje: rgba(170,185,235,.18);
+  --aksent: #AFC0FA;
+  --ramme-1: #3A4057; --ramme-2: #22273A; --ramme-3: #10131E;
+  --sl: 0 1px 2px -1px rgba(0,0,0,.6), -10px 28px 46px -24px rgba(0,0,0,.8);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ark);
+  color: var(--tekst);
+  font-family: var(--brod);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.ark {
+  max-width: 1460px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 34px 60px;
+}
+
+h1 { margin: 0; font-family: var(--vis); font-size: clamp(28px, 5vw, 40px); font-weight: 600; letter-spacing: -.035em; }
+h2 { margin: 0; font-family: var(--vis); font-size: 17px; font-weight: 600; letter-spacing: -.02em; }
+p  { margin: 0; }
+
+.merkelapp { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--tekst-2); }
+.ingress { max-width: 62ch; color: var(--tekst-2); font-size: 16px; }
+
+.topp { display: flex; flex-direction: column; gap: 12px; margin-bottom: 26px; }
+.topp .ko { font-family: var(--vis); color: var(--aksent); font-weight: 700; }
+
+/* ---- styring ---- */
+.styring {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 12px 0 14px;
+  background: linear-gradient(180deg, var(--ark) 72%, transparent);
+}
+.knapper { display: flex; gap: 6px; }
+.knapper button {
+  min-height: 36px; padding: 0 15px;
+  border-radius: 999px;
+  border: 1px solid var(--linje);
+  background: var(--flate);
+  color: var(--tekst-2);
+  font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+  cursor: pointer;
+  transition: color .15s, background .15s, border-color .15s;
+}
+.knapper button:hover { color: var(--tekst); }
+.knapper button[aria-pressed="true"] { background: var(--aksent); border-color: var(--aksent); color: var(--ark); font-weight: 700; }
+
+/* ---- rutenettet av skjermer ---- */
+.vegg { display: grid; grid-template-columns: repeat(auto-fill, minmax(216px, 1fr)); gap: 26px 20px; }
+.vegg--bred { grid-template-columns: minmax(0, 1fr); margin-top: 30px; }
+
+.plass { min-width: 0; }
+.celle { position: relative; cursor: zoom-in; }
+.celle:focus-visible { outline: 2px solid var(--aksent); outline-offset: 6px; border-radius: 28px; }
+
+.ramme {
+  position: relative;
+  transform-origin: top left;
+  padding: 7px;
+  border-radius: 42px;
+  background: linear-gradient(203deg, var(--ramme-1), var(--ramme-2) 48%, var(--ramme-3));
+  box-shadow: var(--sl), 0 0 0 1px rgba(255,255,255,.14) inset;
+}
+.ramme--bred { padding: 6px; border-radius: 22px; }
+.ramme iframe { display: block; border: 0; border-radius: 35px; background: #66729F; }
+.ramme--bred iframe { border-radius: 16px; }
+
+.navnelapp { display: flex; align-items: baseline; gap: 8px; margin-top: 11px; flex-wrap: wrap; }
+.navnelapp b { font-family: var(--vis); font-size: 14px; font-weight: 600; letter-spacing: -.015em; }
+.navnelapp span { font-family: var(--mono); font-size: 10px; color: var(--tekst-2); }
+
+/* ---- forstørret visning ---- */
+.lupe {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px;
+  background: color-mix(in srgb, var(--ark) 86%, black);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.lupe[hidden] { display: none; }
+.lupe .ramme { transform-origin: center; }
+.lukk {
+  position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px;
+  width: 42px; height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--linje);
+  background: var(--flate);
+  color: var(--tekst);
+  cursor: pointer;
+}
+
+/* ---- notatene ---- */
+.notater { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; margin-top: 42px; }
+.notat { background: var(--flate); border: 1px solid var(--linje); border-radius: 18px; padding: 18px; }
+.notat p { color: var(--tekst-2); font-size: 14px; margin-top: 9px; }
+.notat ul { margin: 9px 0 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.notat li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 9px; font-size: 13.5px; color: var(--tekst-2); }
+.notat li b { color: var(--tekst); font-weight: 600; }
+.notat li::before { content: "·"; font-family: var(--mono); color: var(--aksent); text-align: center; }
+
+footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--linje); color: var(--tekst-2); font-size: 13.5px; max-width: 64ch; }
+
+:focus-visible { outline: 2px solid var(--aksent); outline-offset: 3px; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { * { transition-duration: .001ms !important; } }
+</style>
+
+<div class="ark">
+
+  <header class="topp">
+    <span class="merkelapp">Alle skjermer · flyt</span>
+    <h1><span class="ko">공부</span> gong-bu</h1>
+    <p class="ingress">
+      Hele appen i det nye systemet. Glasset ligger over lys som beveger seg, båndene
+      speiles i et gulv nederst, og hver flate fanger lyset på øvre kant i fargene fra
+      båndene bak. Tre temaer, samme struktur.
+    </p>
+  </header>
+
+  <div class="styring">
+    <span class="merkelapp">Tema</span>
+    <div class="knapper" role="group" aria-label="Velg tema" id="temavelger">
+      <button type="button" data-tema="lys"  aria-pressed="false">Lys</button>
+      <button type="button" data-tema="mork" aria-pressed="false">Mørk</button>
+      <button type="button" data-tema="glo"  aria-pressed="true">Glød</button>
+    </div>
+    <span class="merkelapp" style="margin-left:auto">Trykk på en skjerm for å se den stor</span>
+  </div>
+
+  <div class="vegg" id="vegg"></div>
+  <div class="vegg vegg--bred" id="veggBred"></div>
+
+  <div class="notater">
+    <section class="notat">
+      <h2>Hva som er nytt</h2>
+      <ul>
+        <li><span><b>Prismekant.</b> Lysstripa på toppen av hvert kort splittes i de samme fargene som båndene bak. Det er den som binder flatene til lyset.</span></li>
+        <li><span><b>Lyssveip.</b> Et smalt lysfelt passerer over glasset hvert ellevte sekund, forskjøvet fra kort til kort.</span></li>
+        <li><span><b>Hjørnemerker.</b> Fire tynne vinkler rammer inn hovedflaten uten å lage en boks.</span></li>
+        <li><span><b>Tall som teller seg opp</b> når siden åpnes, og en ring av lys der fingeren treffer.</span></li>
+      </ul>
+    </section>
+
+    <section class="notat">
+      <h2>Tre regler som står</h2>
+      <ul>
+        <li><span><b>Tett glass under tekst.</b> Rammeverket slipper bakgrunnen gjennom; flater du leser eller skriver i gjør ikke det.</span></li>
+        <li><span><b>Merket bærer tilstanden.</b> Hel prikk, halv prikk, tom ring. Med tre temaer klarer ikke farge alene å skille dem.</span></li>
+        <li><span><b>Én glødende ting per skjerm.</b> På nivå 1 gløder ingen av de fire svarene — fire like glorier blir et fargebelte.</span></li>
+      </ul>
+    </section>
+
+    <section class="notat">
+      <h2>Fortsatt åpent</h2>
+      <ul>
+        <li><span>Kua i mørkt tema. Hvit pikselku mot nattblått fungerer, men hun er tegnet for lys bakgrunn.</span></li>
+        <li><span>Spillene — matche begrep mot definisjon på tid — har ingen skjerm ennå.</span></li>
+        <li><span>Nivå 3 har ikke ekte dra-og-slipp. Feltene er knapper så lenge.</span></li>
+        <li><span>Ikon og splash for hjemskjermen.</span></li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    Statiske skjermer. Tallene er eksempeldata. Alt visuelt bor i <code style="font-family:var(--mono)">flyt.css</code>;
+    bakgrunnen og orben er delt mellom sidene i hver sin lille fil, og sidene selv inneholder bare struktur.
+  </footer>
+</div>
+
+<div class="lupe" id="lupe" hidden>
+  <button type="button" class="lukk" id="lukk" aria-label="Lukk">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SKJERMER = [
+    { f: 'app/index.html',        n: 'Hjem',                  b: 390, h: 844 },
+    { f: 'app/studie.html',       n: 'Studieøkt',             b: 390, h: 844 },
+    { f: 'app/nivaa1.html',       n: 'Nivå 1 · gjenkjenning', b: 390, h: 844 },
+    { f: 'app/nivaa2.html',       n: 'Nivå 2 · forklaring',   b: 390, h: 844 },
+    { f: 'app/nivaa2-fasit.html', n: 'Nivå 2 · fasit',        b: 390, h: 844 },
+    { f: 'app/nivaa3.html',       n: 'Nivå 3 · sortering',    b: 390, h: 844 },
+    { f: 'app/kode.html',         n: 'Kodespor',              b: 390, h: 844 },
+    { f: 'app/oversikt.html',     n: 'Hva sitter',            b: 390, h: 844 }
+  ];
+  var BREDE = [
+    { f: 'app/bord.html', n: 'Bordet', b: 1280, h: 800 }
+  ];
+
+  var tema = 'glo';
+
+  /* Bygger én celle: ramme, iframe, navnelapp. */
+  function celle(s, bred) {
+    var plass = document.createElement('div');
+    plass.className = 'plass';
+    plass.innerHTML =
+      '<div class="celle" tabindex="0" role="button" aria-label="Vis ' + s.n + ' i stor visning">'
+      + '<div class="ramme' + (bred ? ' ramme--bred' : '') + '" data-b="' + s.b + '" data-h="' + s.h + '">'
+      + '<iframe src="' + s.f + '" title="' + s.n + '" loading="lazy" tabindex="-1"'
+      + ' style="width:' + s.b + 'px;height:' + s.h + 'px;pointer-events:none"></iframe>'
+      + '</div></div>'
+      + '<p class="navnelapp"><b>' + s.n + '</b><span>' + s.f.replace('app/', '') + '</span></p>';
+
+    var ram = plass.querySelector('.ramme');
+    var pad = bred ? 12 : 14;
+    ram.dataset.ytreB = s.b + pad;
+    ram.dataset.ytreH = s.h + pad;
+
+    plass.querySelector('.celle').addEventListener('click', function () { forstorr(s, bred); });
+    plass.querySelector('.celle').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); forstorr(s, bred); }
+    });
+    return plass;
+  }
+
+  SKJERMER.forEach(function (s) { document.getElementById('vegg').appendChild(celle(s, false)); });
+  BREDE.forEach(function (s) { document.getElementById('veggBred').appendChild(celle(s, true)); });
+
+  /* Skalerer hver ramme ned til spalten den står i. */
+  function skaler() {
+    var celler = document.querySelectorAll('.vegg .celle');
+    for (var i = 0; i < celler.length; i++) {
+      var c = celler[i];
+      var ram = c.querySelector('.ramme');
+      var s = Math.min(1, c.clientWidth / parseInt(ram.dataset.ytreB, 10));
+      ram.style.transform = 'scale(' + s + ')';
+      c.style.height = (parseInt(ram.dataset.ytreH, 10) * s) + 'px';
+    }
+  }
+
+  /* Temaet settes i alle rammene samtidig. */
+  function settTema(t) {
+    tema = t;
+    var rammer = document.querySelectorAll('iframe');
+    for (var i = 0; i < rammer.length; i++) {
+      try { rammer[i].contentWindow.postMessage({ tema: t }, '*'); } catch (e) {}
+    }
+    var kn = document.querySelectorAll('#temavelger button');
+    for (var j = 0; j < kn.length; j++) kn[j].setAttribute('aria-pressed', String(kn[j].dataset.tema === t));
+  }
+
+  document.getElementById('temavelger').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (b) settTema(b.dataset.tema);
+  });
+
+  /* En iframe som nettopp lastet må få temaet på nytt. */
+  document.addEventListener('load', function (e) {
+    if (e.target.tagName === 'IFRAME') {
+      try { e.target.contentWindow.postMessage({ tema: tema }, '*'); } catch (err) {}
+    }
+  }, true);
+
+  /* ---- forstørret visning ---- */
+  var lupe = document.getElementById('lupe');
+  var aapen = null;
+
+  function forstorr(s, bred) {
+    if (aapen) aapen.remove();
+    var ram = document.createElement('div');
+    ram.className = 'ramme' + (bred ? ' ramme--bred' : '');
+    ram.innerHTML = '<iframe src="' + s.f + '" title="' + s.n + '" style="width:' + s.b + 'px;height:' + s.h + 'px"></iframe>';
+    lupe.appendChild(ram);
+    aapen = ram;
+    lupe.hidden = false;
+
+    var pad = bred ? 12 : 14;
+    var s2 = Math.min(1,
+      (window.innerWidth - 36) / (s.b + pad),
+      (window.innerHeight - 36) / (s.h + pad));
+    ram.style.transform = 'scale(' + s2 + ')';
+
+    setTimeout(function () {
+      try { ram.querySelector('iframe').contentWindow.postMessage({ tema: tema }, '*'); } catch (e) {}
+    }, 400);
+    document.getElementById('lukk').focus();
+  }
+
+  function lukk() {
+    lupe.hidden = true;
+    if (aapen) { aapen.remove(); aapen = null; }
+  }
+  document.getElementById('lukk').addEventListener('click', lukk);
+  lupe.addEventListener('click', function (e) { if (e.target === lupe) lukk(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lupe.hidden) lukk(); });
+
+  skaler();
+  window.addEventListener('resize', skaler);
+})();
+</script>

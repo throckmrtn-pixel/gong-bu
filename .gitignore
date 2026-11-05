@@ -1,0 +1,5 @@
+.DS_Store
+Thumbs.db
+
+# nedlastet arkiv, ikke en del av prosjektet
+*.zip

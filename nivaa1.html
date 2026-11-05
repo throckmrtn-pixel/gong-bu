@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#66729F">
+<title>Nivå 1 · Gjenkjenning</title>
+<link rel="stylesheet" href="flyt.css">
+</head>
+<body>
+
+<div class="skjerm" data-tema="glo" id="skjerm">
+
+  <div class="scene"></div>
+  <!-- Telefonens egen statuslinje. Hører til enheten, ikke til appen. -->
+  <div class="statuslinje" aria-hidden="true">
+    <span>9:41</span>
+    <span class="ikoner">
+      <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.6" y="5" width="3" height="6" rx="1"/><rect x="9.2" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.8" y="0" width="3" height="11" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.2a10 10 0 0 1 14 0"/><path d="M3.6 7a6.4 6.4 0 0 1 8.8 0"/><path d="M6.3 9.7a2.6 2.6 0 0 1 3.4 0"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.6" y="0.6" width="21" height="10.8" rx="3" stroke="currentColor" stroke-opacity=".5" stroke-width="1.1"/><rect x="2.2" y="2.2" width="17" height="7.6" rx="1.8" fill="currentColor"/><path d="M23.2 4.2v3.6a2 2 0 0 0 0-3.6z" fill="currentColor" fill-opacity=".5"/></svg>
+    </span>
+  </div>
+
+
+  <header class="topp" style="gap:11px">
+    <a class="rund" href="index.html" aria-label="Tilbake til hjem" style="width:40px;height:40px">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    </a>
+    <div class="fremdrift"><i style="width:34%"></i></div>
+    <span class="etikett">04 / 12</span>
+  </header>
+
+  <div class="telemetri">
+    <span class="nivaa">Nivå 01 · Gjenkjenning</span>
+    <span class="strek"></span>
+    <span class="etikett" style="font-size:8.5px">KRYPT_004</span>
+  </div>
+
+  <!-- Spørsmålet. Tettest glass på skjermen — det er her du leser. -->
+  <div class="seksjon">
+    <div class="kort kort--tett" style="padding:24px 20px">
+      <span class="hjorne hjorne--tv"></span>
+      <span class="hjorne hjorne--bh"></span>
+      <p class="etikett" style="margin-bottom:13px">Hvilket begrep?</p>
+      <p class="sporsmaal">
+        Kryptering der avsender og mottaker bruker én felles hemmelig nøkkel,
+        både til å kryptere og dekryptere.
+      </p>
+    </div>
+  </div>
+
+  <div class="fyll"></div>
+
+  <!-- Ingen av svarene gløder. Fire like glorier blir et fargebelte. -->
+  <div class="seksjon stabel" style="gap:10px; padding-bottom:4px">
+    <button type="button" class="pille svar"><span class="nr">01</span><span>Symmetrisk kryptering</span></button>
+    <button type="button" class="pille svar"><span class="nr">02</span><span>Asymmetrisk kryptering</span></button>
+    <button type="button" class="pille svar"><span class="nr">03</span><span>Hashfunksjon</span></button>
+    <button type="button" class="pille svar"><span class="nr">04</span><span>Digital signatur</span></button>
+  </div>
+
+  <div class="sokkel sokkel--lav" style="padding-bottom:12px">
+    <div class="rad spred">
+      <span class="hjelp" style="font-size:12.5px">Fra <a href="#kilde" style="color:var(--blekk)">Sikkerhet / Kryptering</a></span>
+      <button type="button" class="pille pille--stille"><span>HOPP OVER</span></button>
+    </div>
+  </div>
+
+  <nav class="tab" aria-label="Hovedmeny">
+    <a href="index.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>HJEM</a>
+    <a href="nivaa1.html" aria-current="page">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M8 10h8M8 14h5"/></svg>ØV</a>
+    <a href="studie.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg>ØKT</a>
+    <a href="oversikt.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M10 7h7v7"/></svg>KART</a>
+  </nav>
+  <div class="hjemstrek" aria-hidden="true"><i></i></div>
+
+</div>
+
+<script src="flyt-scene.js"></script>
+<script src="flyt-orb.js"></script>
+<script src="flyt-ui.js"></script>
+<script>
+/* Prototypen bytter tema utenfra. */
+window.addEventListener('message', function (e) {
+  if (e.data && e.data.tema) document.getElementById('skjerm').dataset.tema = e.data.tema;
+});
+</script>
+
+</body>
+</html>
