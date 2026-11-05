@@ -24,7 +24,7 @@ Bruk:
     python3 verktoy/lag-kort.py --type alle --torr        # vis uten å kalle API
 """
 
-import argparse, hashlib, json, os, re, sys, textwrap, time, unicodedata
+import argparse, hashlib, json, os, re, ssl, sys, textwrap, time, unicodedata
 import urllib.request, urllib.error
 from datetime import date
 from pathlib import Path
@@ -42,6 +42,43 @@ MODELL = os.environ.get("GONGBU_MODELL", "gpt-5")
 
 
 # ================================================================ nøkkel
+
+def tillit():
+    """
+    Sertifikatlageret å stole på.
+
+    macOS-Python har ofte et tomt CA-lager, og da feiler alle HTTPS-kall
+    med «unable to get local issuer certificate». certifi er det vanlige
+    svaret. Finnes den ikke, bruker vi systemets eget lager.
+
+    Vi slår aldri av verifisering. Et kall som ikke kan verifiseres skal
+    feile, ikke gå gjennom.
+    """
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
+def raad(feil):
+    """Et sertifikatavvis ser kryptisk ut. Si hva som faktisk hjelper."""
+    if "CERTIFICATE_VERIFY_FAILED" not in str(feil):
+        return ""
+    try:
+        import certifi                                   # noqa: F401
+        har = True
+    except ImportError:
+        har = False
+    if not har:
+        return ("\nPython mangler sertifikatlageret sitt. Kjør:\n"
+                "    pip3 install certifi\n"
+                "og prøv igjen.")
+    return ("\ncertifi er installert, så dette er trolig en VPN eller en\n"
+            "brannmur som signerer trafikken med sitt eget rotsertifikat.\n"
+            "Skru av VPN-en og prøv igjen, eller legg rotsertifikatet\n"
+            "i certifi-lageret.")
+
 
 def les_nokkel():
     n = os.environ.get("OPENAI_API_KEY")
@@ -221,13 +258,13 @@ def sporr(nokkel, bruker, torr=False):
         "Content-Type": "application/json",
     })
     try:
-        with urllib.request.urlopen(req, timeout=180) as svar:
+        with urllib.request.urlopen(req, timeout=180, context=tillit()) as svar:
             data = json.loads(svar.read())
     except urllib.error.HTTPError as e:
         detalj = e.read().decode("utf-8", "replace")[:400]
         sys.exit(f"API svarte {e.code}: {detalj}")
     except urllib.error.URLError as e:
-        sys.exit(f"Fikk ikke kontakt med {API}: {e.reason}")
+        sys.exit(f"Fikk ikke kontakt med {API}: {e.reason}\n" + raad(e))
 
     try:
         return json.loads(data["choices"][0]["message"]["content"])
