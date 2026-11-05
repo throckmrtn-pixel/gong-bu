@@ -1,8 +1,10 @@
-Kopier innholdet under til en fil som heter  .env  i prosjektmappa.
-.env er gitignorert. Nøkkelen skal aldri inn i et repo, og aldri
-limes inn i en chat — heller ikke til meg.
+Lag en fil som heter  .env  i prosjektmappa, med denne ene linja
+og nokkelen din rett etter likhetstegnet:
 
-OPENAI_API_KEY=sk-...
+OPENAI_API_KEY=
+
+.env er gitignorert. Nokkelen skal aldri inn i et repo, og aldri
+limes inn i en chat - heller ikke til meg.
 
 # Valgfritt. Standard er gpt-5. Sjekk hva kontoen din har tilgang til.
 # GONGBU_MODELL=gpt-5

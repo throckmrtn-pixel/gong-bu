@@ -56,16 +56,37 @@ def raad(feil):
             "brannmur som signerer trafikken selv. Skru av VPN-en og prøv igjen.")
 
 
+def ekte_nokkel(n):
+    """Plassholderen «sk-...» er ikke en nøkkel. Si det her, ikke la
+    OpenAI svare «Incorrect API key» på den."""
+    n = (n or "").strip().strip('"').strip("'")
+    return "" if (not n or "..." in n or len(n) < 20) else n
+
+
 def les_nokkel():
-    n = os.environ.get("OPENAI_API_KEY")
-    if n:
-        return n.strip()
+    fra_skall = ekte_nokkel(os.environ.get("OPENAI_API_KEY"))
+    if fra_skall:
+        return fra_skall
+
     env = HER / ".env"
+    funnet, plassholder = [], False
     if env.exists():
         for linje in env.read_text(encoding="utf-8").splitlines():
-            if linje.strip().startswith("OPENAI_API_KEY"):
-                return linje.split("=", 1)[1].strip().strip('"').strip("'")
-    sys.exit("Fant ingen API-nøkkel. Legg OPENAI_API_KEY=... i .env i prosjektmappa.")
+            if not linje.strip().startswith("OPENAI_API_KEY") or "=" not in linje:
+                continue
+            n = ekte_nokkel(linje.split("=", 1)[1])
+            if n:
+                funnet.append(n)
+            else:
+                plassholder = True
+
+    if funnet:
+        return funnet[-1]
+    if plassholder:
+        sys.exit(f"Plassholderen «sk-...» står fortsatt i {env}. "
+                 "Bytt den ut med den ekte nøkkelen, på samme linje.")
+    sys.exit(f"Fant ingen API-nøkkel i {env}. Fila skal ha linja "
+             "OPENAI_API_KEY=<nøkkelen din>")
 
 
 def rens(s):

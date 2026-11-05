@@ -80,19 +80,51 @@ def raad(feil):
             "i certifi-lageret.")
 
 
+def ekte_nokkel(n):
+    """
+    Er dette en nøkkel, eller er det plassholderen som ble stående?
+
+    Verdt en egen sjekk: sender vi «sk-...» videre, svarer OpenAI med
+    «Incorrect API key», og da leter du etter feil ting.
+    """
+    n = (n or "").strip().strip('"').strip("'")
+    if not n or "..." in n or len(n) < 20:
+        return ""
+    return n
+
+
 def les_nokkel():
-    n = os.environ.get("OPENAI_API_KEY")
-    if n:
-        return n.strip()
+    fra_skall = ekte_nokkel(os.environ.get("OPENAI_API_KEY"))
+    if fra_skall:
+        return fra_skall
+
     env = HER / ".env"
+    funnet, plassholder = [], False
     if env.exists():
         for linje in env.read_text(encoding="utf-8").splitlines():
-            if linje.strip().startswith("OPENAI_API_KEY"):
-                return linje.split("=", 1)[1].strip().strip('"').strip("'")
+            if not linje.strip().startswith("OPENAI_API_KEY") or "=" not in linje:
+                continue
+            n = ekte_nokkel(linje.split("=", 1)[1])
+            if n:
+                funnet.append(n)
+            else:
+                plassholder = True
+
+    if funnet:
+        if len(funnet) > 1:
+            print(f"  ! {len(funnet)} nøkler i .env — bruker den nederste")
+        return funnet[-1]          # den du skrev sist er den du mente
+
+    if plassholder:
+        sys.exit(
+            f"Linja OPENAI_API_KEY i {env} har ingen ekte nøkkel —\n"
+            "  der står plassholderen, eller ingenting.\n"
+            "  Skriv nøkkelen rett etter likhetstegnet, på den samme linja."
+        )
     sys.exit(
-        "Fant ingen API-nøkkel.\n"
-        "  Lag en fil .env i prosjektmappa med linja:\n"
-        "      OPENAI_API_KEY=sk-...\n"
+        f"Fant ingen API-nøkkel i {env}.\n"
+        "  Fila skal ha én linje:\n"
+        "      OPENAI_API_KEY=<nøkkelen din>\n"
         "  (.env er gitignorert — nøkkelen havner aldri i repoet.)"
     )
 
