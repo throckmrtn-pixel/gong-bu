@@ -17,7 +17,7 @@ Bruk:
     python3 verktoy/sjekk-definisjoner.py --torr
 """
 
-import argparse, json, os, re, sys, time
+import argparse, json, os, re, ssl, sys, time
 from datetime import date
 from pathlib import Path
 
@@ -32,6 +32,28 @@ API = os.environ.get("GONGBU_API", "https://api.openai.com/v1/chat/completions")
 MODELL = os.environ.get("GONGBU_MODELL", "gpt-5")
 
 PULJE = 12          # begreper per kall
+
+
+def tillit():
+    """macOS-Python har ofte et tomt CA-lager. certifi er det vanlige
+    svaret. Verifisering slås aldri av."""
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
+def raad(feil):
+    if "CERTIFICATE_VERIFY_FAILED" not in str(feil):
+        return ""
+    try:
+        import certifi                                   # noqa: F401
+    except ImportError:
+        return ("\nPython mangler sertifikatlageret sitt. Kjør:\n"
+                "    pip3 install certifi\nog prøv igjen.")
+    return ("\ncertifi er installert, så dette er trolig en VPN eller\n"
+            "brannmur som signerer trafikken selv. Skru av VPN-en og prøv igjen.")
 
 
 def les_nokkel():
@@ -148,12 +170,12 @@ def sporr(nokkel, bruker, torr=False):
     req = urllib.request.Request(API, data=kropp, headers={
         "Authorization": f"Bearer {nokkel}", "Content-Type": "application/json"})
     try:
-        with urllib.request.urlopen(req, timeout=180) as svar:
+        with urllib.request.urlopen(req, timeout=180, context=tillit()) as svar:
             data = json.loads(svar.read())
     except urllib.error.HTTPError as e:
         sys.exit(f"API svarte {e.code}: {e.read().decode('utf-8','replace')[:400]}")
     except urllib.error.URLError as e:
-        sys.exit(f"Fikk ikke kontakt med {API}: {e.reason}")
+        sys.exit(f"Fikk ikke kontakt med {API}: {e.reason}\n" + raad(e))
     try:
         return json.loads(data["choices"][0]["message"]["content"])
     except (KeyError, json.JSONDecodeError) as e:

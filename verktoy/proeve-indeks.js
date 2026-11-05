@@ -17,7 +17,7 @@
 const fs = require("fs"), path = require("path"), Module = require("module");
 
 const VAULT = process.argv[2];
-const PLUGIN = process.argv[3];
+const PLUGIN = path.resolve(process.argv[3]);   // require() krever absolutt sti
 
 class TFile { constructor(p, parent) { this.path = p; this.parent = parent; } }
 class Plugin { constructor() {} registerView(){} addRibbonIcon(){} addCommand(){}

@@ -138,8 +138,16 @@ class Kortstokk {
 
       const tekst = await this.app.vault.cachedRead(fil);
       const kropp = tekst.replace(/^---[\s\S]*?\n---\n?/, "");
-      const sporsmaal = rens(seksjon(kropp, /^##\s+Spørsmål/i));
+
+      /* Spørsmålet står i en question-callout. Den eldre formen med
+         «## Spørsmål» leses også, så gamle kort ikke slutter å virke. */
+      const sporsmaal = rens(kallut(kropp, "question")?.tekst
+        || seksjon(kropp, /^##\s+Spørsmål/i));
       if (!sporsmaal) continue;
+
+      const svar = kallut(kropp, "success");
+      const fasit = kallut(kropp, "abstract");
+      const krit = kallut(kropp, "check");
 
       ut.push({
         id: "kort:" + fil.path,
@@ -149,28 +157,87 @@ class Kortstokk {
         kilde: String(fm.Kilde || "").trim(),
         godkjent: /^(ja|true|yes)$/i.test(String(fm.Sjekket || "").trim()),
         sporsmaal,
-        alternativer: lesAlternativer(seksjon(kropp, /^##\s+Alternativer/i)),
-        begrunnelse: rens(seksjon(kropp, /^##\s+Begrunnelse/i)),
-        fasit: rens(seksjon(kropp, /^##\s+Fasit/i)),
-        kriterier: lesPunkter(seksjon(kropp, /^##\s+Sensor/i)),
+        alternativer: lesAlternativer(
+          seksjon(kropp, /^##\s+Alternativer/i), fasitLinje(svar?.tekst)),
+        begrunnelse: utenFasitLinje(svar?.tekst)
+          || rens(seksjon(kropp, /^##\s+Begrunnelse/i)),
+        fasit: rens(fasit?.tekst || svar?.tekst || seksjon(kropp, /^##\s+Fasit/i)),
+        kriterier: lesPunkter(krit?.tekst || seksjon(kropp, /^##\s+Sensor/i)),
         sti: fil.path,
       });
     }
 
-    /* Flervalgskort uten et avkrysset riktig svar er ødelagte. Dropp dem
-       heller enn å vise et kort det er umulig å svare riktig på. */
+    /* Flervalgskort uten et gjenkjennelig riktig svar er ødelagte. Dropp
+       dem heller enn å vise et kort det er umulig å svare riktig på. */
     this.kort = ut.filter((k) => k.slag !== "flervalg"
       || k.alternativer.some((a) => a.riktig));
     return this.kort;
   }
 }
 
-/** «- [x] tekst» / «- [ ] tekst» */
-function lesAlternativer(blokk) {
+/**
+ * Innholdet i en Obsidian-callout: «> [!question] Tittel» og linjene
+ * under som begynner med «>».
+ *
+ * Callouts er grunnen til at kortene ser ut som de hører hjemme i
+ * Obsidian: question står åpen, success/abstract står sammenslått, så
+ * svaret ikke er synlig før du selv folder det ut.
+ */
+function kallut(kropp, slag) {
+  const linjer = String(kropp || "").split("\n");
+  const hode = new RegExp(`^>\\s*\\[!${slag}\\][+-]?\\s*(.*)$`, "i");
+  for (let i = 0; i < linjer.length; i++) {
+    const m = hode.exec(linjer[i]);
+    if (!m) continue;
+    const ut = [];
+    for (let j = i + 1; j < linjer.length; j++) {
+      if (!/^>/.test(linjer[j])) break;
+      ut.push(linjer[j].replace(/^>\s?/, ""));
+    }
+    return { tittel: m[1].trim(), tekst: ut.join("\n").trim() };
+  }
+  return null;
+}
+
+/** Første fete linje i svar-callouten — selve fasiten. */
+function fasitLinje(tekst) {
+  const m = /\*\*(.+?)\*\*/.exec(String(tekst || ""));
+  return m ? m[1].trim() : "";
+}
+
+/** Resten av svar-callouten, altså begrunnelsen. */
+function utenFasitLinje(tekst) {
+  if (!tekst) return "";
+  return rens(String(tekst)
+    .split("\n")
+    .filter((l) => !/^\s*\*\*.+\*\*\s*$/.test(l))
+    .join("\n"));
+}
+
+/** Til sammenligning: samme ord, uansett store bokstaver og tegnsetting. */
+function kam(s) {
+  return String(s || "").toLowerCase()
+    .replace(/\*\*/g, "").replace(/[.,;:!?]+$/, "").trim();
+}
+
+/**
+ * Alternativene under «## Alternativer». Tar både den rene lista
+ * (ingen spoiler i Obsidian) og den eldre avkryssingsformen.
+ */
+function lesAlternativer(blokk, fasit) {
   const ut = [];
   for (const l of String(blokk || "").split("\n")) {
-    const m = /^\s*[-*]\s*\[( |x|X)\]\s*(.+)$/.exec(l);
-    if (m) ut.push({ tekst: rens(m[2]), riktig: m[1].toLowerCase() === "x" });
+    const avkrysset = /^\s*[-*]\s*\[( |x|X)\]\s*(.+)$/.exec(l);
+    if (avkrysset) {
+      ut.push({ tekst: rens(avkrysset[2]), riktig: avkrysset[1].toLowerCase() === "x" });
+      continue;
+    }
+    const vanlig = /^\s*[-*]\s+(.+)$/.exec(l);
+    if (vanlig) ut.push({ tekst: rens(vanlig[1]), riktig: false });
+  }
+  if (fasit && !ut.some((a) => a.riktig)) {
+    const treff = ut.find((a) => kam(a.tekst) === kam(fasit));
+    if (treff) treff.riktig = true;
   }
   return ut;
 }

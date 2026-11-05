@@ -237,46 +237,81 @@ def sporr(nokkel, bruker, torr=False):
 
 # ================================================================ skriving
 
+TITTEL = {
+    "scenario":   "Scenario",
+    "finnfeilen": "Finn feilen",
+    "forskjell":  "Forskjellen",
+    "eksamen":    "Eksamensoppgave",
+}
+
+
+def sitat(tekst):
+    """Tekst som linjer i en Obsidian-callout."""
+    ut = []
+    for l in str(tekst or "").strip().split("\n"):
+        ut.append("> " + l if l.strip() else ">")
+    return ut
+
+
 def skriv_kort(kort, kilde, type_):
-    """Ett kort = én markdown-fil med frontmatter pluginen kan lese."""
+    """
+    Ett kort = én markdown-fil.
+
+    Fila er Obsidian-visningen: spørsmålet står i en åpen callout,
+    alternativene som en ren liste, og svaret i en sammenslått callout
+    du må folde ut selv. Åpner du kortet i vaulten, er det et kort —
+    ikke en fasit med spørsmål over.
+
+    Pluginen leser de samme feltene og tegner sitt eget. Samme fil,
+    to uttrykk.
+    """
     KORTROT.mkdir(parents=True, exist_ok=True)
 
-    tittel = re.sub(r"\s+", " ", kort["sporsmaal"]).strip()
-    if len(tittel) > 70:                      # kutt på ordgrense, ikke midt i et ord
-        tittel = tittel[:70].rsplit(" ", 1)[0] + " …"
-    navn = f"{type_}-{slugg(kort.get('handler_om') or tittel)}"
+    navn = f"{type_}-{slugg(kort.get('handler_om') or kort['sporsmaal'])}"
     sti = KORTROT / f"{navn}.md"
     n = 2
     while sti.exists():
         sti = KORTROT / f"{navn}-{n}.md"
         n += 1
 
-    fm = [
+    ut = [
         "---",
         f"Korttype: {kort['type']}",
         f"Sjanger: {type_}",
-        f'Handler om: "[[{kort.get("handler_om", "")}]]"' if kort.get("handler_om") else "Handler om:",
+        f'Handler om: "[[{kort["handler_om"]}]]"' if kort.get("handler_om") else "Handler om:",
         f'Kilde: "{kilde}"',
         f"Laget: {date.today()}",
         f"Modell: {MODELL}",
         "Sjekket: nei",
         "---",
         "",
+        f"> [!question] {TITTEL.get(type_, 'Spørsmål')}",
+        *sitat(kort["sporsmaal"]),
+        "",
     ]
 
-    kropp = [f"# {tittel}", "", "## Spørsmål", kort["sporsmaal"], ""]
-
     if kort["type"] == "flervalg":
-        kropp += ["## Alternativer"]
-        for i, a in enumerate(kort["alternativer"]):
-            kropp.append(f"{'- [x]' if i == kort['riktig'] else '- [ ]'} {a}")
-        kropp += ["", "## Begrunnelse", kort.get("begrunnelse", ""), ""]
+        riktig = kort["alternativer"][kort["riktig"]]
+        ut += ["## Alternativer", ""]
+        ut += [f"- {a}" for a in kort["alternativer"]]
+        ut += [
+            "",
+            "> [!success]- Svar",
+            f"> **{riktig}**",
+            ">",
+            *sitat(kort.get("begrunnelse", "")),
+            "",
+        ]
     else:
-        kropp += ["## Fasit", kort.get("fasit", ""), "", "## Sensor ser etter"]
-        kropp += [f"- {k}" for k in kort.get("kriterier", [])]
-        kropp += [""]
+        ut += ["> [!abstract]- Fasit", *sitat(kort.get("fasit", "")), ""]
+        if kort.get("kriterier"):
+            ut += ["> [!check]- Sensor ser etter"]
+            ut += [f"> - {k}" for k in kort["kriterier"]]
+            ut += [""]
 
-    sti.write_text("\n".join(fm + kropp), encoding="utf-8")
+    ut += ["---", "", f"*{TITTEL.get(type_, type_)} · kilde: {kilde} · laget av {MODELL}*", ""]
+
+    sti.write_text("\n".join(ut), encoding="utf-8")
     return sti
 
 
