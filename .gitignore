@@ -7,8 +7,12 @@ Thumbs.db
 # datafila fra det gamle web-oppsettet — pluginen leser vaulten direkte
 data/
 
-# API-nøkkelen. Skal aldri havne i et repo, privat eller ikke.
+# API-nøkler. Skal aldri havne i et repo, privat eller ikke.
+# Mønsteret dekker også .env-filer med rare navn — f.eks. hvis en
+# nøkkel ved et uhell havner i filnavnet i stedet for i fila.
 .env
+*.env
+.env.*
 
 # eksamenssettene dine. De er UiOs, ikke dine å publisere.
 eksamen/*
