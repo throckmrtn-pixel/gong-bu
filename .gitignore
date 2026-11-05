@@ -3,3 +3,16 @@ Thumbs.db
 
 # nedlastet arkiv, ikke en del av prosjektet
 *.zip
+
+# datafila fra det gamle web-oppsettet — pluginen leser vaulten direkte
+data/
+
+# API-nøkkelen. Skal aldri havne i et repo, privat eller ikke.
+.env
+
+# eksamenssettene dine. De er UiOs, ikke dine å publisere.
+eksamen/*
+!eksamen/LES-MEG.md
+
+# rapportene fra sjekk-definisjoner.py — arbeidsnotater, ikke kildekode
+rapporter/

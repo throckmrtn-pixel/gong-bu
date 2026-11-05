@@ -1,0 +1,221 @@
+/* ============================================================
+   gong-bu · stil
+
+   Panelversjon av flyt-systemet. Obsidian har egne temaer, så
+   her brukes appens egne variabler bare der de bærer uttrykket
+   — ellers følger vi temaet brukeren allerede har valgt.
+   ============================================================ */
+
+.gongbu {
+  --gb-kant: var(--background-modifier-border);
+  --gb-glass: var(--background-secondary);
+  --gb-glod: var(--interactive-accent);
+  padding: 16px 16px 24px;
+  overflow-y: auto;
+}
+
+/* --- topplinje --- */
+.gongbu-topp {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 9px;
+}
+.gongbu-merke {
+  font-weight: 600; font-size: 15px; letter-spacing: -.02em;
+  color: var(--text-normal);
+}
+.gongbu-stat {
+  font-family: var(--font-monospace);
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.gongbu-stripe {
+  height: 5px; border-radius: 999px; overflow: hidden;
+  background: var(--gb-glass);
+  border: 1px solid var(--gb-kant);
+  margin-bottom: 18px;
+}
+.gongbu-stripe-fyll {
+  height: 100%; border-radius: 999px;
+  background: var(--gb-glod);
+  box-shadow: 0 0 10px -1px var(--gb-glod);
+  transition: width .5s ease;
+}
+
+/* --- kortet --- */
+.gongbu-kort {
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid var(--gb-kant);
+  background: var(--gb-glass);
+  padding: 18px;
+  margin-bottom: 14px;
+}
+/* prismekanten fra flyt, dempet til et panel */
+.gongbu-kort::after {
+  content: ""; position: absolute; left: 14%; right: 14%; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gb-glod), transparent);
+  opacity: .7;
+}
+
+.gongbu-etikett {
+  font-family: var(--font-monospace);
+  font-size: 9.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 11px;
+}
+.gongbu-def { font-size: 16px; line-height: 1.45; color: var(--text-normal); }
+
+/* --- svaralternativer --- */
+.gongbu-valg { display: flex; flex-direction: column; gap: 8px; }
+.gongbu-svar {
+  display: flex; align-items: center; gap: 11px;
+  width: 100%; min-height: 46px;
+  padding: 0 15px;
+  border-radius: 13px;
+  border: 1px solid var(--gb-kant);
+  background: var(--gb-glass);
+  color: var(--text-normal);
+  font-size: 14.5px; text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.gongbu-svar:hover:not(.gongbu-laast) { border-color: var(--gb-glod); }
+.gongbu-nr {
+  font-family: var(--font-monospace);
+  font-size: 9.5px; letter-spacing: .1em; color: var(--text-faint);
+  flex-shrink: 0;
+}
+.gongbu-laast { cursor: default; opacity: .55; }
+.gongbu-rett {
+  opacity: 1;
+  border-color: var(--color-green);
+  background: rgba(var(--color-green-rgb), .14);
+}
+.gongbu-feil {
+  opacity: 1;
+  border-color: var(--color-red);
+  background: rgba(var(--color-red-rgb), .12);
+}
+
+/* --- etter svaret --- */
+.gongbu-fasit {
+  margin-top: 14px; padding: 14px 15px;
+  border-radius: 13px;
+  border: 1px solid var(--gb-kant);
+  background: var(--background-primary-alt);
+  font-size: 14px; line-height: 1.5; color: var(--text-muted);
+}
+.gongbu-videre {
+  margin-top: 14px; width: 100%; min-height: 44px;
+  border-radius: 999px; border: 0;
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  font-weight: 600; font-size: 15px;
+  cursor: pointer;
+}
+
+/* --- bunn --- */
+.gongbu-bunn {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 14px;
+}
+.gongbu-kilde { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+.gongbu-stille {
+  background: none; border: 0; cursor: pointer;
+  font-family: var(--font-monospace);
+  font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.gongbu-stille:hover { color: var(--text-normal); }
+
+.gongbu-tomt {
+  padding: 28px 18px; text-align: center;
+  color: var(--text-muted); font-size: 14px; line-height: 1.5;
+}
+
+
+/* ============================================================
+   GENERERTE KORT  ·  «50 Kort»
+   ============================================================ */
+
+/* --- bunkevalg --- */
+.gongbu-bunker { display: flex; gap: 6px; margin-bottom: 16px; }
+.gongbu-bunke {
+  flex: 1; min-height: 30px; padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--gb-kant);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-monospace);
+  font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+  white-space: nowrap;
+}
+.gongbu-bunke:hover { color: var(--text-normal); }
+.gongbu-bunke-paa {
+  border-color: var(--gb-glod);
+  background: var(--gb-glass);
+  color: var(--text-normal);
+}
+
+/* --- korthodet, med merket for ukontrollert --- */
+.gongbu-hode {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+}
+.gongbu-hode .gongbu-etikett { margin-bottom: 11px; }
+
+/* Et kort en modell har skrevet og du ikke har lest gjennom. Skal
+   være til å se, ikke til å overse. */
+.gongbu-ukontrollert {
+  flex-shrink: 0;
+  padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--color-orange);
+  color: var(--color-orange);
+  font-family: var(--font-monospace);
+  font-size: 8.5px; letter-spacing: .14em; text-transform: uppercase;
+}
+
+.gongbu-sporsmaal {
+  font-size: 15.5px; line-height: 1.5; color: var(--text-normal);
+  white-space: pre-wrap;
+}
+
+/* --- skrivekort --- */
+.gongbu-felt {
+  width: 100%; min-height: 128px; resize: vertical;
+  padding: 13px 14px;
+  border-radius: 13px;
+  border: 1px solid var(--gb-kant);
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-family: inherit; font-size: 14.5px; line-height: 1.5;
+}
+.gongbu-felt:focus { outline: none; border-color: var(--gb-glod); }
+
+.gongbu-kriterier { margin: 2px 0 0; padding-left: 20px; }
+.gongbu-kriterier li { margin: 4px 0; }
+
+/* Du dømmer eget svar. Ingen modell kan se om du traff poenget. */
+.gongbu-dom { display: flex; gap: 8px; margin-top: 14px; }
+.gongbu-domknapp {
+  flex: 1; min-height: 42px;
+  border-radius: 999px;
+  border: 1px solid var(--gb-kant);
+  background: var(--gb-glass);
+  color: var(--text-normal);
+  font-size: 13.5px; font-weight: 500;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.gongbu-dom-satt:hover   { border-color: var(--color-green); }
+.gongbu-dom-delvis:hover { border-color: var(--color-yellow); }
+.gongbu-dom-bomma:hover  { border-color: var(--color-red); }
+
+/* --- påminnelsen om å godkjenne --- */
+.gongbu-godkjenn {
+  margin-top: 12px;
+  font-size: 12.5px; line-height: 1.5; color: var(--text-muted);
+}
+.gongbu-godkjenn a { cursor: pointer; }

@@ -1,0 +1,9 @@
+{
+  "id": "gong-bu",
+  "name": "gong-bu",
+  "version": "0.1.0",
+  "minAppVersion": "1.4.0",
+  "description": "Øv på begrepene i vaulten din. Tre nivåer: kjenne igjen, forklare, skille.",
+  "author": "Ami",
+  "isDesktopOnly": false
+}
