@@ -1,7 +1,7 @@
 /* ============================================================
    gong-bu · flyt · scenen
 
-   Bakgrunnen er et foto — det strømmende lyset Ami fant — lagt
+   Bakgrunnen er et foto — det strømmende lyset Ida fant — lagt
    under tre lag: en flat demping som gjør teksten lesbar, en
    gradient på toppen der overskriftene står, og et korn som tar
    bort det digitale preget.

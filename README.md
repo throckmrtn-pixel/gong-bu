@@ -166,5 +166,5 @@ Tre temaer, byttes med `data-tema` på `.skjerm`:
 <div class="skjerm" data-tema="glo">   <!-- lys · mork · glo -->
 ```
 
-`bg-lys.webp` og `bg-mork.webp` er Amis egne referansebilder, komprimert.
+Bakgrunnsbildene er Idas egne referansebilder, komprimert.
 Skal appen deles videre, bytt dem mot bilder du har rettighetene til.

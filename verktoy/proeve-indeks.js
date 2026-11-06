@@ -10,7 +10,7 @@
 
        node verktoy/proeve-indeks.js "<vault>" plugin/main.js
 
-   YAML-leseren her er et minimum som dekker Amis frontmatter-form.
+   YAML-leseren her er et minimum som dekker Idas frontmatter-form.
    Obsidian har sin egen, bedre parser; denne er bare til prøven.
    ============================================================ */
 
@@ -29,7 +29,7 @@ const requestUrl = async () => { throw new Error("ingen nettverk i prøven"); };
 class ItemView { constructor(){ this.containerEl = { children: [null, null] }; } }
 class Notice { constructor(m){ console.log("[notice]", m); } }
 
-/* minimal YAML for Amis frontmatter-form — bare til denne prøven */
+/* minimal YAML for Idas frontmatter-form — bare til denne prøven */
 function frontmatter(raa) {
   const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(raa);
   if (!m) return null;
