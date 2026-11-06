@@ -22,6 +22,26 @@ from datetime import date
 from pathlib import Path
 
 HER = Path(__file__).resolve().parent.parent
+
+
+def last_env():
+    """Leser .env inn i miljøet før konstantene under settes. Noe som
+    allerede står i skallet vinner, så du kan overstyre for én kjøring."""
+    env = HER / ".env"
+    if not env.exists():
+        return
+    for linje in env.read_text(encoding="utf-8").splitlines():
+        linje = linje.strip()
+        if not linje or linje.startswith("#") or "=" not in linje:
+            continue
+        navn, verdi = linje.split("=", 1)
+        navn = navn.strip()
+        if navn and navn not in os.environ:
+            os.environ[navn] = verdi.strip().strip('"').strip("'")
+
+
+last_env()
+
 VAULT = Path(os.environ.get("GONGBU_VAULT", Path.home() /
     "Library/CloudStorage/OneDrive-UniversitetetiOslo/Notater/"
     "Informatikk, digital økonomi og ledelse"))
@@ -63,10 +83,19 @@ def ekte_nokkel(n):
     return "" if (not n or "..." in n or len(n) < 20) else n
 
 
+def lokalt_endepunkt():
+    """En modell som kjører på maskinen din trenger ingen nøkkel."""
+    import urllib.parse
+    vert = urllib.parse.urlparse(API).hostname or ""
+    return vert in ("localhost", "127.0.0.1", "::1", "0.0.0.0")
+
+
 def les_nokkel():
     fra_skall = ekte_nokkel(os.environ.get("OPENAI_API_KEY"))
     if fra_skall:
         return fra_skall
+    if lokalt_endepunkt():
+        return ""
 
     env = HER / ".env"
     funnet, plassholder = [], False
