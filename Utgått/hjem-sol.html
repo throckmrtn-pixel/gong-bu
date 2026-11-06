@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2F4FB">
+<title>gong-bu · hjem (sollys)</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="skjerm">
+
+  <!-- glasskuler som driver i bakgrunnen -->
+  <div class="kule" style="left:308px; top:118px; width:54px; height:54px"></div>
+  <div class="kule kule--b" style="left:28px; top:214px; width:26px; height:26px"></div>
+  <div class="kule kule--b" style="left:304px; top:646px; width:18px; height:18px"></div>
+
+  <header class="topp">
+    <div class="merke">
+      <span class="ko">공부</span>
+      <span class="navn">gong-bu</span>
+    </div>
+    <span class="nivaa">IN1020 · 100</span>
+  </header>
+
+  <!-- målestokken. rent ornament, men den setter tonen -->
+  <div class="seksjon seksjon--tett"><div class="hakk"></div></div>
+
+  <div class="seksjon seksjon--tett">
+    <div class="segment">
+      <span class="valgt">
+        <span class="iris iris--tett"></span>
+        <button type="button">IN1020</button>
+      </span>
+      <button type="button">IN1000</button>
+      <button type="button">INEC</button>
+    </div>
+  </div>
+
+  <!-- Beredskapsdialen. Det store tallet er hvor klar du er,
+       ikke hvor lite tid du har igjen. -->
+  <div class="fyll midt" style="flex-direction:column; padding:0 22px">
+
+    <div class="dial">
+      <span class="hjorne hjorne--tv"></span>
+      <span class="hjorne hjorne--th"></span>
+      <span class="hjorne hjorne--bv"></span>
+      <span class="hjorne hjorne--bh"></span>
+
+      <span class="dial-glo"></span>
+
+      <svg viewBox="0 0 248 248" aria-hidden="true">
+        <!-- ytterste hårstrek -->
+        <circle cx="124" cy="124" r="121" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="1"/>
+        <!-- fin målering -->
+        <circle cx="124" cy="124" r="115" fill="none" stroke="rgba(90,102,160,.26)"
+                stroke-width="4" stroke-dasharray="1 7" stroke-linecap="butt"/>
+        <!-- sporet -->
+        <circle cx="124" cy="124" r="104" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="5"/>
+        <circle cx="124" cy="124" r="104" fill="none" stroke="rgba(130,146,200,.20)" stroke-width="1"/>
+        <!-- fyllgraden: 62 % av omkretsen (2πr ≈ 653) -->
+        <circle cx="124" cy="124" r="104" fill="none" stroke="url(#bue)" stroke-width="4.5"
+                stroke-linecap="round" stroke-dasharray="405 653" transform="rotate(-90 124 124)"/>
+        <!-- lyspunktet i enden av buen -->
+        <circle cx="52.8" cy="199.8" r="6" fill="#FFFFFF"/>
+        <circle cx="52.8" cy="199.8" r="3" fill="#8E9BE0"/>
+        <defs>
+          <linearGradient id="bue" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0"   stop-color="#FFC978"/>
+            <stop offset=".34" stop-color="#F2D9DF"/>
+            <stop offset=".68" stop-color="#ABC0F6"/>
+            <stop offset="1"   stop-color="#8E9BE0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div class="dial-lense">
+        <span class="glans" style="left:12%; right:22%; top:6%; height:34%; border-radius:50%"></span>
+        <span class="glimt" style="left:-4%; bottom:8%; width:52%; height:26%; border-radius:50%"></span>
+        <span class="tall" style="position:relative; font-size:64px">62<span style="font-size:24px; letter-spacing:0">%</span></span>
+        <span class="lapp lapp--aksent" style="position:relative; margin-top:9px; letter-spacing:.26em">Sitter</span>
+      </div>
+    </div>
+
+    <p class="tittel" style="margin-top:28px; font-size:21px; text-align:center">Datasikkerhet og nettverk</p>
+    <div class="rad" style="margin-top:11px; gap:10px">
+      <span style="width:20px; height:1px; background:rgba(90,102,160,.34)"></span>
+      <span class="lapp">Eksamen · midt i desember</span>
+      <span style="width:20px; height:1px; background:rgba(90,102,160,.34)"></span>
+    </div>
+  </div>
+
+  <!-- To flytende brikker som overlapper hero-kanten, og kua imellom -->
+  <div class="flytrad" style="margin-bottom:-6px">
+    <a class="brikkelenke" href="oversikt.html">
+      <span class="rund" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </span>
+      <span>
+        <b>12 forfalt</b>
+        <span class="lapp" style="font-size:9px">Ingen tvang</span>
+      </span>
+    </a>
+
+    <img class="kua" src="ku.svg" width="62" height="47" alt="" style="margin:0 6px 2px 0">
+  </div>
+
+  <div class="sokkel">
+    <div style="position:relative">
+      <span class="iris"></span>
+      <a class="pille pille--stor" href="nivaa1.html">
+        <span class="glans"></span>
+        <span class="glimt"></span>
+        <span>Begynn</span>
+      </a>
+    </div>
+    <p class="lapp" style="margin:4px 0 0; text-align:center">Sju kort klare · tre minutter</p>
+  </div>
+
+  <nav class="nav" aria-label="Hovedmeny">
+    <a href="index.html" aria-current="page">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>HJEM</a>
+    <a href="nivaa1.html">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M8 10h8M8 14h5"/></svg>ØV</a>
+    <a href="oversikt.html">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M10 7h7v7"/></svg>KART</a>
+    <a href="kode.html">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg>KODE</a>
+  </nav>
+
+</div>
+
+</body>
+</html>

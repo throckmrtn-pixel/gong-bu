@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#93A6DC">
+<meta name="theme-color" content="#51688A">
 <title>Studieøkt · gong-bu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="flyt.css">
 </head>
 <body>
 
-<div class="skjerm" data-tema="glo" id="skjerm">
+<div class="skjerm" data-tema-auto data-tema="staal" id="skjerm">
 
   <!-- Scenen bygges av flyt-scene.js. -->
   <div class="scene"></div>
@@ -28,8 +31,8 @@
        TOPP
        ============================================================ -->
   <header class="topp">
-    <a class="rund" href="index.html" aria-label="Tilbake">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    <a class="rund" href="hjem.html" aria-label="Tilbake">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
     </a>
     <span class="etikett etikett--sterk">Studieøkt</span>
     <button type="button" class="rund" id="lyd" aria-label="Slå alarmlyden av eller på" aria-pressed="true">
@@ -38,38 +41,32 @@
   </header>
 
   <div class="seksjon seksjon--tett" style="text-align:center">
-    <h1 id="fag">Datasikkerhet</h1>
-    <p class="hjelp" style="margin-top:7px" id="undertittel">Velg hvor lenge. Du kan stoppe når som helst.</p>
+    <p class="etikett">Emne</p>
+    <h1 id="fag" style="font-size:28px">Datasikkerhet</h1>
+    <p class="hjelp"  id="undertittel">Velg hvor lenge. Du kan stoppe når som helst.</p>
   </div>
 
   <!-- ============================================================
        URSKIVA — ringen er klokka, orben er selskapet
        ============================================================ -->
-  <div class="fyll midt" style="flex-direction:column; gap:18px; padding:0 20px">
+  <div class="fyll midt" style="flex-direction:column; gap:18px">
 
+    <!-- Urskiva er et måleinstrument, ikke en fremdriftsring. Derfor
+         er buen blekk og ikke lys, og derfor har skiva to ringer med
+         merkestrek: en fin utenfor og fire kvartmerker innenfor. -->
     <div class="urskive">
       <svg viewBox="0 0 300 300" aria-hidden="true">
-        <defs>
-          <linearGradient id="bue" x1="1" y1="0" x2="0" y2="1">
-            <stop offset="0"   stop-color="var(--band-kjerne)"/>
-            <stop offset=".45" stop-color="var(--orb-glod)"/>
-            <stop offset="1"   stop-color="var(--orb-fyll)"/>
-          </linearGradient>
-        </defs>
-        <!-- fin målering -->
-        <circle cx="150" cy="150" r="142" fill="none" stroke="var(--glass-kant)"
-                stroke-width="4" stroke-dasharray="1 7" opacity=".55"/>
-        <!-- sporet -->
-        <circle cx="150" cy="150" r="132" fill="none" stroke="var(--glass-kant)" stroke-width="3" opacity=".5"/>
+        <!-- sporet. Ingen merkering rundt: hundre og tjue små
+             streker langs kanten er hundre og tjue striper. -->
+        <circle cx="150" cy="150" r="134" fill="none" stroke="var(--kant-linje)" stroke-width="3.5"/>
         <!-- nedtellingen -->
-        <circle id="bane" cx="150" cy="150" r="132" fill="none" stroke="url(#bue)" stroke-width="5"
-                stroke-linecap="round" stroke-dasharray="829.4" stroke-dashoffset="0"
-                transform="rotate(-90 150 150)"
+        <circle id="bane" cx="150" cy="150" r="134" fill="none" stroke="var(--urviser)" stroke-width="3.5"
+                stroke-linecap="round" stroke-dasharray="842" stroke-dashoffset="0"
+                transform="rotate(-90 150 150)" opacity=".8"
                 style="transition:stroke-dashoffset .6s linear"/>
-        <!-- lyspunktet i enden av buen -->
+        <!-- merket i enden av buen: en ring, ikke en lyskule -->
         <g id="hode" transform="rotate(0 150 150)">
-          <circle cx="150" cy="18" r="6" fill="var(--band-kjerne)"/>
-          <circle cx="150" cy="18" r="2.6" fill="var(--orb-fyll)"/>
+          <circle cx="150" cy="16" r="4" fill="var(--urviser)" opacity=".8"/>
         </g>
       </svg>
 
@@ -97,9 +94,9 @@
        KORTET — hva som venter etterpå. Ingen streak, ingen press.
        ============================================================ -->
   <div class="seksjon">
-    <div class="kort kort--tynn" style="padding:14px 16px; display:flex; align-items:center; gap:13px">
-      <img src="ku.svg" width="40" height="30" alt="" style="image-rendering:pixelated; flex-shrink:0; filter:drop-shadow(0 3px 5px rgba(20,30,70,.35))">
-      <p class="brod" style="font-size:14px" id="etterpaa">12 kort venter når du er ferdig. De går ingen steder.</p>
+    <div class="kort kort--strek" style="display:flex; align-items:center; gap:13px">
+      <img class="kua-liten" src="ku.svg" width="38" height="29" alt="">
+      <p class="brod" style="font-size:13.5px" id="etterpaa">12 kort venter når du er ferdig. De går ingen steder.</p>
     </div>
   </div>
 
@@ -121,14 +118,17 @@
 
 </div>
 
+<script src="flyt-utseende.js"></script>
+<script src="flyt-tid.js"></script>
 <script src="flyt-scene.js"></script>
 <script src="flyt-orb.js"></script>
+<script src="flyt-fag.js"></script>
 <script src="flyt-ui.js"></script>
 <script>
 (function () {
   "use strict";
 
-  var OMKRETS = 2 * Math.PI * 132;          // sporet i urskiva
+  var OMKRETS = 2 * Math.PI * 134;          // sporet i urskiva
   var skjerm  = document.getElementById('skjerm');
   var orb     = document.getElementById('orb');
   var bane    = document.getElementById('bane');

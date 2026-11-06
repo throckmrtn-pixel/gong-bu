@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#66729F">
+<meta name="theme-color" content="#51688A">
 <title>gong-bu · bordet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="flyt.css">
 </head>
 <body>
 
-<div class="skjerm skjerm--bord" data-tema="glo" id="skjerm">
+<div class="skjerm skjerm--bord" data-tema-auto data-tema="staal" id="skjerm">
 
   <div class="scene" data-form="bred"></div>
 
@@ -30,7 +33,7 @@
           <!-- en krystall, ikke en parabol: det er Obsidian som er kilden -->
           <path d="M45 6 L63 22 L52 48 L38 48 L27 22 Z" fill="none" stroke="var(--blekk-2)" stroke-width="1.6" stroke-linejoin="round"/>
           <path d="M45 6 L45 48 M27 22 L63 22" stroke="var(--blekk-3)" stroke-width="1" opacity=".7"/>
-          <g stroke="var(--orb-glod)" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".9">
+          <g stroke="var(--strek)" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".9">
             <path d="M70 18a12 12 0 0 1 0 18"/>
             <path d="M76 12a20 20 0 0 1 0 30"/>
           </g>
@@ -42,8 +45,8 @@
       </section>
 
       <section class="sveve" data-kobling="v">
-        <p class="etikett" style="font-size:8.5px; line-height:1.5; margin-bottom:10px">Kua</p>
-        <div class="orb" data-sinn="rolig" style="width:100%; height:112px; margin-bottom:8px"></div>
+        <p class="etikett" style="font-size:8.5px; line-height:1.5">Kua</p>
+        <div class="orb" data-sinn="rolig" style="width:100%; height:112px"></div>
         <div class="boble">Du blandet hash og signatur i går. Ta de to sammen?</div>
       </section>
 
@@ -56,7 +59,7 @@
 
       <header class="bordtopp">
         <div>
-          <p class="etikett" style="margin-bottom:5px">IN1020 · 공부</p>
+          <p class="etikett">IN1020 · 공부</p>
           <h1>Datasikkerhet og nettverk</h1>
         </div>
         <div class="verktoy">
@@ -83,13 +86,13 @@
             <svg class="kurve" viewBox="0 0 420 112" preserveAspectRatio="none" style="height:112px" role="img" aria-label="Kurve over begreper som sitter, siste fjorten dager">
               <defs>
                 <linearGradient id="flate" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0"   stop-color="var(--orb-glod)" stop-opacity=".42"/>
-                  <stop offset="1"   stop-color="var(--orb-glod)" stop-opacity="0"/>
+                  <stop offset="0"   stop-color="var(--strek)" stop-opacity=".42"/>
+                  <stop offset="1"   stop-color="var(--strek)" stop-opacity="0"/>
                 </linearGradient>
                 <linearGradient id="linje" x1="0" y1="0" x2="1" y2="0">
                   <stop offset="0"   stop-color="var(--frynse-1)"/>
-                  <stop offset=".55" stop-color="var(--band-kjerne)"/>
-                  <stop offset="1"   stop-color="var(--orb-glod)"/>
+                  <stop offset=".55" stop-color="var(--strek)"/>
+                  <stop offset="1"   stop-color="var(--strek)"/>
                 </linearGradient>
               </defs>
               <g stroke="var(--kant-linje)" stroke-width="1">
@@ -98,7 +101,7 @@
               <path d="M0 92 C 48 86, 76 70, 120 72 S 196 52, 246 44 S 330 34, 420 20 L420 112 L0 112 Z" fill="url(#flate)"/>
               <path d="M0 92 C 48 86, 76 70, 120 72 S 196 52, 246 44 S 330 34, 420 20"
                     fill="none" stroke="url(#linje)" stroke-width="2.4" stroke-linecap="round"/>
-              <circle cx="420" cy="20" r="4" fill="var(--band-kjerne)"/>
+              <circle cx="420" cy="20" r="4" fill="var(--strek)"/>
             </svg>
 
             <div class="soyle">
@@ -108,7 +111,7 @@
             </div>
           </div>
 
-          <div class="rad spred" style="margin-top:8px">
+          <div class="rad spred">
             <span class="etikett" style="font-size:8px">22. okt</span>
             <span class="etikett" style="font-size:8px">29. okt</span>
             <span class="etikett" style="font-size:8px">5. nov</span>
@@ -154,8 +157,8 @@
                   fill="none" stroke="var(--frynse-1)" stroke-width="2" stroke-linecap="round" opacity=".7"/>
           </svg>
 
-          <svg viewBox="0 0 220 44" preserveAspectRatio="none" style="width:100%; flex:1; min-height:44px; display:block; margin-top:8px" aria-hidden="true">
-            <g fill="var(--orb-glod)" opacity=".85">
+          <svg viewBox="0 0 220 44" preserveAspectRatio="none" style="width:100%; flex:1; min-height:44px; display:block" aria-hidden="true">
+            <g fill="var(--strek)" opacity=".85">
               <rect x="2"   y="26" width="9" height="18" rx="2"/>
               <rect x="18"  y="18" width="9" height="26" rx="2"/>
               <rect x="34"  y="30" width="9" height="14" rx="2"/>
@@ -164,7 +167,7 @@
               <rect x="82"  y="32" width="9" height="12" rx="2"/>
               <rect x="98"  y="16" width="9" height="28" rx="2"/>
               <rect x="114" y="28" width="9" height="16" rx="2"/>
-              <rect x="130" y="8"  width="9" height="36" rx="2" fill="var(--band-kjerne)"/>
+              <rect x="130" y="8"  width="9" height="36" rx="2" fill="var(--strek)"/>
               <rect x="146" y="24" width="9" height="20" rx="2"/>
               <rect x="162" y="34" width="9" height="10" rx="2"/>
               <rect x="178" y="20" width="9" height="24" rx="2"/>
@@ -172,7 +175,7 @@
             </g>
           </svg>
 
-          <div class="minirad" style="margin-top:auto; padding-top:9px">
+          <div class="minirad">
             <div class="mini"><b>4/7</b><span>Hashfunksjon</span></div>
             <div class="mini"><b>3/6</b><span>UDP</span></div>
           </div>
@@ -185,7 +188,7 @@
           </a>
 
           <section class="kort kort--liten" style="display:flex; flex-direction:column; gap:9px; flex:1; min-height:0">
-            <p class="korttittel" style="margin-bottom:0">
+            <p class="korttittel">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
               Notater
             </p>
@@ -195,11 +198,11 @@
                 <g stroke="var(--kant-linje)" stroke-width="1" fill="none">
                   <path d="M40 30h32M88 30h32M56 30v34M104 30v34"/>
                 </g>
-                <g fill="var(--orb-glod)" opacity=".9">
+                <g fill="var(--strek)" opacity=".9">
                   <circle cx="40" cy="30" r="5"/><circle cx="80" cy="30" r="7"/><circle cx="120" cy="30" r="5"/>
                   <circle cx="56" cy="64" r="4"/><circle cx="104" cy="64" r="4"/>
                 </g>
-                <circle cx="80" cy="30" r="12" fill="none" stroke="var(--band-kjerne)" stroke-width="1" opacity=".5"/>
+                <circle cx="80" cy="30" r="12" fill="none" stroke="var(--strek)" stroke-width="1" opacity=".5"/>
               </svg>
               <figcaption>Nettverk.md</figcaption>
             </figure>
@@ -208,8 +211,8 @@
               <svg viewBox="0 0 160 96" aria-hidden="true">
                 <rect x="36" y="38" width="46" height="34" rx="5" fill="none" stroke="var(--blekk-2)" stroke-width="1.6"/>
                 <path d="M48 38v-9a11 11 0 0 1 22 0v9" fill="none" stroke="var(--blekk-2)" stroke-width="1.6"/>
-                <circle cx="59" cy="54" r="4" fill="var(--orb-glod)"/>
-                <path d="M96 55h34M124 49l6 6-6 6" fill="none" stroke="var(--orb-glod)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="59" cy="54" r="4" fill="var(--strek)"/>
+                <path d="M96 55h34M124 49l6 6-6 6" fill="none" stroke="var(--strek)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               <figcaption>Kryptering.md</figcaption>
             </figure>
@@ -228,28 +231,31 @@
         <p class="etikett" style="font-size:8.5px; line-height:1.5">Eksamen</p>
         <p class="tall" style="font-size:40px; margin:10px 0 4px">38</p>
         <p class="etikett" style="font-size:8px">dager igjen</p>
-        <div style="height:4px; border-radius:2px; margin-top:11px; background:var(--glass-tynn); border:1px solid var(--kant-linje); overflow:hidden">
-          <i style="display:block; height:100%; width:46%; background:linear-gradient(90deg, var(--orb-fyll), var(--orb-glod))"></i>
+        <div style="height:4px; border-radius:2px; background:var(--glass-tynn); border:1px solid var(--kant-linje); overflow:hidden">
+          <i style="display:block; height:100%; width:46%; background:var(--strek); opacity:.8"></i>
         </div>
       </section>
 
       <section class="sveve" data-kobling="h">
-        <p class="etikett" style="font-size:8.5px; line-height:1.5; margin-bottom:11px">Forfalt</p>
+        <p class="etikett" style="font-size:8.5px; line-height:1.5">Forfalt</p>
         <p class="tall" style="font-size:34px; margin:0 0 10px">12</p>
         <ul class="logg" style="list-style:none; margin:0; padding:0">
           <li><i></i><span>Hashfunksjon</span></li>
           <li><i></i><span>Digital signatur</span></li>
           <li class="svak"><i></i><span>DHCP</span></li>
         </ul>
-        <img class="kua-liten" src="ku.svg" width="34" height="26" alt="" style="margin-top:11px">
+        <img class="kua-liten" src="ku.svg" width="34" height="26" alt="">
       </section>
 
     </aside>
   </div>
 </div>
 
+<script src="flyt-utseende.js"></script>
+<script src="flyt-tid.js"></script>
 <script src="flyt-scene.js"></script>
 <script src="flyt-orb.js"></script>
+<script src="flyt-fag.js"></script>
 <script src="flyt-ui.js"></script>
 <script>
 /* ============================================================

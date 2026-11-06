@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#51688A">
+<title>gong-bu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="flyt.css">
+</head>
+<body>
+
+<div class="skjerm" data-tema-auto data-tema="staal" id="skjerm">
+
+  <!-- Scenen og målelaget bygges av flyt-scene.js. -->
+  <div class="scene"></div>
+
+  <!-- ============================================================
+       RAILEN
+       Stående tekst og målestrek langs venstre kant. Rent ornament,
+       men det er den som gjør at flaten leses som utsnittet av noe
+       større i stedet for som en avsluttet side.
+       ============================================================ -->
+
+  <!-- Telefonens egen statuslinje. Hører til enheten, ikke til appen. -->
+  <div class="statuslinje" aria-hidden="true">
+    <span>9:41</span>
+    <span class="ikoner">
+      <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.6" y="5" width="3" height="6" rx="1"/><rect x="9.2" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.8" y="0" width="3" height="11" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.2a10 10 0 0 1 14 0"/><path d="M3.6 7a6.4 6.4 0 0 1 8.8 0"/><path d="M6.3 9.7a2.6 2.6 0 0 1 3.4 0"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.6" y="0.6" width="21" height="10.8" rx="3" stroke="currentColor" stroke-opacity=".5" stroke-width="1.1"/><rect x="2.2" y="2.2" width="17" height="7.6" rx="1.8" fill="currentColor"/><path d="M23.2 4.2v3.6a2 2 0 0 0 0-3.6z" fill="currentColor" fill-opacity=".5"/></svg>
+    </span>
+  </div>
+
+  <!-- ============================================================
+       TOPPBAREN — appen til venstre, vaulten til høyre.
+       Vaulten står her fordi alt innhold i appen kommer derfra;
+       er den ikke synket, er kortene gamle.
+       ============================================================ -->
+  <a class="toppbar" href="index.html" aria-label="Bytt fag">
+    <div class="merke">
+      <span class="fagmerke" aria-hidden="true" data-fag-merke>IN</span>
+      <div style="min-width:0">
+        <div class="navn" data-fag-navn>Datateknologi</div>
+        <div class="etikett" style="font-size:7.5px; letter-spacing:.2em" data-fag-kode>IN1020</div>
+      </div>
+    </div>
+
+    <span class="delestrek" aria-hidden="true"></span>
+
+    <div class="vault">
+      <div class="navn" style="font-weight:400">Obsidian</div>
+      <div class="rad" style="gap:6px">
+        <span class="prikk" aria-hidden="true"></span>
+        <span class="etikett" style="font-size:7.5px; letter-spacing:.18em">Synk 2m</span>
+      </div>
+    </div>
+
+    <span class="bytt" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h11l-3-3M17 14H6l3 3"/></svg>
+    </span>
+  </a>
+
+  <div class="rull">
+
+    <!-- ============================================================
+         OVERSKRIFT, TRAPP OG ORB
+         Trappa til venstre er appens tre nivåer. Streken foran
+         markerer hvilket du står i — her nivå 1.
+         ============================================================ -->
+    <div class="seksjon" style="position:relative">
+
+      <div class="rad spred" style="align-items:flex-start">
+        <p class="etikett">Sesjon</p>
+        <p class="indeks"><b>04</b> / 12</p>
+      </div>
+
+      <h1 style="font-size:31px">Velkommen<br>tilbake</h1>
+
+      <ul class="trapp">
+        <li class="naa">Kjenne igjen</li>
+        <li>Forklare</li>
+        <li>Skille</li>
+      </ul>
+
+      <a class="orb svev" href="studie.html" data-sinn="rolig"
+         style="right:-6px; top:16px; width:132px; height:132px"
+         aria-label="Start en studieøkt"></a>
+    </div>
+
+    <!-- ============================================================
+         DAGENS PLAN
+         Avlesning først, avkryssing under — oppbygningen fra
+         referansebildet. Tallet står i mono, stripa er tynn: en
+         tjukk stripe leser som en prestasjon, en tynn som en måling.
+         ============================================================ -->
+    <div class="seksjon">
+      <div class="kort">
+
+        <p class="mikro">
+          <span class="nr">01</span>
+          <span class="navn">Dagens plan</span>
+          <span class="leder"></span>
+          <span class="verdi">2 / 4</span>
+        </p>
+
+        <div class="stolperad">
+          <span class="stolpe"><i style="width:52%"></i></span>
+          <span class="tall"><span data-tall="52">52</span>&#8202;%</span>
+        </div>
+
+        <ul class="plan" style="list-style:none; margin:0; padding:0">
+          <li>
+            <span class="rute rute--av" aria-hidden="true"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="gjort">Nivå 1 · gjenkjenning</span><span class="maal">12 kort</span>
+          </li>
+          <li>
+            <span class="rute rute--av" aria-hidden="true"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+            <span class="gjort">Les: Kryptering</span><span class="maal">10 min</span>
+          </li>
+          <li>
+            <span class="rute" aria-hidden="true"></span>
+            <span>Nivå 2 · forklaring</span><span class="maal">6 kort</span>
+          </li>
+          <li>
+            <span class="rute" aria-hidden="true"></span>
+            <span>Kodespor IN1000</span><span class="maal">4 oppg</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         FLISENE
+         Fire like brytere. Den mest apparat-aktige komponenten i
+         systemet, og den raskeste veien inn i et nivå.
+         ============================================================ -->
+    <div class="seksjon seksjon--tett">
+      <nav class="fliser" aria-label="Start en øvelse">
+        <a class="flisknapp" href="nivaa1.html">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h10M7 14h6"/></svg>
+          Nivå 1
+        </a>
+        <a class="flisknapp" href="nivaa2.html">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16M4 10h16M4 15h10"/><path d="M15 19l2 2 4-4"/></svg>
+          Nivå 2
+        </a>
+        <a class="flisknapp" href="nivaa3.html">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/></svg>
+          Nivå 3
+        </a>
+        <a class="flisknapp" href="kode.html?fag=in1000">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 8L5 12l3.5 4M15.5 8l3.5 4-3.5 4"/></svg>
+          Kode
+        </a>
+      </nav>
+    </div>
+
+    <!-- ============================================================
+         BEREDSKAP + KUA
+         Det store tallet er hvor klar du er, ikke hvor lite tid du
+         har igjen. Kortene står på linje nå — et instrument er
+         innrettet, ikke flytende.
+         ============================================================ -->
+    <div class="seksjon seksjon--tett bento bento--delt">
+
+      <div class="kort kort--liten">
+        <p class="mikro">
+          <span class="nr">02</span>
+          <span class="navn">Beredskap</span>
+          <span class="leder"></span>
+        </p>
+        <div class="rad" style="gap:12px; align-items:center">
+          <div class="ringlite" style="width:62px; height:62px">
+            <svg viewBox="0 0 74 74" aria-hidden="true">
+              <circle cx="37" cy="37" r="30" fill="none" stroke="var(--kant-linje)" stroke-width="4"/>
+              <!-- 62 % av omkretsen (2πr ≈ 188.5) -->
+              <circle cx="37" cy="37" r="30" fill="none" stroke="var(--blekk)" stroke-width="4"
+                      stroke-linecap="round" stroke-dasharray="116.9 188.5"
+                      transform="rotate(-90 37 37)" opacity=".88"/>
+            </svg>
+            <b style="font-size:15px"><span data-tall="62">62</span><span style="font-size:8px; letter-spacing:.1em">%</span></b>
+          </div>
+          <div style="min-width:0">
+            <p class="storverdi"><span data-tall="12">12</span></p>
+            <p class="etikett" style="font-size:7.5px">Forfalt</p>
+          </div>
+        </div>
+        <svg viewBox="0 0 160 22" style="width:100%; height:22px; display:block" aria-hidden="true">
+          <path d="M3 15 C 24 15, 32 6, 52 8 S 88 17, 108 10 S 140 4, 157 6"
+                fill="none" stroke="var(--blekk-2)" stroke-width="1.2" stroke-linecap="round" opacity=".8"/>
+          <circle cx="157" cy="6" r="2" fill="none" stroke="var(--blekk)" stroke-width="1.2"/>
+        </svg>
+      </div>
+
+      <div class="kort kort--liten">
+        <p class="mikro">
+          <span class="nr">03</span>
+          <span class="navn">Kua</span>
+          <span class="leder"></span>
+        </p>
+        <img class="kua-liten" src="ku.svg" width="34" height="26" alt="">
+        <p class="brod" style="font-size:12px; line-height:1.5">
+          Tolv kort har ligget en stund. Eller bare én økt — du velger.
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         VAULTEN
+         Tre tall i en avlesning, og den sist rørte fila under.
+         ============================================================ -->
+    <div class="seksjon seksjon--tett">
+      <div class="kort">
+        <p class="mikro">
+          <span class="nr">04</span>
+          <span class="navn">Vaulten</span>
+          <span class="leder"></span>
+          <span class="verdi">Obsidian</span>
+        </p>
+
+        <div class="avlesning avlesning--3">
+          <div><b data-tall="428">428</b><span>Notater</span></div>
+          <div><b>1&#8239;276</b><span>Lenker</span></div>
+          <div><b data-tall="36">36</b><span>Nye · 7d</span></div>
+        </div>
+
+        <div class="sistnotat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0; opacity:.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+          <div style="min-width:0">
+            <p class="sti">Sikkerhet / Kryptering.md</p>
+            <p class="lenker">12 lenker · 3 beslektede</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         BEGREPSKARTET
+         Samme grupper som i oversikten — de kommer fra «Del av:»-
+         feltet i begrepsnotatene. Nodene er ringer nå, ikke kuler:
+         en ring er et punkt i et diagram, en kule er en perle.
+         ============================================================ -->
+    <div class="seksjon seksjon--tett">
+      <div class="kort">
+        <p class="mikro">
+          <span class="nr">05</span>
+          <span class="navn">Begrepskart</span>
+          <span class="leder"></span>
+          <span class="verdi">7 noder</span>
+        </p>
+
+        <div class="rad" style="gap:12px; align-items:center">
+          <svg class="graf" viewBox="0 0 190 108" style="width:56%; max-width:100%" role="img" aria-label="Begrepskart med sammenkoblede noder">
+            <g class="kant" fill="none">
+              <path d="M95 54 L36 26"/><path d="M95 54 L58 76"/><path d="M95 54 L152 24"/>
+              <path d="M95 54 L162 72"/><path d="M95 54 L100 97"/><path d="M95 54 L22 62"/>
+              <path d="M36 26 L22 62"/><path d="M152 24 L162 72"/>
+            </g>
+            <circle class="node" cx="36"  cy="26" r="5"/>
+            <circle class="node" cx="58"  cy="76" r="4"/>
+            <circle class="node" cx="152" cy="24" r="5"/>
+            <circle class="node" cx="162" cy="72" r="4"/>
+            <circle class="node" cx="100" cy="97" r="3.5"/>
+            <circle class="node" cx="22"  cy="62" r="3.5"/>
+            <circle class="node node--stor" cx="95" cy="54" r="9"/>
+          </svg>
+
+          <div class="emner" style="width:44%">
+            <span class="emne">Kryptering</span>
+            <span class="emne">Protokoll</span>
+            <span class="emne">Sikkerhetsmål</span>
+            <span class="emne">Nettverk</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="tab" aria-label="Hovedmeny">
+    <a href="hjem.html" aria-current="page">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg><span>HJEM</span></a>
+    <a href="nivaa1.html">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h5"/></svg><span>ØV</span></a>
+    <a href="studie.html">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg><span>ØKT</span></a>
+    <a href="oversikt.html">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M10 7h7v7"/></svg><span>KART</span></a>
+  </nav>
+
+  <div class="hjemstrek" aria-hidden="true"><i></i></div>
+
+</div>
+
+<script src="flyt-utseende.js"></script>
+<script src="flyt-tid.js"></script>
+<script src="flyt-scene.js"></script>
+<script src="flyt-orb.js"></script>
+<script src="flyt-fag.js"></script>
+<script src="flyt-ui.js"></script>
+<script>
+/* Prototypen bytter tema utenfra. */
+window.addEventListener('message', function (e) {
+  if (e.data && e.data.tema) document.getElementById('skjerm').dataset.tema = e.data.tema;
+});
+</script>
+
+</body>
+</html>

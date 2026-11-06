@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#66729F">
+<meta name="theme-color" content="#51688A">
 <title>Kodespor · IN1000</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="flyt.css">
 </head>
 <body>
 
-<div class="skjerm" data-tema="glo" id="skjerm">
+<div class="skjerm" data-tema-auto data-tema="staal" id="skjerm">
 
   <div class="scene"></div>
   <!-- Telefonens egen statuslinje. Hører til enheten, ikke til appen. -->
@@ -25,7 +28,7 @@
 
   <header class="topp">
     <span class="nivaa">IN1000 · Kodespor</span>
-    <span class="etikett">Lister og referanser</span>
+    <span class="etikett" style="letter-spacing:.14em; font-size:8.5px; text-align:right">Lister og referanser</span>
   </header>
 
   <div class="seksjon">
@@ -40,21 +43,21 @@
   </div>
 
   <div class="seksjon">
-    <label class="etikett" for="utskrift" style="display:block; margin-bottom:8px">Svaret ditt</label>
+    <label class="etikett" for="utskrift" style="display:block">Svaret ditt</label>
     <input id="utskrift" class="felt felt--kode" type="text" value="3" inputmode="numeric">
   </div>
 
   <!-- Sporet kjøres linje for linje etter at du har svart. -->
   <div class="seksjon seksjon--tett">
-    <div class="kort" style="padding:15px 16px; background:color-mix(in srgb, var(--frynse-2) 16%, var(--glass))">
-      <p class="etikett" style="margin-bottom:10px; color:var(--blekk)">Ikke helt — her er sporet</p>
+    <div class="kort" style="background:color-mix(in srgb, var(--frynse-2) 16%, var(--glass))">
+      <p class="etikett" style="color:var(--blekk)">Ikke helt — her er sporet</p>
       <div class="spor">
         <div><span class="n">1</span><span>tall → [1, 2, 3]</span></div>
         <div><span class="n">2</span><span>ny peker på <strong style="font-weight:600; color:var(--blekk)">samme</strong> liste</span></div>
         <div><span class="n">3</span><span>tall → [1, 2, 3, 4]</span></div>
         <div><span class="n">4</span><span>skriver <strong style="font-weight:600; color:var(--blekk)">4</strong></span></div>
       </div>
-      <p class="brod" style="margin-top:12px; font-size:13px; color:var(--blekk-2)">
+      <p class="brod" style="font-size:13px; color:var(--blekk-2)">
         Tilordning kopierer ikke lista. Begge navnene viser til det samme objektet.
       </p>
     </div>
@@ -67,21 +70,24 @@
   </div>
 
   <nav class="tab" aria-label="Hovedmeny">
-    <a href="index.html">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>HJEM</a>
+    <a href="hjem.html">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg><span>HJEM</span></a>
     <a href="nivaa1.html" aria-current="page">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M8 10h8M8 14h5"/></svg>ØV</a>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M8 10h8M8 14h5"/></svg><span>ØV</span></a>
     <a href="studie.html">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg>ØKT</a>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/></svg><span>ØKT</span></a>
     <a href="oversikt.html">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M10 7h7v7"/></svg>KART</a>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M10 7h7v7"/></svg><span>KART</span></a>
   </nav>
   <div class="hjemstrek" aria-hidden="true"><i></i></div>
 
 </div>
 
+<script src="flyt-utseende.js"></script>
+<script src="flyt-tid.js"></script>
 <script src="flyt-scene.js"></script>
 <script src="flyt-orb.js"></script>
+<script src="flyt-fag.js"></script>
 <script src="flyt-ui.js"></script>
 <script>
 /* Prototypen bytter tema utenfra. */

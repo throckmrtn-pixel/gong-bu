@@ -40,6 +40,11 @@ PDFROT = HER / "eksamen"
 API = os.environ.get("GONGBU_API", "https://api.openai.com/v1/chat/completions")
 MODELL = os.environ.get("GONGBU_MODELL", "gpt-5")
 
+# En lokal modell bruker lengre tid enn et API-kall, og tåler mindre
+# materiale om gangen. Begge deler kan skrus ned i .env.
+TIDSFRIST = int(os.environ.get("GONGBU_TIDSFRIST", "600"))
+TEGN = int(os.environ.get("GONGBU_TEGN", "24000"))
+
 
 # ================================================================ nøkkel
 
@@ -270,38 +275,87 @@ JSON: {{"kort": [{{"type":"skriv","sporsmaal":"oppgaveteksten","fasit":"et godt 
 }
 
 
-def sporr(nokkel, bruker, torr=False):
+def hent_json(tekst):
+    """
+    JSON ut av et modellsvar, uansett hvor pent det er pakket.
+
+    Store modeller med JSON-modus svarer med rent JSON. En lokal modell
+    svarer gjerne med ```json-gjerder rundt, eller en setning foran.
+    Vi graver ut det ytterste objektet i stedet for å gi opp.
+    """
+    t = (tekst or "").strip()
+    try:
+        return json.loads(t)
+    except json.JSONDecodeError:
+        pass
+
+    gjerde = re.search(r"```(?:json)?\s*([\s\S]*?)```", t)
+    if gjerde:
+        try:
+            return json.loads(gjerde.group(1).strip())
+        except json.JSONDecodeError:
+            t = gjerde.group(1).strip()
+
+    start = t.find("{")
+    if start == -1:
+        raise ValueError("fant ingen JSON i svaret")
+    dybde, i_streng, rommet = 0, False, False
+    for i in range(start, len(t)):
+        c = t[i]
+        if rommet:
+            rommet = False
+        elif c == "\\" and i_streng:
+            rommet = True
+        elif c == '"':
+            i_streng = not i_streng
+        elif not i_streng:
+            if c == "{":
+                dybde += 1
+            elif c == "}":
+                dybde -= 1
+                if dybde == 0:
+                    return json.loads(t[start:i + 1])
+    raise ValueError("JSON-objektet i svaret er ikke lukket")
+
+
+def sporr(nokkel, bruker, torr=False, _json_modus=True):
     if torr:
         print("\n----- ville sendt -----")
         print(bruker[:1500] + ("\n… (kuttet)" if len(bruker) > 1500 else ""))
         return {"kort": []}
 
-    kropp = json.dumps({
+    last = {
         "model": MODELL,
         "messages": [
             {"role": "system", "content": SYSTEM},
             {"role": "user", "content": bruker},
         ],
-        "response_format": {"type": "json_object"},
-    }).encode("utf-8")
+    }
+    # JSON-modus støttes ikke overalt. Faller kallet på den, prøver vi uten.
+    if _json_modus:
+        last["response_format"] = {"type": "json_object"}
 
-    req = urllib.request.Request(API, data=kropp, headers={
-        "Authorization": f"Bearer {nokkel}",
+    req = urllib.request.Request(API, data=json.dumps(last).encode("utf-8"), headers={
+        "Authorization": f"Bearer {nokkel or 'ollama'}",
         "Content-Type": "application/json",
     })
     try:
-        with urllib.request.urlopen(req, timeout=180, context=tillit()) as svar:
+        with urllib.request.urlopen(req, timeout=TIDSFRIST, context=tillit()) as svar:
             data = json.loads(svar.read())
     except urllib.error.HTTPError as e:
         detalj = e.read().decode("utf-8", "replace")[:400]
+        if _json_modus and ("response_format" in detalj or e.code == 400):
+            print("   (endepunktet tok ikke JSON-modus — prøver uten)")
+            return sporr(nokkel, bruker, torr, _json_modus=False)
         sys.exit(f"API svarte {e.code}: {detalj}")
     except urllib.error.URLError as e:
         sys.exit(f"Fikk ikke kontakt med {API}: {e.reason}\n" + raad(e))
 
     try:
-        return json.loads(data["choices"][0]["message"]["content"])
-    except (KeyError, json.JSONDecodeError) as e:
-        sys.exit(f"Uventet svar fra modellen: {e}")
+        return hent_json(data["choices"][0]["message"]["content"])
+    except (KeyError, ValueError, json.JSONDecodeError) as e:
+        sys.exit(f"Fikk ikke JSON ut av svaret: {e}\n"
+                 "  Små modeller sliter med dette. Prøv --maks 2, eller en større modell.")
 
 
 # ================================================================ skriving
@@ -393,7 +447,8 @@ def allerede_laget():
 
 # ================================================================ kjøring
 
-def material_begreper(begreper, maks_tegn=24000):
+def material_begreper(begreper, maks_tegn=None):
+    maks_tegn = TEGN if maks_tegn is None else maks_tegn
     """Pakker begrepsnotatene til én tekstblokk modellen kan lese."""
     biter, lengde = [], 0
     for b in begreper:

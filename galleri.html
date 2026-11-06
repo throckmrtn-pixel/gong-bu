@@ -1,5 +1,9 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>gong-bu skjermer</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
 
 <style>
@@ -162,18 +166,17 @@ footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--linje)
     <span class="merkelapp">Alle skjermer · flyt</span>
     <h1><span class="ko">공부</span> gong-bu</h1>
     <p class="ingress">
-      Hele appen i det nye systemet. Glasset ligger over lys som beveger seg, båndene
-      speiles i et gulv nederst, og hver flate fanger lyset på øvre kant i fargene fra
-      båndene bak. Tre temaer, samme struktur.
+      Hele appen i det myke systemet: frostet glass som flyter i luft. Alt er lys og
+      volum — ingenting er strek. Tre temaer, samme struktur.
     </p>
   </header>
 
   <div class="styring">
     <span class="merkelapp">Tema</span>
     <div class="knapper" role="group" aria-label="Velg tema" id="temavelger">
-      <button type="button" data-tema="lys"  aria-pressed="false">Lys</button>
-      <button type="button" data-tema="mork" aria-pressed="false">Mørk</button>
-      <button type="button" data-tema="glo"  aria-pressed="true">Glød</button>
+      <button type="button" data-tema="klar"  aria-pressed="false">Klar</button>
+      <button type="button" data-tema="staal" aria-pressed="true">Stål</button>
+      <button type="button" data-tema="natt"  aria-pressed="false">Natt</button>
     </div>
     <span class="merkelapp" style="margin-left:auto">Trykk på en skjerm for å se den stor</span>
   </div>
@@ -185,10 +188,11 @@ footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--linje)
     <section class="notat">
       <h2>Hva som er nytt</h2>
       <ul>
-        <li><span><b>Prismekant.</b> Lysstripa på toppen av hvert kort splittes i de samme fargene som båndene bak. Det er den som binder flatene til lyset.</span></li>
-        <li><span><b>Lyssveip.</b> Et smalt lysfelt passerer over glasset hvert ellevte sekund, forskjøvet fra kort til kort.</span></li>
-        <li><span><b>Hjørnemerker.</b> Fire tynne vinkler rammer inn hovedflaten uten å lage en boks.</span></li>
-        <li><span><b>Tall som teller seg opp</b> når siden åpnes, og en ring av lys der fingeren treffer.</span></li>
+        <li><span><b>Ingen striper.</b> Bånd, koordinatnett, målerail, ledestreker, segmenterte stolper og merkeringer er alle ute. Hver av dem var en stripe, og lagt oppå hverandre ble de et mønster.</span></li>
+        <li><span><b>Myk luft.</b> Scenen er tre store uskarpe lysflekker, en diger kulekant oppe til høyre, tre bobler og en dis langs bunnen. Blur på 64 px — under 40 begynner kanten å avtegne seg.</span></li>
+        <li><span><b>Hvit hårkant.</b> Flatene bæres av én lys 1 px kant og en vid, nesten usynlig skygge. Skru av kanten, og kortet smelter inn i bakgrunnen.</span></li>
+        <li><span><b>Flisene.</b> Fire myke firkanter med hårstrek-ikon, rett fra referansen. Den raskeste veien inn i et nivå.</span></li>
+        <li><span><b>Avkryssingen.</b> Ring når den er tom, myk firkant med hake når den er gjort.</span></li>
       </ul>
     </section>
 
@@ -197,14 +201,14 @@ footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--linje)
       <ul>
         <li><span><b>Tett glass under tekst.</b> Rammeverket slipper bakgrunnen gjennom; flater du leser eller skriver i gjør ikke det.</span></li>
         <li><span><b>Merket bærer tilstanden.</b> Hel prikk, halv prikk, tom ring. Med tre temaer klarer ikke farge alene å skille dem.</span></li>
-        <li><span><b>Én glødende ting per skjerm.</b> På nivå 1 gløder ingen av de fire svarene — fire like glorier blir et fargebelte.</span></li>
+        <li><span><b>Én solid ting per skjerm.</b> Hovedhandlingen er den eneste ugjennomsiktige flaten. I et system der alt annet er gjennomsiktig er det et sterkere signal enn å lyse.</span></li>
       </ul>
     </section>
 
     <section class="notat">
       <h2>Fortsatt åpent</h2>
       <ul>
-        <li><span>Kua i mørkt tema. Hvit pikselku mot nattblått fungerer, men hun er tegnet for lys bakgrunn.</span></li>
+        <li><span>Kua. Hun er den eneste tingen i systemet som ikke er lys eller glass. Skal hun bli igjen som pikselku?</span></li>
         <li><span>Spillene — matche begrep mot definisjon på tid — har ingen skjerm ennå.</span></li>
         <li><span>Nivå 3 har ikke ekte dra-og-slipp. Feltene er knapper så lenge.</span></li>
         <li><span>Ikon og splash for hjemskjermen.</span></li>
@@ -242,7 +246,7 @@ footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--linje)
     { f: 'app/bord.html', n: 'Bordet', b: 1280, h: 800 }
   ];
 
-  var tema = 'glo';
+  var tema = 'staal';
 
   /* Bygger én celle: ramme, iframe, navnelapp. */
   function celle(s, bred) {

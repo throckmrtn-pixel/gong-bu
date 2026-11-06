@@ -79,7 +79,7 @@
 '    <ellipse cx="120" cy="118" rx="94" ry="28" fill="none"',
 '             stroke="url(#ringGrad)" stroke-width="2.4" opacity=".8"/>',
 '    <ellipse class="ringlys" cx="120" cy="118" rx="94" ry="28" fill="none"',
-'             stroke="var(--band-kjerne)" stroke-width="3" stroke-linecap="round"',
+'             stroke="var(--orb-kjerne)" stroke-width="3" stroke-linecap="round"',
 '             stroke-dasharray="30 382" opacity=".5"/>',
 '  </g>',
 
@@ -99,7 +99,7 @@
 '    <ellipse clip-path="url(#nedre)" cx="120" cy="118" rx="94" ry="28" fill="none"',
 '             stroke="url(#ringGrad)" stroke-width="2.6"/>',
 '    <ellipse class="ringlys" clip-path="url(#nedre)" cx="120" cy="118" rx="94" ry="28" fill="none"',
-'             stroke="var(--band-kjerne)" stroke-width="3.4" stroke-linecap="round"',
+'             stroke="var(--orb-kjerne)" stroke-width="3.4" stroke-linecap="round"',
 '             stroke-dasharray="30 382"/>',
 '  </g>',
 '  <g transform="rotate(24 120 118)">',
@@ -109,9 +109,9 @@
 
 '  <!-- krusningene i vannet under -->',
 '  <g class="krus">',
-'    <ellipse cx="120" cy="200" rx="40" ry="6"  fill="none" stroke="var(--band-kjerne)" stroke-width="1.4" opacity=".55"/>',
-'    <ellipse cx="120" cy="206" rx="62" ry="9"  fill="none" stroke="var(--band-kjerne)" stroke-width="1.1" opacity=".34"/>',
-'    <ellipse cx="120" cy="213" rx="84" ry="12" fill="none" stroke="var(--band-kjerne)" stroke-width="0.9" opacity=".18"/>',
+'    <ellipse cx="120" cy="200" rx="40" ry="6"  fill="none" stroke="var(--orb-kjerne)" stroke-width="1.4" opacity=".55"/>',
+'    <ellipse cx="120" cy="206" rx="62" ry="9"  fill="none" stroke="var(--orb-kjerne)" stroke-width="1.1" opacity=".34"/>',
+'    <ellipse cx="120" cy="213" rx="84" ry="12" fill="none" stroke="var(--orb-kjerne)" stroke-width="0.9" opacity=".18"/>',
 '  </g>',
 '  <ellipse class="speiling" cx="120" cy="204" rx="58" ry="9" fill="url(#halo)" filter="url(#mykt)"/>',
 '</svg>'

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>gong-bu bunnmeny</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="flyt.css">
+<style>
+  body { background: #0B111C; color: #E9EFF8; font-family: Inter, system-ui, sans-serif; padding: 40px 24px 70px; }
+  .ark { max-width: 1180px; margin: 0 auto; }
+  h1 { font-family: "Space Grotesk", sans-serif; font-weight: 200; font-size: 36px; letter-spacing: -.04em; margin: 0 0 10px; }
+  .ingress { max-width: 60ch; color: #9AA6BC; line-height: 1.6; margin: 0 0 34px; font-size: 15px; }
+  .merkelapp { font-size: 9.5px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: #76839B; }
+
+  .styring { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; }
+  .knapper { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
+  .knapper button {
+    border: 0; background: none; cursor: pointer; border-radius: 999px;
+    padding: 8px 16px; color: #9AA6BC;
+    font: 500 12px/1 Inter, sans-serif; letter-spacing: .06em;
+  }
+  .knapper button[aria-pressed="true"] { background: rgba(255,255,255,.14); color: #fff; }
+
+  .rekke { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 26px; }
+  .boks { display: flex; flex-direction: column; gap: 14px; }
+  .hode { display: flex; align-items: baseline; gap: 10px; }
+  .hode h2 { font-family: "Space Grotesk", sans-serif; font-weight: 400; font-size: 19px; letter-spacing: -.02em; margin: 0; color: #fff; }
+  .hode code { font-size: 11px; color: #76839B; font-family: "JetBrains Mono", monospace; }
+  .om { color: #9AA6BC; font-size: 13.5px; line-height: 1.6; margin: 0; }
+
+  /* Et utsnitt av bunnen av skjermen, så menyen vises slik den
+     faktisk står: over innhold, med scenen bak. */
+  .utsnitt {
+    position: relative; width: 100%; max-width: 390px;
+    height: 190px; border-radius: 0 0 30px 30px;
+    overflow: hidden; isolation: isolate;
+    border: 1px solid rgba(255,255,255,.12); border-top: 0;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .utsnitt .innhold {
+    position: absolute; left: 16px; right: 16px; top: 14px; height: 92px;
+    border-radius: 20px; border: 1px solid var(--kant-linje);
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px);
+  }
+  .utsnitt .hjemstrek { margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="ark">
+
+  <p class="merkelapp">gong-bu · komponent</p>
+  <h1>Bunnmenyen</h1>
+  <p class="ingress">
+    Tre retninger på samme markup. Alle bytter med én klasse på
+    <code style="font-family:'JetBrains Mono',monospace; font-size:13px">&lt;nav class="tab"&gt;</code>,
+    og alle tre virker i alle tre temaene. Kapsel står i appen nå.
+  </p>
+
+  <div class="styring">
+    <span class="merkelapp">Tema</span>
+    <div class="knapper" role="group" aria-label="Velg tema" id="temavelger">
+      <button type="button" data-tema="klar"  aria-pressed="false">Klar</button>
+      <button type="button" data-tema="staal" aria-pressed="true">Stål</button>
+      <button type="button" data-tema="natt"  aria-pressed="false">Natt</button>
+    </div>
+  </div>
+
+  <div class="rekke" id="rekke"></div>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var IKON = {
+    HJEM: '<path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/>',
+    'ØV':  '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h5"/>',
+    'ØKT': '<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 1.8"/>',
+    KART: '<circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M10 7h7v7"/>'
+  };
+
+  var VARIANTER = [
+    { klasse: '', navn: 'Kapsel', kode: 'class="tab"',
+      om: 'Menyen slutter å være en list langs bunnen og blir et objekt som svever. Den aktive utvider seg til en pille med etikett; de tre andre er bare ikon. Fire etiketter ved siden av hverandre er fire ord du uansett ikke leser — ett ord på den du står i er en posisjonsangivelse. Bredden er låst, så kapselen står i ro når pilla flytter seg.' },
+    { klasse: 'tab--bloom', navn: 'Bloom', kode: 'class="tab tab--bloom"',
+      om: 'Full bredde som før, men den aktive har ingen plate under seg — den lyser bakfra i stedet. Stillest av de tre, og den eneste som holder alle fire etikettene synlige hele tiden. Lysflekken er samme språk som scenen: myk, ingen kant.' },
+    { klasse: 'tab--ring', navn: 'Ring', kode: 'class="tab tab--ring"',
+      om: 'Full bredde, og den aktive får en tynn ring rundt ikonet. Ringen er samme motiv som urskiva og sirkelknappene, så menyen bindes til resten av systemet i stedet for å ha sitt eget markeringsspråk.' }
+  ];
+
+  function meny(klasse, aktiv) {
+    var ut = '<nav class="tab ' + klasse + '" aria-label="Hovedmeny">';
+    for (var navn in IKON) {
+      var er = navn === aktiv;
+      ut += '<a href="#" ' + (er ? 'aria-current="page"' : '') + '>'
+          + '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+          + ' stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+          + IKON[navn] + '</svg><span>' + navn + '</span></a>';
+    }
+    return ut + '</nav>';
+  }
+
+  var tema = 'staal';
+
+  function tegn() {
+    var ut = '';
+    for (var i = 0; i < VARIANTER.length; i++) {
+      var v = VARIANTER[i];
+      ut += '<div class="boks">'
+          + '<div class="hode"><h2>' + v.navn + '</h2><code>' + v.kode + '</code></div>'
+          + '<p class="om">' + v.om + '</p>'
+          + '<div class="utsnitt skjerm" data-tema="' + tema + '" style="height:190px">'
+          +   '<div class="scene"></div>'
+          +   '<div class="innhold"></div>'
+          +   meny(v.klasse, 'HJEM')
+          +   '<div class="hjemstrek" aria-hidden="true"><i></i></div>'
+          + '</div>'
+          + '</div>';
+    }
+    document.getElementById('rekke').innerHTML = ut;
+    if (window.byggScene) window.byggScene();
+  }
+
+  document.getElementById('temavelger').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    tema = b.dataset.tema;
+    Array.prototype.forEach.call(this.querySelectorAll('button'), function (o) {
+      o.setAttribute('aria-pressed', String(o === b));
+    });
+    tegn();
+  });
+
+  tegn();
+})();
+</script>
+<script src="flyt-scene.js"></script>
+
+</body>
+</html>

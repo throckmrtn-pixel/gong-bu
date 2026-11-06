@@ -1,0 +1,488 @@
+<title>gong-bu designsystem</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+/* Layout: en arbeidsbenk — telefonen til venstre, systemnotatene til høyre. */
+:root {
+  --ark:    #E9ECF5;
+  --ark-2:  #FFFFFF;
+  --ark-3:  #F4F6FC;
+  --tekst:  #191D2B;
+  --tekst-2:#4F5770;
+  --linje:  rgba(90,102,160,.20);
+  --aksent: #44489C;
+  --sol:    #E8A33C;
+
+  --vis: "Space Grotesk", "Helvetica Neue", sans-serif;
+  --brod: Inter, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ark:    #13151D;
+    --ark-2:  #1B1E29;
+    --ark-3:  #232736;
+    --tekst:  #EDEFF8;
+    --tekst-2:#9BA3C0;
+    --linje:  rgba(170,185,235,.20);
+    --aksent: #AFC0FA;
+    --sol:    #F3C073;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ark:    #13151D;
+  --ark-2:  #1B1E29;
+  --ark-3:  #232736;
+  --tekst:  #EDEFF8;
+  --tekst-2:#9BA3C0;
+  --linje:  rgba(170,185,235,.20);
+  --aksent: #AFC0FA;
+  --sol:    #F3C073;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ark);
+  color: var(--tekst);
+  font-family: var(--brod);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.ark {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 34px 56px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+h1, h2, h3 { font-family: var(--vis); font-weight: 600; margin: 0; letter-spacing: -.03em; text-wrap: balance; }
+h1 { font-size: clamp(30px, 5vw, 42px); }
+h2 { font-size: 19px; letter-spacing: -.02em; }
+h3 { font-size: 14px; }
+p  { margin: 0; }
+
+.merkelapp {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--tekst-2);
+}
+
+/* ---------- topp ---------- */
+
+.topp { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+.topp .ko { font-family: var(--vis); color: var(--aksent); font-weight: 700; }
+.ingress { max-width: 60ch; color: var(--tekst-2); font-size: 16px; }
+
+/* ---------- benken ---------- */
+
+.benk {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: 34px;
+  align-items: start;
+}
+@media (max-width: 860px) { .benk { grid-template-columns: minmax(0, 1fr); } }
+
+.velger { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+.temarad { display: flex; align-items: center; gap: 12px; margin: -4px 0 16px; flex-wrap: wrap; }
+.temarad[hidden] { display: none; }
+.temarad .velger { margin-bottom: 0; }
+.velger button {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 8px 13px;
+  min-height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--linje);
+  background: var(--ark-2);
+  color: var(--tekst-2);
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.velger button:hover { color: var(--tekst); }
+.velger button[aria-pressed="true"] {
+  background: var(--aksent);
+  border-color: var(--aksent);
+  color: var(--ark-2);
+  font-weight: 700;
+}
+
+/* telefonrammen */
+.ramme-ytre { position: relative; }
+.benk--bred { grid-template-columns: minmax(0, 1fr); }
+.ramme {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  transform-origin: top left;
+  border-radius: 44px;
+  padding: 7px;
+  background: linear-gradient(203deg, #FAFBFF, #C9CEE2 48%, #8E94AE);
+  box-shadow: -14px 36px 60px -28px rgba(20,26,50,.55), 0 0 0 1px rgba(255,255,255,.25) inset;
+}
+.ramme iframe {
+  width: 376px;
+  height: 830px;
+  border: 0;
+  border-radius: 37px;
+  display: block;
+  background: #F2F4FB;
+}
+.skjermnavn {
+  margin-top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.skjermnavn b { font-family: var(--vis); font-size: 15px; font-weight: 600; }
+.fil { font-family: var(--mono); font-size: 11px; color: var(--tekst-2); }
+
+/* ---------- notatene ---------- */
+
+.notater { display: flex; flex-direction: column; gap: 18px; }
+
+.kort {
+  background: var(--ark-2);
+  border: 1px solid var(--linje);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.kort > p { color: var(--tekst-2); font-size: 14.5px; }
+
+/* lysdiagrammet */
+.lysdiagram { color: var(--tekst-2); width: 100%; height: auto; max-width: 100%; border-radius: 12px; background: var(--ark-3); }
+
+/* palett */
+.palett { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 9px; }
+.swatch { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.swatch .flate { height: 46px; border-radius: 11px; border: 1px solid var(--linje); }
+.swatch code { font-family: var(--mono); font-size: 10px; color: var(--tekst-2); letter-spacing: .02em; }
+.swatch span { font-size: 11.5px; font-weight: 500; }
+
+/* materialtabell */
+.materialer { display: flex; flex-direction: column; gap: 10px; }
+.material {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+.prove {
+  height: 56px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.62);
+  background-color: #EEF1FA;
+  background-image:
+    radial-gradient(70% 50% at 88% 2%, rgba(255,226,170,.9), rgba(255,226,170,0) 70%),
+    radial-gradient(70% 60% at 4% 96%, rgba(171,192,246,.75), rgba(171,192,246,0) 72%);
+  box-shadow: inset 0 1px 0 #fff, -3px 8px 14px -8px rgba(74,86,140,.5);
+}
+.prove--lese { background-color: #FCFDFF; }
+.prove--hinne { background-color: #EDF0F9; background-image:
+    radial-gradient(70% 50% at 88% 2%, rgba(255,226,170,.45), rgba(255,226,170,0) 70%),
+    radial-gradient(70% 60% at 4% 96%, rgba(171,192,246,.38), rgba(171,192,246,0) 72%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+.material b { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.material p { font-size: 13.5px; color: var(--tekst-2); margin-top: 3px; }
+
+/* regler */
+ol.regler { margin: 0; padding-left: 0; list-style: none; counter-reset: r; display: flex; flex-direction: column; gap: 11px; }
+ol.regler li { counter-increment: r; display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 11px; font-size: 14px; align-items: start; }
+ol.regler li > span { min-width: 0; }
+ol.regler li::before {
+  content: counter(r, decimal-leading-zero);
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--aksent); padding-top: 3px; letter-spacing: .06em;
+}
+ol.regler em { font-style: normal; font-weight: 600; }
+
+/* typografi */
+.typerad { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; border-top: 1px solid var(--linje); padding-top: 11px; }
+.typerad:first-of-type { border-top: 0; padding-top: 0; }
+.typerad .navn { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--tekst-2); min-width: 92px; }
+
+footer { margin-top: 40px; border-top: 1px solid var(--linje); padding-top: 18px; color: var(--tekst-2); font-size: 13.5px; max-width: 62ch; }
+
+:focus-visible { outline: 2px solid var(--aksent); outline-offset: 3px; border-radius: 8px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition-duration: .001ms !important; } }
+</style>
+
+<div class="ark">
+
+  <header class="topp">
+    <span class="merkelapp">Frontend · telefon 390 × 844 · bord 1280 × 800</span>
+    <h1><span class="ko">공부</span> gong-bu</h1>
+    <p class="ingress">
+      To retninger side om side. <strong style="font-weight:600">Dagens system</strong> er kald
+      pastellgrunn med varmt sollys ovenfra høyre — én fast lysvinkel, ingen mørke flater.
+      <strong style="font-weight:600">Flyt</strong> er den nye: glasset ligger over lys som
+      beveger seg, i tre temaer og to formater. Hjem, studieøkt og bordet er bygget i den.
+    </p>
+  </header>
+
+  <div class="benk">
+
+    <section>
+      <h2 class="merkelapp" style="margin-bottom:12px">Skjermer</h2>
+      <div class="velger" role="group" aria-label="Velg skjerm" id="skjermvelger">
+        <button type="button" data-fil="app/index.html"   data-tema-stotte="1" data-navn="Hjem · ny retning"     aria-pressed="true">Hjem</button>
+        <button type="button" data-fil="app/studie.html"  data-tema-stotte="1" data-navn="Studieøkt · nedtelling" aria-pressed="false">Studieøkt</button>
+        <button type="button" data-fil="app/bord.html" data-tema-stotte="1" data-bredde="1280" data-hoyde="800" data-navn="Bordet · bredt dashbord" aria-pressed="false">Bordet</button>
+        <button type="button" data-fil="app/nivaa1.html"       data-navn="Nivå 1 · gjenkjenning"       aria-pressed="false">Nivå 1</button>
+        <button type="button" data-fil="app/nivaa2.html"       data-navn="Nivå 2 · du skriver selv"    aria-pressed="false">Nivå 2</button>
+        <button type="button" data-fil="app/nivaa2-fasit.html" data-navn="Nivå 2 · fasit og retting"   aria-pressed="false">Fasit</button>
+        <button type="button" data-fil="app/nivaa3.html"       data-navn="Nivå 3 · diskriminering"     aria-pressed="false">Nivå 3</button>
+        <button type="button" data-fil="app/kode.html"         data-navn="Kodespor · IN1000"           aria-pressed="false">Kode</button>
+        <button type="button" data-fil="app/oversikt.html"     data-navn="Hva sitter · kartet"         aria-pressed="false">Kart</button>
+        <button type="button" data-fil="app/hjem-sol.html"     data-navn="Hjem · forrige retning"      aria-pressed="false">Hjem · sol</button>
+      </div>
+
+      <div class="temarad" id="temarad">
+        <span class="merkelapp">Tema</span>
+        <div class="velger" role="group" aria-label="Velg tema" id="temavelger">
+          <button type="button" data-tema="lys"  aria-pressed="false">Lys</button>
+          <button type="button" data-tema="mork" aria-pressed="false">Mørk</button>
+          <button type="button" data-tema="glo"  aria-pressed="true">Glød</button>
+        </div>
+      </div>
+
+      <div class="ramme-ytre" id="rammeYtre">
+        <div class="ramme" id="ramme">
+          <iframe id="rute" src="app/index.html" title="gong-bu, skjermen Hjem" loading="eager"></iframe>
+        </div>
+      </div>
+
+      <p class="skjermnavn"><b id="navn">Hjem · ny retning</b><span class="fil" id="fil">index.html</span></p>
+
+
+      <section class="kort">
+        <h2>Fem regler · dagens system</h2>
+        <ol class="regler">
+          <li><span><em>Glass på rammeverk, tett på innhold.</em> Ellers kjemper teksten mot bakgrunnen, og det er slitsomt etter tjue kort på bussen.</span></li>
+          <li><span><em>Tilstand bæres av merket, ikke fargen.</em> Hel prikk, halv prikk, tom ring. Når hele paletten er lys klarer ikke farge alene å skille tre tilstander.</span></li>
+          <li><span><em>Én glødende ting per skjerm.</em> Full <code style="font-family:var(--mono); font-size:12px">.iris</code> brukes én gang. Alt annet er stillere.</span></li>
+          <li><span><em>Nederste tredjedel er tommelsonen.</em> Minste trykkflate 44 px.</span></li>
+          <li><span><em>Kua er det eneste som ikke er glass.</em> Alt annet er lys og presisjon. Derfor fungerer den.</span></li>
+        </ol>
+      </section>
+    </section>
+
+    <div class="notater">
+
+      <section class="kort">
+        <h2>Ny retning: flyt</h2>
+        <p>Forrige system hadde én fast sol og ingen mørke flater. Her er lyset i stedet noe
+           som <em style="font-style:normal; font-weight:600">beveger seg bak glasset</em> — båndene strømmer,
+           speiles i gulvet, og kortene plukker opp fargen fra det som ligger under dem.</p>
+        <p><em style="font-style:normal; font-weight:600">Bordet</em> er samme system i bredt
+           format: ett hovedpanel, svevende sidepaneler utenfor, og koblingslinjer med lysende
+           noder imellom. Linjene regnes ut fra hvor panelene faktisk havner, så de treffer selv
+           om innholdet endrer høyde.</p>
+        <p>Hjemskjermen og studieøkten er bygget i flyt. De sju andre skjermene står igjen på
+           det gamle systemet — <em style="font-style:normal; font-weight:600">Hjem · sol</em> nederst i
+           listen er den forrige hjemskjermen, så du kan se dem ved siden av hverandre.</p>
+        <p>Orben er tegnet i SVG, ikke hentet fra et bilde. Derfor skalerer den, bytter farge med
+           temaet, og kan reagere på hva som skjer: den puster rolig før du starter, raskere mens
+           økten går, halvlukker øynene på pause og blusser opp når tiden er ute.</p>
+        <div class="materialer">
+          <div class="material"><div class="prove" style="background:linear-gradient(168deg,#E4EAFA,#E9E3F6 52%,#F3F0FA)"></div>
+            <div><b>lys</b><p>Dagslys. Mørkt blekk, trygt å lese lenge i.</p></div></div>
+          <div class="material"><div class="prove" style="background:linear-gradient(168deg,#0D1326,#151C38 52%,#090D1C); border-color:rgba(176,196,255,.3)"></div>
+            <div><b>mørk</b><p>Natt. Båndene lyser, alt annet trekker seg tilbake.</p></div></div>
+          <div class="material"><div class="prove" style="background:linear-gradient(168deg,#66729F,#74689E 52%,#4F7694)"></div>
+            <div><b>glød</b><p>Det lysende glasset. Hvit tekst, mest stemning.</p></div></div>
+        </div>
+        <p style="font-size:13.5px">Glød er mørkere enn referansebildet. Med den lyse pastellgrunnen
+           lå hvit tekst på rundt 2,5:1 — nå ligger den på 4,7:1. Vil du ha den blekere, må teksten
+           bli mørk eller flytte inn på glass.</p>
+      </section>
+
+      <section class="kort">
+        <h2>Lyset i dagens system</h2>
+        <p>Én sol, øverst til høyre, 203°. Samme vinkel i hver eneste gradient i systemet.
+           Endrer du den, endrer du den overalt.</p>
+        <svg class="lysdiagram" viewBox="0 0 320 150" role="img" aria-label="Diagram: sol øverst til høyre, glassflate på midten, varm kaustikk nede til venstre">
+          <defs>
+            <linearGradient id="glassflate" x1="1" y1="0" x2="0" y2="1">
+              <stop offset="0"  stop-color="#FFF4DE"/>
+              <stop offset=".5" stop-color="#FFFFFF"/>
+              <stop offset="1"  stop-color="#CCD7F7"/>
+            </linearGradient>
+            <radialGradient id="kaustikk">
+              <stop offset="0"   stop-color="#FFD68A" stop-opacity=".95"/>
+              <stop offset=".55" stop-color="#F3C6C0" stop-opacity=".55"/>
+              <stop offset="1"   stop-color="#C6D4FA" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- sol -->
+          <circle cx="276" cy="27" r="13" fill="#FFCB78"/>
+          <circle cx="276" cy="27" r="22" fill="#FFCB78" opacity=".28"/>
+          <!-- stråler mot glasset -->
+          <g stroke="#E8A33C" stroke-width="1.1" stroke-linecap="round" opacity=".75">
+            <path d="M262 40 L196 70"/>
+            <path d="M270 46 L204 76"/>
+            <path d="M277 52 L212 82"/>
+          </g>
+          <!-- glassflate -->
+          <rect x="108" y="56" width="112" height="42" rx="13" fill="url(#glassflate)" stroke="#FFFFFF"/>
+          <!-- prismekant på solsiden -->
+          <path d="M126 57 H212" stroke="#E8A33C" stroke-width="1.6" stroke-linecap="round"/>
+          <!-- kaustikk -->
+          <ellipse cx="128" cy="118" rx="62" ry="15" fill="url(#kaustikk)"/>
+          <!-- etiketter -->
+          <text x="248" y="68" font-family="JetBrains Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="currentColor">SOL 203°</text>
+          <text x="22" y="140" font-family="JetBrains Mono, monospace" font-size="8.5" letter-spacing="1.4" fill="currentColor">KAUSTIKK</text>
+          <path d="M66 132 L108 120" stroke="currentColor" stroke-width=".8" opacity=".6"/>
+        </svg>
+      </section>
+
+      <section class="kort">
+        <h2>Paletten · dagens system</h2>
+        <p>Kalde pastellflater, varmt lys. Gullet er aldri fyll — det er bare lyset som treffer.</p>
+        <div class="palett">
+          <div class="swatch"><div class="flate" style="background:#ABC0F6"></div><span>Periwinkle</span><code>#ABC0F6</code></div>
+          <div class="swatch"><div class="flate" style="background:#C7D6F7"></div><span>Dis</span><code>#C7D6F7</code></div>
+          <div class="swatch"><div class="flate" style="background:#D5D9F2"></div><span>Lilla dis</span><code>#D5D9F2</code></div>
+          <div class="swatch"><div class="flate" style="background:#E4E2F8"></div><span>Syrin</span><code>#E4E2F8</code></div>
+          <div class="swatch"><div class="flate" style="background:#E1EDF6"></div><span>Is</span><code>#E1EDF6</code></div>
+          <div class="swatch"><div class="flate" style="background:#D6F0EA"></div><span>Mint</span><code>#D6F0EA</code></div>
+          <div class="swatch"><div class="flate" style="background:#F8DCE6"></div><span>Rosa</span><code>#F8DCE6</code></div>
+          <div class="swatch"><div class="flate" style="background:#FFE2AA"></div><span>Solkant</span><code>#FFE2AA</code></div>
+          <div class="swatch"><div class="flate" style="background:#44489C"></div><span>Aksent</span><code>#44489C</code></div>
+          <div class="swatch"><div class="flate" style="background:#191D2B"></div><span>Blekk</span><code>#191D2B</code></div>
+        </div>
+      </section>
+
+      <section class="kort">
+        <h2>Tre tettheter glass</h2>
+        <p>Jo mer tekst, jo tettere glass. Rammeverket får slippe bakgrunnen gjennom; flater du
+           skal lese eller skrive i gjør ikke det.</p>
+        <div class="materialer">
+          <div class="material">
+            <div class="prove"></div>
+            <div><b>panel</b><p>Rammeverk — kort, menyer, knapper. Slipper bakgrunnen gjennom.</p></div>
+          </div>
+          <div class="material">
+            <div class="prove prove--lese"></div>
+            <div><b>panel--lese</b><p>Innhold — spørsmål, fasit, kode. Nesten tett, trygt å lese i.</p></div>
+          </div>
+          <div class="material">
+            <div class="prove prove--hinne"></div>
+            <div><b>panel--hinne</b><p>Antydning — «du skrev», sitater, bisetninger.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="kort">
+        <h2>Typografi</h2>
+        <div class="typerad"><span class="navn">Space Grotesk</span><span style="font-family:var(--vis); font-size:24px; font-weight:600; letter-spacing:-.03em">Hva sitter</span></div>
+        <div class="typerad"><span class="navn">Inter</span><span style="font-size:16px">Ciphertext kan endres uten at du merker det.</span></div>
+        <div class="typerad"><span class="navn">JetBrains Mono</span><span style="font-family:var(--mono); font-size:11px; letter-spacing:.18em">NIVÅ 02 · KRYPT_004</span></div>
+      </section>
+
+
+    </div>
+  </div>
+
+  <footer>
+    Statiske skjermer — ingen logikk ennå. Alt visuelt bor i <code style="font-family:var(--mono)">styles.css</code>;
+    sidene inneholder bare struktur. Nattmodus er med vilje ikke laget: designet er lyst, og en mørk variant er en egen øvelse.
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var rute   = document.getElementById('rute');
+  var navn   = document.getElementById('navn');
+  var fil    = document.getElementById('fil');
+  var ramme  = document.getElementById('ramme');
+  var ytre   = document.getElementById('rammeYtre');
+  var knapper = Array.prototype.slice.call(document.querySelectorAll('#skjermvelger button'));
+
+  var temarad   = document.getElementById('temarad');
+  var temaknapper = Array.prototype.slice.call(document.querySelectorAll('#temavelger button'));
+  var tema      = 'glo';
+  var stotter   = true;
+
+  function settTema(t) {
+    tema = t;
+    if (!stotter) return;
+    try {
+      var d = rute.contentDocument;
+      var s = d && d.getElementById('skjerm');
+      if (s) s.dataset.tema = t;
+    } catch (e) { /* ulik opprinnelse — da tar meldingen under jobben */ }
+    try { rute.contentWindow.postMessage({ tema: t }, '*'); } catch (e) {}
+  }
+
+  temaknapper.forEach(function (b) {
+    b.addEventListener('click', function () {
+      temaknapper.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+      settTema(b.dataset.tema);
+    });
+  });
+
+  rute.addEventListener('load', function () { settTema(tema); });
+
+  knapper.forEach(function (b) {
+    b.addEventListener('click', function () {
+      knapper.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+      stotter = b.dataset.temaStotte === '1';
+      temarad.hidden = !stotter;
+      settFormat(parseInt(b.dataset.bredde || 390, 10), parseInt(b.dataset.hoyde || 844, 10));
+      rute.src = b.dataset.fil;
+      rute.title = 'gong-bu, skjermen ' + b.textContent.trim();
+      navn.textContent = b.dataset.navn;
+      fil.textContent = b.dataset.fil.replace('app/','');
+    });
+  });
+
+  // Rammen tar formatet til skjermen som vises, og skaleres ned
+  // til spalten den står i.
+  var benk = document.querySelector('.benk');
+  var ruteFlate = ramme.querySelector('iframe');
+  var formB = 390, formH = 844;
+
+  function settFormat(b, h) {
+    formB = b; formH = h;
+    var bred = b > 700;
+    benk.classList.toggle('benk--bred', bred);
+    ramme.style.width  = b + 'px';
+    ramme.style.height = h + 'px';
+    ramme.style.padding = bred ? '6px' : '7px';
+    ramme.style.borderRadius = bred ? '22px' : '44px';
+    ruteFlate.style.width  = (b - (bred ? 12 : 14)) + 'px';
+    ruteFlate.style.height = (h - (bred ? 12 : 14)) + 'px';
+    ruteFlate.style.borderRadius = bred ? '16px' : '37px';
+    skaler();
+  }
+
+  function skaler() {
+    var s = Math.min(1, ytre.clientWidth / formB);
+    ramme.style.transform = 'scale(' + s + ')';
+    ytre.style.height = (formH * s) + 'px';
+  }
+  settFormat(390, 844);
+  window.addEventListener('resize', skaler);
+})();
+</script>

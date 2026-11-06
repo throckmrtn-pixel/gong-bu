@@ -1,183 +1,242 @@
 /* ============================================================
    gong-bu · flyt
-   Ny retning: glasskort som flyter over strømmende lys.
+   Designsystemet. Alt visuelt bor her.
 
-   Forrige system («sollys gjennom glass») hadde én fast sol og
-   ingen mørke flater. Her er lyset i stedet noe som BEVEGER seg
-   bak glasset — båndene strømmer, og flatene plukker opp fargen
-   fra det som ligger under dem.
+   Uttrykket: frostet glass som flyter i myk luft. Alt er lys og
+   volum — ingenting er strek.
 
-   Tre temaer, byttes med data-tema på .skjerm:
-     lys   — dagslys. Mørkt blekk, trygt å lese lenge i.
-     mork  — natt. Dype blåtoner, båndene lyser.
-     glo   — det lysende glasset. Hvit tekst, mest stemning.
+   Det er den ene regelen hele systemet henger på. Forrige utgave
+   hadde strømmende bånd, koordinatnett, målerail og ledestreker,
+   og alt sammen leste som striper lagt oppå hverandre. Her er
+   lyset gjort om til uskarpe flekker, og flatene bæres av en myk
+   hvit hårkant i stedet for av linjer.
 
-   Dette stilarket er selvstendig. styles.css rører det ikke.
+   Fire ting bærer uttrykket:
+
+     1  Myk luft.   Scenen er uskarpe lysflekker, en kulekant, et
+                     par bobler og dis langs bunnen. Null linjer.
+     2  Runde kort. Radier 20/24/14. Nok til å lese som frostet
+                     plate, ikke nok til å lese som pute.
+     3  Hvit kant.  Hver flate har en hårtynn, lys kant og en vid,
+                     nesten usynlig skygge. Kanten gjør jobben.
+     4  Lett type.  Overskrifter på vekt 200–300. Små sperrede
+                     versaler til merkelapper. Mono bare på kode.
+
+   Tre temaer, byttes med data-tema på .skjerm. Gamle og nye navn
+   peker på det samme, så eldre markup ikke brekker:
+
+     lys  / klar   — nesten hvitt. Dagslys, lange økter.
+     glo  / staal  — dempet blått. Lys tekst.
+     mork / natt   — natt.
    ============================================================ */
 
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500;700&display=swap");
+/* Fontene hentes med <link> i hver <head>, ikke med @import her.
+   En @import blir først oppdaget etter at dette arket er lastet ned,
+   og blokkerer alt som kommer etter — også sideovergangene, som har
+   et tidsvindu å rekke.
+   ============================================================ */
 
 /* ============================================================
-   TOKENS — felles form og rytme
+   TOKENS — form og rytme
    ============================================================ */
 
 :root {
-  --r-kort:  26px;
-  --r-stor:  32px;
-  --r-knapp: 20px;
+  --r-kort:  20px;
+  --r-stor:  24px;
+  --r-knapp: 14px;
+  --r-liten: 10px;
   --r-pille: 999px;
 
-  --mykt: cubic-bezier(.22,.61,.36,1);
+  /* --- AVSTANDENE -------------------------------------------
+     Fire tall styrer all luft i appen. Ikke legg inn en femte,
+     og ikke overstyr dem med style-attributter i markupen — det
+     var det som gjorde at mellomrommene ikke var like før.
+
+       --kant     margen mot skjermkanten. Alt som har en venstre-
+                  eller høyrekant bruker denne, så alt flukter.
+       --takt     avstanden mellom to blokker under hverandre.
+       --glipe    avstanden mellom to ting ved siden av hverandre.
+       --kortluft lufta inni et kort.                            */
+  --kant:     22px;
+  --takt:     16px;
+  --glipe:    12px;
+  --kortluft: 18px;
+
+  --mykt:  cubic-bezier(.22,.61,.36,1);
+  --skarp: cubic-bezier(.16,.84,.26,1);
   --fjaer: cubic-bezier(.34,1.3,.5,1);
 }
 
 /* ============================================================
    TEMAENE
-   Hvert tema setter de samme tolv variablene. Ingenting annet
-   i fila kjenner til fargene.
+   Hvert tema setter de samme variablene. Ingenting annet i fila
+   kjenner til fargene.
    ============================================================ */
 
-/* --- LYS · dagslys ---------------------------------------- */
-.skjerm[data-tema="lys"] {
-  --bakgrunn:      url("bg-lys.webp");
-  --bakgrunn-bred: url("bg-lys-bred.webp");
-  --veil: rgba(255,255,255,.30);
-  --grunn-1: #E4EAFA;
-  --grunn-2: #E9E3F6;
-  --grunn-3: #F3F0FA;
+/* --- KLAR · dagslys --------------------------------------- */
+.skjerm[data-tema="lys"],
+.skjerm[data-tema="klar"] {
+  --grunn-1: #DFEAF6;
+  --grunn-2: #C3D8EF;
+  --grunn-3: #B6CFEA;
 
-  --band-1: #A9BFF5;   /* kaldt   */
-  --band-2: #F0CFE4;   /* varmt   */
-  --band-3: #BCE6E8;   /* mint    */
-  --band-kjerne: #FFFFFF;
-  --frynse-1: #B6D2FF;   /* brytning over kanten  */
-  --frynse-2: #F6CBE2;   /* brytning under kanten */
-  --band-styrke: .80;
-  --band-glod: .44;
+  /* atmosfæren */
+  --dis-1: rgba(255,255,255,.72);
+  --dis-2: rgba(132,172,218,.66);
+  --dis-3: rgba(186,210,238,.82);
+  --bue:   rgba(255,255,255,.85);
+  --boblerim: rgba(255,255,255,.78);
+  --dugg:  rgba(255,255,255,.75);
 
-  --blekk:   #1B2135;
-  --blekk-2: #414A68;
-  --blekk-3: #5A6283;
-  --aksent:  #4950B4;
+  --blekk:   #101722;
+  --blekk-2: #3A4659;
+  --blekk-3: #4C5668;
+  --aksent:  #2B4FC4;
+  --puls:    #085569;
 
-  --glass:      rgba(255,255,255,.80);
-  --glass-tett: rgba(255,255,255,.93);
-  --glass-tynn: rgba(255,255,255,.52);
+  --glass:      rgba(255,255,255,.52);
+  --glass-tett: rgba(255,255,255,.84);
+  --glass-tynn: rgba(255,255,255,.3);
   --glass-kant: rgba(255,255,255,.95);
-  --glass-topp: rgba(255,255,255,1);
-  --kant-linje: rgba(90,102,160,.17);
-  --kast: 0 1px 2px -1px rgba(52,64,120,.18), 0 20px 36px -22px rgba(52,64,120,.48);
+  --glass-topp: rgba(255,255,255,.95);
+  --kant-linje: rgba(255,255,255,.75);
+  --kant-sterk: rgba(255,255,255,1);
+  --kast: 0 2px 4px -2px rgba(28,50,92,.10), 0 28px 54px -30px rgba(28,50,92,.36);
 
   --skrim: rgba(255,255,255,0);
+  --skrim-bunn: rgba(176,198,226,.6);
   --orb-kjerne: #FFFFFF;
-  --orb-fyll:   #9FB6F2;
-  --orb-rim:    #5C6CC4;
+  --orb-fyll:   #C9D9EC;
+  --orb-rim:    #8599B5;
   --orb-oye:    #FFFFFF;
-  --orb-glod:   #A9BFF5;
+  --orb-glod:   #E2EDF8;
+  --urviser: var(--blekk);
+  --glod: rgba(26,54,102,.17);
+  --fag-tone: rgba(74,132,224,.55);
+  --foto: url("bakgrunn-dag.webp");
+  --foto-styrke: .88;
+  --foto-mykt: 4px;
+  --vask: 56%;
+  --strek: #1D2838;
+  --strek-svak: rgba(29,40,56,.34);
+  --band-kjerne: #1D2838;
 }
 
-/* --- MØRK · natt ------------------------------------------ */
-.skjerm[data-tema="mork"] {
-  --tekstskygge: 0 1px 16px rgba(0,0,0,.5);
-  --bakgrunn:      url("bg-mork.webp");
-  --bakgrunn-bred: url("bg-mork-bred.webp");
-  --veil: rgba(7,11,24,.34);
-  --grunn-1: #0D1326;
-  --grunn-2: #151C38;
-  --grunn-3: #090D1C;
+/* --- NATT -------------------------------------------------- */
+.skjerm[data-tema="mork"],
+.skjerm[data-tema="natt"] {
+  --tekstskygge: 0 1px 16px rgba(0,0,0,.6);
+  --grunn-1: #0C1420;
+  --grunn-2: #141E2E;
+  --grunn-3: #080D16;
 
-  --band-1: #5FD8F0;
-  --band-2: #D98FF0;
-  --band-3: #8FA0FF;
-  --band-kjerne: #FFFFFF;
-  --frynse-1: #6FE6FF;   /* brytning over kanten  */
-  --frynse-2: #DE86F3;   /* brytning under kanten */
-  --band-styrke: .92;
-  --band-glod: .72;
+  --dis-1: rgba(146,192,232,.38);
+  --dis-2: rgba(44,86,136,.44);
+  --dis-3: rgba(150,185,220,.20);
+  --bue:   rgba(190,220,245,.30);
+  --boblerim: rgba(205,230,250,.36);
+  --dugg:  rgba(150,195,230,.22);
 
-  --blekk:   #EDF1FF;
-  --blekk-2: #BAC4E6;
-  --blekk-3: #96A1C8;
-  --aksent:  #A9C0FF;
+  --blekk:   #EAF1FA;
+  --blekk-2: #B2BECF;
+  --blekk-3: #9AA5B8;
+  --aksent:  #9AC6E0;
+  --puls:    #5FD2E8;
 
-  --glass:      rgba(12,18,40,.66);
-  --glass-tett: rgba(9,14,32,.84);
-  --glass-tynn: rgba(12,18,40,.46);
-  --glass-kant: rgba(176,196,255,.26);
-  --glass-topp: rgba(214,228,255,.42);
-  --kant-linje: rgba(176,196,255,.22);
-  --kast: 0 1px 2px -1px rgba(0,0,0,.5), 0 22px 44px -24px rgba(0,0,0,.7);
+  --glass:      rgba(18,27,42,.52);
+  --glass-tett: rgba(12,19,31,.78);
+  --glass-tynn: rgba(18,27,42,.3);
+  --glass-kant: rgba(185,212,240,.3);
+  --glass-topp: rgba(200,224,248,.26);
+  --kant-linje: rgba(185,212,240,.19);
+  --kant-sterk: rgba(185,212,240,.38);
+  --kast: 0 2px 4px -2px rgba(0,0,0,.5), 0 28px 56px -30px rgba(0,0,0,.82);
 
-  --skrim: rgba(0,0,0,0);
+  --skrim: rgba(6,10,18,.4);
+  --skrim-bunn: rgba(6,10,18,.66);
   --orb-kjerne: #FFFFFF;
-  --orb-fyll:   #7FA8F0;
-  --orb-rim:    #2B3B72;
-  --orb-oye:    #DFF4FF;
-  --orb-glod:   #6FC8EC;
+  --orb-fyll:   #87A6CC;
+  --orb-rim:    #27354A;
+  --orb-oye:    #E2F1FB;
+  --orb-glod:   #8CBFDA;
+  --urviser: #FFFFFF;
+  --glod: rgba(158,206,240,.6);
+  --fag-tone: rgba(142,186,236,.75);
+  --foto: url("bakgrunn-natt.webp");
+  --foto-styrke: .8;
+  --foto-mykt: 3px;
+  --vask: 58%;
+  --strek: #FFFFFF;
+  --strek-svak: rgba(255,255,255,.4);
+  --band-kjerne: #FFFFFF;
 }
 
-/* --- GLØD · lysende glass ---------------------------------
-   Hvit tekst krever at kortene legger en kjølig slør over
-   bakgrunnen. Uten sløret er kontrasten rundt 2.5:1 og teksten
-   forsvinner i de lyse båndene.                               */
-.skjerm[data-tema="glo"] {
-  --tekstskygge: 0 1px 14px rgba(16,24,58,.55);
-  /* Glød er det lyse bildet sett i skumring: samme foto, tettere slør. */
-  --bakgrunn:      url("bg-lys.webp");
-  --bakgrunn-bred: url("bg-lys-bred.webp");
-  --veil: rgba(40,46,102,.50);
-  --grunn-1: #66729F;
-  --grunn-2: #74689E;
-  --grunn-3: #4F7694;
+/* --- STÅL · dempet blått -----------------------------------
+   Lys tekst krever at grunnen er mørk nok. Blekere enn dette og
+   teksten må enten bli mørk eller flytte inn på tett glass.    */
+.skjerm[data-tema="glo"],
+.skjerm[data-tema="staal"] {
+  --tekstskygge: 0 1px 14px rgba(10,22,40,.55);
+  --grunn-1: #46617F;
+  --grunn-2: #3C5473;
+  --grunn-3: #2C405C;
 
-  --band-1: #DCE8FF;
-  --band-2: #F6DCF2;
-  --band-3: #CFF2F6;
-  --band-kjerne: #FFFFFF;
-  --frynse-1: #CDE6FF;   /* brytning over kanten  */
-  --frynse-2: #F7D4EC;   /* brytning under kanten */
-  --band-styrke: .88;
-  --band-glod: .55;
+  --dis-1: rgba(255,255,255,.66);
+  --dis-2: rgba(74,112,160,.70);
+  --dis-3: rgba(188,214,240,.40);
+  --bue:   rgba(255,255,255,.6);
+  --boblerim: rgba(255,255,255,.52);
+  --dugg:  rgba(255,255,255,.4);
 
   --blekk:   #FFFFFF;
-  --blekk-2: #E4EAFF;
-  --blekk-3: #CBD6F4;
+  --blekk-2: #E6EEF7;
+  --blekk-3: #DCE6F2;
   --aksent:  #FFFFFF;
+  --puls:    #B3EDF8;
 
-  --glass:      rgba(34,46,95,.46);
-  --glass-tett: rgba(28,38,82,.60);
-  --glass-tynn: rgba(34,46,95,.26);
-  --glass-kant: rgba(226,236,255,.40);
-  --glass-topp: rgba(255,255,255,.62);
-  --kant-linje: rgba(226,236,255,.36);
-  --kast: 0 1px 2px -1px rgba(24,32,70,.34), 0 22px 42px -24px rgba(24,32,70,.62);
+  --glass:      rgba(26,42,66,.3);
+  --glass-tett: rgba(20,34,54,.5);
+  --glass-tynn: rgba(26,42,66,.16);
+  --glass-kant: rgba(255,255,255,.42);
+  --glass-topp: rgba(255,255,255,.5);
+  --kant-linje: rgba(255,255,255,.34);
+  --kant-sterk: rgba(255,255,255,.6);
+  --kast: 0 2px 4px -2px rgba(12,24,44,.26), 0 28px 54px -30px rgba(12,24,44,.55);
 
-  /* slør øverst, slik at tittelteksten har noe å stå på */
-  --skrim: rgba(18,26,62,.42);
+  --skrim: rgba(16,30,52,.3);
+  --skrim-bunn: rgba(16,30,52,.6);
   --orb-kjerne: #FFFFFF;
-  --orb-fyll:   #BBD2FA;
-  --orb-rim:    #4A5CA8;
+  --orb-fyll:   #CFDFEE;
+  --orb-rim:    #536C8C;
   --orb-oye:    #FFFFFF;
-  --orb-glod:   #DCE8FF;
+  --orb-glod:   #E6F1FA;
+  --urviser: #FFFFFF;
+  --glod: rgba(255,255,255,.62);
+  --fag-tone: rgba(188,218,248,.75);
+  --foto: url("bakgrunn-natt.webp");
+  --foto-styrke: .72;
+  --foto-mykt: 5px;
+  --vask: 62%;
+  --strek: #FFFFFF;
+  --strek-svak: rgba(255,255,255,.42);
+  --band-kjerne: #FFFFFF;
 }
 
 * { box-sizing: border-box; }
-
-/* [hidden] må slå gjennom display:flex på komponentene. */
 [hidden] { display: none !important; }
 
 body {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
-  background: #0B0F1C;
+  background: #080D16;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
 }
 
-:focus-visible { outline: 2px solid var(--aksent); outline-offset: 3px; border-radius: 10px; }
+:focus-visible { outline: 2px solid var(--aksent); outline-offset: 3px; border-radius: 8px; }
 
 /* ============================================================
-   SKJERMEN OG SCENEN
+   SKJERMEN
    ============================================================ */
 
 .skjerm {
@@ -192,75 +251,154 @@ body {
   overflow: hidden;
   isolation: isolate;
   color: var(--blekk);
-  background: linear-gradient(168deg, var(--grunn-1) 0%, var(--grunn-2) 52%, var(--grunn-3) 100%);
+  background: linear-gradient(166deg, var(--grunn-1) 0%, var(--grunn-2) 56%, var(--grunn-3) 100%);
 }
 
-/* Lagene i scenen ligger bakerst; alt innhold legger seg over. */
+/* ============================================================
+   SCENEN — myk luft
+   Alt her er uskarpt eller har mykt rim. Skal du legge inn noe
+   med skarp kant, hører det ikke hjemme i dette laget.
+   ============================================================ */
+
 .scene { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .skjerm > *:not(.scene) { position: relative; z-index: 1; }
+/* Unntak for overlegg. Regelen over gir alle barn av .skjerm
+   position:relative, og uten dette blir et overlegg et flex-element
+   som presser resten av skjermen sammen i stedet for å legge seg
+   over den. */
+.skjerm > .arkbunn,
+.skjerm > .ark { position: absolute; }
 
-/* Bakgrunnsbildet. Driver umerkelig, så flaten aldri står helt stille. */
+/* Motivvalg. data-bak på .skjerm bytter bildet; alt annet i
+   fotolaget — styrke, uskarphet, vask — er felles.
+   Rekkefølgen her betyr noe: den mørke står først og gjelder alle
+   temaer, så overstyrer den lyse de to lyse temaene. */
+.skjerm[data-bak="blomst"] .scene .foto { background-image: url("blomst-natt.webp"); }
+.skjerm[data-bak="blomst"][data-tema="lys"]  .scene .foto,
+.skjerm[data-bak="blomst"][data-tema="klar"] .scene .foto { background-image: url("blomst-dag.webp"); }
+
+/* 0 · FOTOET — bakgrunnsbildet.
+   Skalert litt opp og flyttet så det aldri viser en kant, og mykt i
+   de lyse temaene der kontrasten mot teksten er trangest. */
 .scene .foto {
   position: absolute;
   inset: -3%;
-  background-image: var(--bakgrunn);
+  background-image: var(--foto);
   background-size: cover;
-  background-position: center;
-  animation: sig 46s ease-in-out infinite alternate;
-}
-.scene[data-form="bred"] .foto { background-image: var(--bakgrunn-bred); }
-
-@keyframes sig {
-  from { transform: scale(1)    translate(0, 0) }
-  to   { transform: scale(1.06) translate(-1.1%, .9%) }
+  background-position: 56% 38%;
+  opacity: var(--foto-styrke, 0);
+  filter: blur(var(--foto-mykt, 0)) saturate(.92);
 }
 
-/* Sløret som gir tekst øverst noe å stå på. Bare synlig i glød. */
-/* To lag i ett: en flat demping over hele bildet som gjør teksten
-   lesbar, og en gradient på toppen der overskriftene står. */
+/* 0b · VASKEN — temaets egen grunnfarge lagt over fotoet.
+   Bildet har harde hvite lysstreker i seg, og uten denne ville tekst
+   som havnet oppå en av dem blitt uleselig. Vasken trekker hele flaten
+   mot grunnfargen uten å skjule motivet: den er grunnen til at det går
+   an å bruke et så sterkt bilde bak et grensesnitt i det hele tatt. */
+.scene .vask {
+  position: absolute; inset: 0;
+  background: linear-gradient(166deg,
+    color-mix(in srgb, var(--grunn-1) var(--vask, 50%), transparent) 0%,
+    color-mix(in srgb, var(--grunn-2) var(--vask, 50%), transparent) 56%,
+    color-mix(in srgb, var(--grunn-3) var(--vask, 50%), transparent) 100%);
+}
+
+/* 1 · DISEN — tre store lysflekker.
+   Blur på 64 px gjør at de leser som lys i rommet og ikke som
+   former. Under cirka 40 px begynner kanten å avtegne seg. */
+.scene .dis {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  opacity: .62;
+  will-change: transform;
+}
+.scene .dis--1 { background: radial-gradient(circle, var(--dis-1), transparent 68%); }
+.scene .dis--2 { background: radial-gradient(circle, var(--dis-2), transparent 66%); }
+.scene .dis--3 { background: radial-gradient(circle, var(--dis-3), transparent 70%); }
+
+/* 2 · BUEN — en diger kulekant oppe til høyre, som i referansen.
+   Det er en ring med tykk kant og blur, ikke en fylt sirkel:
+   fylt blir det en sol, som ring blir det kanten av noe stort
+   som så vidt er innenfor bildet. */
+.scene .bue {
+  position: absolute;
+  border-radius: 50%;
+  border: 2.5% solid var(--bue);
+  filter: blur(18px);
+  opacity: 1;
+}
+
+/* 3 · BOBLENE — gjennomsiktige kuler med lysrim. Den eneste
+   tingen i scenen som har kontur, og den er myk og sitter bare
+   på én side. */
+.scene .boble {
+  position: absolute;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, var(--boblerim), transparent 44%),
+    radial-gradient(circle at 68% 76%, var(--boblerim), transparent 34%);
+  box-shadow: inset 0 0 30px -10px var(--boblerim);
+  opacity: .3;
+  will-change: transform;
+}
+
+/* 4 · DUGGEN — lysdisen langs nedre kant, der referansebildene
+   har vann. */
+.scene .dugg {
+  position: absolute;
+  left: -14%; right: -14%; bottom: -10%;
+  height: 44%;
+  background: radial-gradient(62% 100% at 50% 100%, var(--dugg), transparent 70%);
+  filter: blur(34px);
+}
+
+/* 5 · SKRIMMET — slør som gir tekst noe å stå på, i topp og bunn.
+   Bunnen er den viktigste: det er der sokkelen og menyen bor, og den
+   eneste delen av skjermen der tekst kan havne rett på fotoet uten
+   glass bak seg. */
 .scene .skrim {
   position: absolute; inset: 0;
   background:
     linear-gradient(180deg, var(--skrim) 0%, rgba(0,0,0,0) 56%),
-    var(--veil);
+    linear-gradient(0deg, var(--skrim-bunn, transparent) 0%, rgba(0,0,0,0) 30%);
 }
 
-/* Kornet. Uten dette ser gradientene digitale ut. */
+/* 6 · KORNET. Uten dette ser gradientene digitale ut. */
 .scene .korn {
   position: absolute; inset: 0;
   mix-blend-mode: overlay;
-  opacity: .16;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .11;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Båndene driver sakte. Tre grupper i ulik takt, så mønsteret
-   aldri gjentar seg synlig. */
-.band-a { animation: drift-a 23s ease-in-out infinite alternate; }
-.band-b { animation: drift-b 31s ease-in-out infinite alternate; }
-.band-c { animation: drift-c 19s ease-in-out infinite alternate; }
+/* Driften. Ingenting under førti sekunder — går det fortere
+   leses det som en animasjon i stedet for som luft. */
+.driv-a { animation: driv-a 44s ease-in-out infinite alternate; }
+.driv-b { animation: driv-b 58s ease-in-out infinite alternate; }
+.driv-c { animation: driv-c 50s ease-in-out infinite alternate; }
 
-@keyframes drift-a { from { transform: translate(0,0)        } to { transform: translate(-16px, 10px) } }
-@keyframes drift-b { from { transform: translate(0,0)        } to { transform: translate(14px, -12px) } }
-@keyframes drift-c { from { transform: translate(0,0) scale(1) } to { transform: translate(-9px, 7px) scale(1.03) } }
-
-/* Lyspunktet som løper langs et bånd. */
-.gnist { animation: loep 11s linear infinite; }
-@keyframes loep { from { stroke-dashoffset: 900 } to { stroke-dashoffset: 0 } }
+@keyframes driv-a { from { transform: translate(0,0) scale(1) } to { transform: translate(3%, -2.5%) scale(1.06) } }
+@keyframes driv-b { from { transform: translate(0,0) scale(1) } to { transform: translate(-3.5%, 2%) scale(1.04) } }
+@keyframes driv-c { from { transform: translate(0,0) scale(1) } to { transform: translate(2%, 3%) scale(1.07) } }
 
 .fyll { flex-grow: 1; min-height: 0; }
 
 /* ============================================================
    GLASS
-   Tre tettheter, som før. Jo mer tekst, jo tettere.
+   Fire tettheter. Jo mer tekst, jo tettere.
+   Flatene bæres av en hårtynn lys kant og en vid, nesten usynlig
+   skygge. Det er kanten som gjør jobben — skru den av, og kortet
+   smelter inn i bakgrunnen.
    ============================================================ */
 
 .kort {
   position: relative;
   border-radius: var(--r-kort);
-  padding: 18px;
+  padding: var(--kortluft);
   background: var(--glass);
-  -webkit-backdrop-filter: blur(26px) saturate(1.5);
-  backdrop-filter: blur(26px) saturate(1.5);
+  -webkit-backdrop-filter: blur(32px) saturate(1.1);
+  backdrop-filter: blur(32px) saturate(1.1);
   border: 1px solid var(--kant-linje);
   box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
 }
@@ -268,20 +406,29 @@ body {
 .kort--tynn {
   background: var(--glass-tynn);
   box-shadow: inset 0 1px 0 var(--glass-topp);
-  border-color: var(--kant-linje);
+}
+/* Bare kant, ingen flate. Der kortet skal telle som et felt og
+   ikke som en plate. */
+.kort--strek {
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
 }
 
-/* Lysstripa langs øvre kant — glassets fas. */
+/* Lysfallet langs øvre fas. Hvitt som dør ut mot sidene — ikke
+   en strek tvers over, som ville blitt nok en stripe. */
 .kort::after,
 .pille::after,
-.tab::after {
+.sveve::after,
+.hovedpanel::after,
+.flisknapp::after {
   content: "";
   position: absolute;
-  left: 14%; right: 14%; top: 0;
+  left: 20%; right: 20%; top: 0;
   height: 1px;
   pointer-events: none;
-  background: linear-gradient(90deg,
-    rgba(255,255,255,0), var(--glass-topp) 50%, rgba(255,255,255,0));
+  background: linear-gradient(90deg, transparent, var(--glass-topp) 50%, transparent);
 }
 
 /* ============================================================
@@ -291,54 +438,47 @@ body {
    farge med temaet og reagere på tilstand.
 
    Tilstander settes med data-sinn på .orb:
-     rolig   — puster langsomt
-     jobber  — litt raskere, ringen løper
-     hviler  — dempet, øynene halvlukket
-     ferdig  — blusser opp
+     rolig · jobber · hviler · ferdig
    ============================================================ */
 
 .orb { position: relative; width: 100%; height: 100%; }
 .orb svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
-.orb .kule      { animation: puster 5.5s ease-in-out infinite; transform-origin: 120px 118px; }
-.orb .halo      { animation: pulser 5.5s ease-in-out infinite; transform-origin: 120px 118px; }
-.orb .ringlys   { animation: baneloep 9s linear infinite; }
-.orb .oye       { animation: blunk 7.5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
-.orb .speiling  { animation: skvulp 5.5s ease-in-out infinite; transform-origin: 120px 206px; }
-.orb .krus ellipse { animation: krusning 6s ease-out infinite; transform-origin: 120px 206px; }
-.orb .krus ellipse:nth-child(2) { animation-delay: -2s; }
-.orb .krus ellipse:nth-child(3) { animation-delay: -4s; }
+.orb .kule      { animation: puster 6.5s ease-in-out infinite; transform-origin: 120px 118px; }
+.orb .halo      { animation: pulser 6.5s ease-in-out infinite; transform-origin: 120px 118px; }
+.orb .ringlys   { animation: baneloep 11s linear infinite; }
+.orb .oye       { animation: blunk 8.5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+.orb .speiling  { animation: skvulp 6.5s ease-in-out infinite; transform-origin: 120px 206px; }
+.orb .krus ellipse { animation: krusning 7s ease-out infinite; transform-origin: 120px 206px; }
+.orb .krus ellipse:nth-child(2) { animation-delay: -2.3s; }
+.orb .krus ellipse:nth-child(3) { animation-delay: -4.6s; }
 
 @keyframes krusning {
   0%   { transform: scale(.72); opacity: 0 }
-  22%  { opacity: .7 }
+  22%  { opacity: .5 }
   100% { transform: scale(1.3); opacity: 0 }
 }
-
-@keyframes puster { 0%,100% { transform: scale(1) } 50% { transform: scale(1.022) } }
-@keyframes pulser { 0%,100% { opacity: .72; transform: scale(1) } 50% { opacity: 1; transform: scale(1.07) } }
+@keyframes puster { 0%,100% { transform: scale(1) } 50% { transform: scale(1.018) } }
+@keyframes pulser { 0%,100% { opacity: .55; transform: scale(1) } 50% { opacity: .85; transform: scale(1.06) } }
 @keyframes baneloep { from { stroke-dashoffset: 412 } to { stroke-dashoffset: 0 } }
-@keyframes skvulp { 0%,100% { transform: scaleX(1) scaleY(1); opacity: .5 } 50% { transform: scaleX(1.06) scaleY(.88); opacity: .68 } }
-@keyframes blunk {
-  0%, 92%, 100% { transform: scaleY(1) }
-  95%           { transform: scaleY(.08) }
-}
+@keyframes skvulp { 0%,100% { transform: scaleX(1) scaleY(1); opacity: .4 } 50% { transform: scaleX(1.05) scaleY(.9); opacity: .56 } }
+@keyframes blunk { 0%, 92%, 100% { transform: scaleY(1) } 95% { transform: scaleY(.08) } }
 
-.orb[data-sinn="jobber"] .kule    { animation-duration: 3.6s; }
-.orb[data-sinn="jobber"] .halo    { animation-duration: 3.6s; }
-.orb[data-sinn="jobber"] .ringlys { animation-duration: 5s; }
+.orb[data-sinn="jobber"] .kule    { animation-duration: 4.2s; }
+.orb[data-sinn="jobber"] .halo    { animation-duration: 4.2s; }
+.orb[data-sinn="jobber"] .ringlys { animation-duration: 6s; }
 
-.orb[data-sinn="hviler"] .kule    { animation-duration: 9s; }
-.orb[data-sinn="hviler"] .halo    { animation-duration: 9s; opacity: .5; }
-.orb[data-sinn="hviler"] .ringlys { animation-play-state: paused; opacity: .35; }
+.orb[data-sinn="hviler"] .kule    { animation-duration: 10s; }
+.orb[data-sinn="hviler"] .halo    { animation-duration: 10s; opacity: .4; }
+.orb[data-sinn="hviler"] .ringlys { animation-play-state: paused; opacity: .3; }
 .orb[data-sinn="hviler"] .oye     { animation: none; transform: scaleY(.3); }
 
-.orb[data-sinn="ferdig"] .halo    { animation: blussoppp 1.6s ease-out infinite; }
-.orb[data-sinn="ferdig"] .ringlys { animation-duration: 2.4s; }
+.orb[data-sinn="ferdig"] .halo    { animation: blussoppp 1.9s ease-out infinite; }
+.orb[data-sinn="ferdig"] .ringlys { animation-duration: 3s; }
 @keyframes blussoppp {
-  0%   { opacity: .7;  transform: scale(1) }
-  40%  { opacity: 1;   transform: scale(1.18) }
-  100% { opacity: .7;  transform: scale(1) }
+  0%   { opacity: .55; transform: scale(1) }
+  40%  { opacity: .9;  transform: scale(1.14) }
+  100% { opacity: .55; transform: scale(1) }
 }
 
 /* ============================================================
@@ -354,40 +494,224 @@ body {
   margin: 0;
   text-shadow: var(--tekstskygge, none);
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 300;
-  font-size: 54px;
+  font-weight: 200;
+  font-size: 52px;
   letter-spacing: -.04em;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   color: var(--blekk);
 }
-.tid-rad { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+.tid-rad { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 
 /* ============================================================
    TYPOGRAFI
+   Lette overskrifter, vanlig sans i innholdet, og små sperrede
+   versaler til merkelapper. Mono er reservert for kode — brukt på
+   løpende tekst legger den en teknisk maske over alt.
    ============================================================ */
 
 h1, h2, .tittel {
   margin: 0;
   font-family: "Space Grotesk", sans-serif;
-  letter-spacing: -.03em;
+  letter-spacing: -.025em;
   color: var(--blekk);
 }
-h1 { font-size: 34px; font-weight: 300; letter-spacing: -.045em; line-height: 1.04; text-shadow: var(--tekstskygge, none); }
-h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+h1 { font-size: 33px; font-weight: 200; letter-spacing: -.04em; line-height: 1.08; text-shadow: var(--tekstskygge, none); }
+h2 { font-size: 17px; font-weight: 500; letter-spacing: -.02em; }
 
-.brod  { margin: 0; font-size: 15px; line-height: 1.52; color: var(--blekk-2); }
-.hjelp { margin: 0; font-size: 14px; line-height: 1.5; color: var(--blekk-3); text-shadow: var(--tekstskygge, none); }
+.brod  { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--blekk-2); }
+/* Stablet brødtekst. Avstanden lå i style-attributter før; nå er
+   den en del av skalaen som alt annet. */
+.brod + .brod, .brod + .hjelp, .hjelp + .brod,
+.kodeblokk + .brod, .brod + .kodeblokk { margin-top: var(--glipe); }
+.hjelp { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--blekk-3); text-shadow: var(--tekstskygge, none); }
 
+/* Merkelappen: små sperrede versaler. Sperringen er det eneste
+   som skiller den fra brødtekst, og det holder. */
 .etikett {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
+  font-family: Inter, sans-serif;
+  font-size: 9.5px;
   font-weight: 500;
-  letter-spacing: .2em;
+  letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--blekk-3);
+  text-shadow: var(--tekstskygge, none);
 }
-.etikett--sterk { color: var(--blekk-2); font-weight: 700; }
+.etikett--sterk { color: var(--blekk-2); font-weight: 600; }
+
+/* Indekstelleren: 04 / 12. */
+.indeks {
+  font-family: Inter, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .1em;
+  color: var(--blekk-3);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  text-shadow: var(--tekstskygge, none);
+}
+.indeks b { color: var(--blekk); font-weight: 500; }
+
+/* Korttittelen. Vanlig sans i lesbar størrelse, med en valgfri
+   verdi til høyre. Ingen ledestrek — det var nok en stripe. */
+.mikro {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -.015em;
+  color: var(--blekk);
+}
+.mikro .nr { display: none; }                 /* nummereringen er ute */
+.mikro .navn  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mikro .leder { flex: 1; min-width: 6px; }    /* bare avstand nå, ingen strek */
+.mikro .verdi {
+  margin-left: auto; flex-shrink: 0;
+  font-family: Inter, sans-serif;
+  font-size: 11px; font-weight: 400; letter-spacing: .06em;
+  color: var(--blekk-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.korttittel {
+  display: flex; align-items: center; gap: 9px;
+  margin: 0 0 12px;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 500; font-size: 14px; letter-spacing: -.015em;
+  color: var(--blekk);
+}
+.korttittel svg { flex-shrink: 0; opacity: .65; }
+.korttittel .pil { margin-left: auto; opacity: .4; }
+
+/* Trappa: listen med sperrede versaler, som i referansen. Ingen
+   strek foran — vekt og farge skiller nivået du står i. */
+.trapp { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.trapp li {
+  font-family: Inter, sans-serif;
+  font-size: 9.5px; font-weight: 500; letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--blekk-3);
+  text-shadow: var(--tekstskygge, none);
+}
+.trapp li.naa { color: var(--blekk); font-weight: 600; }
+
+/* Stolpen: myk fremdriftsstripe med tallet ved siden av. */
+.stolperad { display: flex; align-items: center; gap: 12px; }
+.stolpe {
+  flex: 1; height: 5px; border-radius: 999px;
+  background: color-mix(in srgb, var(--blekk-3) 20%, transparent);
+  overflow: hidden;
+}
+.stolpe > i {
+  display: block; height: 100%; border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 10px -2px rgba(255,255,255,.7);
+}
+.skjerm[data-tema="lys"] .stolpe > i,
+.skjerm[data-tema="klar"] .stolpe > i { background: var(--blekk); box-shadow: none; opacity: .86; }
+.stolperad .tall {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 15px; font-weight: 400; letter-spacing: -.02em;
+  color: var(--blekk); flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Avlesningen: tall over, sperret navn under. Ingen rammer eller
+   skillelinjer — avstanden holder dem fra hverandre. */
+.avlesning { display: grid; gap: 14px; }
+.avlesning--3 { grid-template-columns: repeat(3, 1fr); }
+.avlesning--2 { grid-template-columns: repeat(2, 1fr); }
+.avlesning > div { min-width: 0; }
+.avlesning b {
+  display: block;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 300; font-size: 21px; letter-spacing: -.035em; line-height: 1.1;
+  color: var(--blekk);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.avlesning span {
+  display: block; margin-top: 4px;
+  font-family: Inter, sans-serif;
+  font-size: 8.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--blekk-3);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Pulsprikken. Markerer levende tilstand: synk, pågående økt. */
+.puls {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  background: var(--puls);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--puls) 15%, transparent);
+  animation: pulsar 3.6s ease-in-out infinite;
+}
+@keyframes pulsar {
+  0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--puls) 15%, transparent) }
+  50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--puls) 4%, transparent) }
+}
+
+/* Nivåmerket. */
+.nivaa {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 13px;
+  border-radius: var(--r-pille);
+  border: 1px solid var(--kant-linje);
+  background: var(--glass-tynn);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  font-family: Inter, sans-serif;
+  font-size: 9.5px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--blekk);
+  flex-shrink: 0;
+}
+.nivaa::before {
+  content: ""; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--puls);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--puls) 15%, transparent);
+}
+
+/* ============================================================
+   AVVIKLET
+   Målelaget fra forrige utgave. Klassene er beholdt som tomme
+   regler så gammel markup ikke lager hull, men de tegner
+   ingenting lenger: hver eneste av dem var en stripe.
+   ============================================================ */
+.rail, .hjorne, .hakk, .scene .nett, .scene .skanner, .koblinger { display: none !important; }
+.telemetri .strek { flex: 1; }
+.skjerm--rail .toppbar, .skjerm--rail .tab { margin-left: 16px; }
+.forskjov { margin-top: 0; }
+
+/* ============================================================
+   LYSSVEIP
+   Et smalt lysfelt som passerer over glasset med lange mellomrom.
+   Den ene bevegelsen som er igjen på selve flatene.
+   ============================================================ */
+
+.kort, .sveve { overflow: hidden; }
+.kort::before, .sveve::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(104deg,
+    transparent 42%,
+    color-mix(in srgb, white 14%, transparent) 49%,
+    transparent 56%);
+  transform: translateX(-130%);
+  animation: sveip 19s cubic-bezier(.45,0,.15,1) infinite;
+}
+.kort:nth-of-type(2)::before, .sveve:nth-of-type(2)::before { animation-delay: 4.6s; }
+.kort:nth-of-type(3)::before, .sveve:nth-of-type(3)::before { animation-delay: 9.2s; }
+.kort:nth-of-type(4)::before { animation-delay: 13.8s; }
+
+@keyframes sveip {
+  0%, 84%   { transform: translateX(-130%) }
+  97%, 100% { transform: translateX(130%) }
+}
 
 /* ============================================================
    KNAPPER
@@ -400,28 +724,27 @@ h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 52px;
-  padding: 0 22px;
+  min-height: 50px;
+  padding: 0 20px;
   border: 1px solid var(--kant-linje);
-  border-radius: var(--r-pille);
+  border-radius: var(--r-knapp);
   background: var(--glass);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.1);
+  backdrop-filter: blur(24px) saturate(1.1);
   color: var(--blekk);
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 500;
+  font-size: 15.5px;
   letter-spacing: -.01em;
   text-decoration: none;
   cursor: pointer;
   box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
-  transition: transform .16s var(--mykt), opacity .16s var(--mykt);
+  transition: transform .15s var(--skarp), border-color .15s var(--skarp), background .15s var(--skarp);
 }
-.pille:active { transform: translateY(1px) scale(.993); }
+.pille:hover { border-color: var(--kant-sterk); }
+.pille:active { transform: translateY(1px) scale(.995); }
 
-/* Stillere valg: ingen flate i det hele tatt, bare mono-tekst.
-   backdrop-filter må nullstilles òg, ellers blir uskarpheten
-   stående igjen som en synlig plate. */
+/* Stillere valg: ingen flate, bare sperret tekst. */
 .pille--stille {
   background: none;
   -webkit-backdrop-filter: none;
@@ -429,123 +752,332 @@ h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
   border-color: transparent;
   box-shadow: none;
   min-height: 40px;
-  padding: 0 12px;
-  color: var(--blekk-3);
-  font-family: "JetBrains Mono", monospace;
+  padding: 0 10px;
+  color: var(--blekk-2);
+  font-family: Inter, sans-serif;
   font-size: 9.5px;
   font-weight: 500;
-  letter-spacing: .14em;
+  letter-spacing: .2em;
   text-transform: uppercase;
+  text-shadow: var(--tekstskygge, none);
 }
-.pille--stille::after { display: none; }
-.pille--stille::before { display: none; }
-.pille--stille:hover { color: var(--blekk); }
-.pille--stor  { width: 100%; min-height: 60px; font-size: 18px; }
+.pille--stille::after, .pille--stille::before { display: none; }
+.pille--stille:hover { color: var(--blekk); border-color: transparent; }
+.pille--stor { width: 100%; min-height: 58px; font-size: 17px; }
 
-/* Hovedhandlingen. Den ene tingen på skjermen som lyser. */
+/* Hovedhandlingen: den ene ugjennomsiktige flaten. I et system
+   der alt annet slipper lys gjennom er det å være tett et
+   sterkere signal enn å lyse. */
 .pille--lys {
-  background: linear-gradient(168deg,
-    color-mix(in srgb, var(--orb-glod) 78%, white) 0%,
-    color-mix(in srgb, var(--orb-fyll) 86%, white) 58%,
-    var(--orb-fyll) 100%);
-  border-color: rgba(255,255,255,.9);
-  color: #16203C;
+  background: #FFFFFF;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: transparent;
+  color: #101722;
+  font-weight: 600;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,1),
-    0 0 26px -4px color-mix(in srgb, var(--orb-glod) 70%, transparent),
-    var(--kast);
+    0 2px 6px -2px rgba(16,32,60,.24),
+    0 24px 44px -26px rgba(16,32,60,.5);
 }
+.pille--lys:hover { border-color: transparent; }
+.pille--lys::after { display: none; }
 
 .rund {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px; height: 44px;
+  width: 42px; height: 42px;
   flex-shrink: 0;
   border-radius: 50%;
   border: 1px solid var(--kant-linje);
   background: var(--glass);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   color: var(--blekk);
   text-decoration: none;
   cursor: pointer;
   box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
+  transition: border-color .15s var(--skarp);
+}
+.rund:hover { border-color: var(--kant-sterk); }
+/* Den store, tomme sirkelknappen fra referansen: bare kontur. */
+.rund--kontur {
+  width: 52px; height: 52px;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  border-color: var(--kant-sterk);
 }
 
+/* FLISENE
+   Fire myke firkanter med hårstrek-ikon og etikett under. Rett
+   fra referansen, og den beste snarveien inn i et nivå. */
+.fliser { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--glipe); }
+.flisknapp {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 72px;
+  padding: 12px 4px;
+  border: 1px solid var(--kant-linje);
+  border-radius: var(--r-knapp);
+  background: var(--glass-tynn);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  color: var(--blekk-2);
+  text-decoration: none;
+  cursor: pointer;
+  font-family: Inter, sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: border-color .15s var(--skarp), background .15s var(--skarp), color .15s var(--skarp);
+}
+.flisknapp svg { opacity: .75; }
+.flisknapp:hover { border-color: var(--kant-sterk); background: var(--glass); color: var(--blekk); }
+.flisknapp[aria-current="page"],
+.flisknapp[aria-pressed="true"] { background: var(--glass); color: var(--blekk); border-color: var(--kant-sterk); }
+
 /* Varighetsvalgene. */
-.valg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; width: 100%; }
+.valg { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--glipe); width: 100%; }
 .valg button {
   min-height: 44px;
   padding: 0 6px;
   font-size: 14px;
-  border-radius: var(--r-pille);
+  border-radius: var(--r-knapp);
   border: 1px solid var(--kant-linje);
   background: var(--glass-tynn);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  color: var(--blekk-2);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: var(--blekk-3);
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: color .15s, background .15s, border-color .15s;
 }
-.valg button:hover { color: var(--blekk); }
+.valg button:hover { color: var(--blekk); border-color: var(--kant-sterk); }
 .valg button[aria-pressed="true"] {
   background: var(--glass-tett);
-  border-color: var(--glass-kant);
+  border-color: var(--kant-sterk);
   color: var(--blekk);
-  box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
+  box-shadow: inset 0 1px 0 var(--glass-topp);
 }
 
 /* ============================================================
-   BUNNMENY
+   BUNNMENYEN
+
+   Grunnformen er en flytende kapsel: den går ikke ut til kantene,
+   den svever. Det er den enkleste måten å få en meny til å lese
+   som et objekt i rommet i stedet for som en list langs bunnen,
+   og det er den samme logikken som resten av systemet — flater
+   som flyter, ikke flater som sitter fast.
+
+   Tre varianter. Bytt med en klasse på <nav class="tab ...">:
+
+     (ingen)        kapsel — den aktive utvider seg til en pille
+                    med etikett, resten er bare ikon
+     .tab--bloom    bredden som før, men den aktive er markert med
+                    lys som siver ut bakfra i stedet for en plate
+     .tab--ring     bredden som før, den aktive får en tynn ring
+                    rundt ikonet
+
+   Alle tre bruker samme markup.
    ============================================================ */
 
 .tab {
   position: relative;
   flex-shrink: 0;
-  margin: 0 16px 18px;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding: 9px 4px;
-  border-radius: var(--r-stor);
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  /* Fast bredde, ikke fit-content: den aktive pilla er bredere enn
+     de andre, så en kapsel som krymper til innholdet ville flyttet
+     seg sidelengs hver gang du bytter side. Nå står kapselen i ro
+     og bare pilla inni beveger seg. */
+  width: 274px;
+  max-width: calc(100% - (var(--kant) * 2));
+  margin: 0 auto var(--takt);
+  padding: 6px;
+  border-radius: var(--r-pille);
   border: 1px solid var(--kant-linje);
   background: var(--glass);
-  -webkit-backdrop-filter: blur(26px) saturate(1.5);
-  backdrop-filter: blur(26px) saturate(1.5);
-  box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
+  -webkit-backdrop-filter: blur(44px) saturate(1.5) brightness(1.05);
+  backdrop-filter: blur(44px) saturate(1.5) brightness(1.05);
+  /* Fem skygger, og de gjør hver sin ting. De tre inne i glasset er
+     de som gir det tykkelse og retning: lys som treffer øvre fas,
+     et rim oppe til venstre, og mørke som samler seg i bunnen. Uten
+     dem er kapselen en matt flate med uskarphet bak; med dem er den
+     et stykke optisk glass med en lyskilde et sted. */
+  box-shadow:
+    inset 0 1px 0 var(--glass-topp),
+    inset 1px 1px 1px -1px var(--glass-topp),
+    inset 0 -10px 18px -14px rgba(8,16,32,.6),
+    0 1px 2px -1px rgba(14,26,52,.26),
+    0 24px 42px -26px rgba(14,26,52,.62);
 }
-.tab a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  min-height: 46px;
-  text-decoration: none;
-  color: var(--blekk-3);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: .14em;
-}
-.tab a[aria-current="page"] { color: var(--blekk); font-weight: 700; }
-/* Den aktive fanen står på sin egen lille plate. */
-.tab a[aria-current="page"]::before {
+
+/* Lyspølen kapselen kaster på gulvet under seg. Den henter fagets
+   tone, så menyen sier hvilken modus du er i uten å skrive det, og
+   den ligger under den aktive fanen og ikke på midten. */
+.tab::before {
   content: "";
   position: absolute;
-  left: 2px; right: 2px; top: -6px; bottom: -6px;
-  border-radius: 19px;
-  background: color-mix(in srgb, var(--band-kjerne) 15%, transparent);
-  border: 1px solid color-mix(in srgb, var(--band-kjerne) 32%, transparent);
-  box-shadow: inset 0 1px 0 var(--glass-topp);
+  left: 0; right: 0; bottom: -17px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(34% 100% at var(--pille-x, 50%) 0%,
+    var(--fag-tone), transparent 74%);
+  filter: blur(12px);
+  opacity: .62;
+  pointer-events: none;
+  transition: background .45s var(--skarp);
+}
+
+.tab a {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--r-pille);
+  text-decoration: none;
+  color: var(--blekk-3);
+  font-family: Inter, sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  transition: color .2s var(--skarp), padding .3s var(--skarp), background .2s var(--skarp);
+}
+.tab a svg { flex-shrink: 0; opacity: .7; transition: opacity .2s; }
+.tab a:hover { color: var(--blekk); }
+.tab a:hover svg { opacity: .95; }
+
+/* Etiketten kollapser på alt som ikke er den aktive siden. Fire
+   etiketter ved siden av hverandre er fire ord du uansett ikke
+   leser; ett ord på den du står i er en posisjonsangivelse. */
+.tab a span {
+  display: block;
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width .34s var(--skarp), margin-left .34s var(--skarp), opacity .2s;
+}
+
+/* Pilla er ikke en plate lagt oppå glasset — den er lys som står
+   inne i det. Derfor en radial gradient fra fagets tone over en tett
+   flate, og en indre glød langs kanten, i stedet for en flat fyll. */
+.tab a[aria-current="page"] {
+  color: var(--blekk);
+  font-weight: 600;
+  padding: 0 17px;
+  background:
+    radial-gradient(130% 150% at 50% 0%,
+      color-mix(in srgb, var(--fag-tone) 34%, transparent), transparent 72%),
+    var(--glass-tett);
+  box-shadow:
+    inset 0 1px 0 var(--glass-topp),
+    inset 0 0 16px -5px color-mix(in srgb, var(--fag-tone) 60%, transparent),
+    0 2px 9px -4px rgba(14,26,52,.4);
+}
+.tab a[aria-current="page"] svg { opacity: 1; }
+.tab a[aria-current="page"] span { max-width: 90px; margin-left: 10px; opacity: 1; }
+
+/* Lyset som siver ut under den aktive pilla. Myk flekk, ingen
+   strek — samme språk som scenen. */
+.tab a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: -13px;
+  width: 92%; height: 16px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(50% 100% at 50% 0%, var(--glod), transparent 78%);
+  filter: blur(7px);
+  pointer-events: none;
+}
+
+/* Faset på kapselen: en lysflekk over den aktive fanen i stedet for en
+   jevn strek tvers over. Glasskanten fanger lyset der det er noe. */
+.tab::after {
+  content: "";
+  position: absolute;
+  left: 4%; right: 4%; top: 0;
+  height: 1px;
+  pointer-events: none;
+  background: radial-gradient(42% 100% at var(--pille-x, 50%) 50%,
+    var(--glass-topp), transparent 72%);
+  transition: background .45s var(--skarp);
+}
+
+/* Ikonene: de tre du ikke står i trekker seg litt tilbake, og det
+   aktive kommer et hakk fram. Forskjellen er liten med vilje — det
+   er pilla som bærer markeringen, ikonet bare følger etter. */
+.tab a svg { opacity: .84; transform: scale(.94); transition: transform .26s var(--fjaer), opacity .2s; }
+.tab a[aria-current="page"] svg { transform: scale(1.04); }
+
+/* --- VARIANT · BLOOM ---------------------------------------
+   Full bredde som før, men den aktive har ingen plate under seg.
+   I stedet lyser den bakfra. Stillere enn kapsel, og den eneste
+   av de tre som holder alle fire etikettene synlige. */
+.tab--bloom {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: auto;
+  max-width: none;
+  margin: 0 var(--kant) var(--takt);
+  padding: 8px 5px;
+  border-radius: var(--r-stor);
+}
+.tab--bloom a { flex-direction: column; gap: 7px; padding: 0 4px; min-height: 48px; }
+.tab--bloom a span { max-width: none; margin-left: 0; opacity: 1; overflow: visible; }
+.tab--bloom a[aria-current="page"] { background: none; box-shadow: none; padding: 0 4px; }
+.tab--bloom a[aria-current="page"]::after {
+  left: 50%; top: 2px; bottom: auto;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glod), transparent 66%);
+  filter: blur(7px);
+}
+
+/* --- VARIANT · RING ----------------------------------------
+   Full bredde, og den aktive får en tynn ring rundt ikonet.
+   Ringen er det samme motivet som sirkelknappen og urskiva, så
+   den binder menyen til resten av systemet. */
+.tab--ring {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: auto;
+  max-width: none;
+  margin: 0 var(--kant) var(--takt);
+  padding: 9px 5px;
+  border-radius: var(--r-stor);
+}
+.tab--ring a { flex-direction: column; gap: 11px; padding: 0 4px; min-height: 54px; }
+.tab--ring a span { max-width: none; margin-left: 0; opacity: 1; overflow: visible; }
+.tab--ring a[aria-current="page"] { background: none; box-shadow: none; padding: 0 4px; }
+.tab--ring a svg { position: relative; z-index: 1; }
+.tab--ring a[aria-current="page"]::after {
+  left: 50%; top: -1px; bottom: auto;
+  width: 33px; height: 33px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 1px solid var(--kant-sterk);
+  background: var(--glass-tynn);
+  filter: none;
 }
 
 /* ============================================================
    TELEFONENS EGNE KANTER
-   Statuslinja og hjemstreken hører til enheten, ikke til appen.
-   De er med fordi skjermbildet ellers ikke ser ut som en telefon.
    ============================================================ */
 
 .statuslinje {
@@ -553,39 +1085,42 @@ h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 13px 26px 0;
+  padding: 13px var(--kant) 0;
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14.5px;
   letter-spacing: -.01em;
   color: var(--blekk);
 }
-.statuslinje .ikoner { display: flex; align-items: center; gap: 5px; opacity: .92; }
+.statuslinje .ikoner { display: flex; align-items: center; gap: 5px; opacity: .9; }
 
 .hjemstrek { flex-shrink: 0; height: 20px; display: flex; align-items: center; justify-content: center; }
-.hjemstrek i { width: 134px; height: 5px; border-radius: 3px; background: var(--blekk); opacity: .5; }
+.hjemstrek i { width: 134px; height: 5px; border-radius: 3px; background: var(--blekk); opacity: .4; }
 
 /* ============================================================
    LAYOUT-HJELPERE
    ============================================================ */
 
-.topp    { padding: 22px 20px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.seksjon { padding: 18px 20px 0; }
-.seksjon--tett { padding-top: 11px; }
-.sokkel  { flex-shrink: 0; padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 11px; }
-.rad     { display: flex; align-items: center; gap: 10px; }
+.topp    { padding: var(--takt) var(--kant) 0; display: flex; align-items: center; justify-content: space-between; gap: var(--glipe); }
+.seksjon { padding: var(--takt) var(--kant) 0; }
+/* --tett fantes for å stramme inn enkelte overganger. Den er nå
+   det samme som alle andre: én takt mellom to blokker, overalt. */
+.seksjon--tett { padding-top: var(--takt); }
+.sokkel  { flex-shrink: 0; padding: var(--takt) var(--kant) var(--kant); display: flex; flex-direction: column; gap: var(--glipe); }
+.rad     { display: flex; align-items: center; gap: var(--glipe); }
 .spred   { justify-content: space-between; }
 .kolonne { display: flex; flex-direction: column; }
 .midt    { display: flex; align-items: center; justify-content: center; }
-.stabel  { display: flex; flex-direction: column; gap: 12px; }
+.stabel  { display: flex; flex-direction: column; gap: var(--glipe); }
+.telemetri { display: flex; align-items: center; gap: var(--glipe); padding: var(--takt) var(--kant) 0; }
 
 /* ============================================================
    RESPONSIVT OG BEVEGELSE
    ============================================================ */
 
 @media (min-width: 430px) {
-  body { padding: 28px 0; background: #11162A; }
-  .skjerm { border-radius: 38px; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 40px 70px -34px rgba(0,0,0,.7); }
+  body { padding: 28px 0; background: #0B111C; }
+  .skjerm { border-radius: 38px; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 40px 72px -34px rgba(0,0,0,.72); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -598,71 +1133,61 @@ h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
 
 /* ============================================================
    HJEMSKJERMEN
-   Bento av glasskort over scenen. Kortene har ulik høyde og
-   starter på ulik linje — det er forskyvningen som gjør at det
-   leses som flytende plater og ikke som en tabell.
    ============================================================ */
 
-/* --- toppbaren: app til venstre, vaulten til høyre ---------- */
 .toppbar {
   position: relative;
-  margin: 14px 16px 0;
+  margin: var(--glipe) var(--kant) 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 10px 9px 12px;
+  gap: 11px;
+  padding: 9px 10px 9px 11px;
   border-radius: var(--r-pille);
   border: 1px solid var(--kant-linje);
   background: var(--glass);
-  -webkit-backdrop-filter: blur(24px) saturate(1.5);
-  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.1);
+  backdrop-filter: blur(28px) saturate(1.1);
   box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
 }
-.toppbar .merke   { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.toppbar .merke { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .toppbar .glyf {
   width: 30px; height: 30px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   border-radius: 50%;
-  border: 1px solid var(--glass-kant);
+  border: 1px solid var(--kant-sterk);
   background: radial-gradient(circle at 34% 28%,
-    color-mix(in srgb, var(--orb-kjerne) 90%, transparent),
-    var(--orb-fyll) 62%, var(--orb-rim));
+    var(--orb-kjerne), var(--orb-fyll) 68%, var(--orb-rim));
   font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  font-size: 11px; font-weight: 700; color: #16203C;
+  font-size: 10.5px; font-weight: 700; color: #16203C;
 }
-.toppbar .navn { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 14px; letter-spacing: -.02em; line-height: 1.15; }
-.toppbar .delestrek { width: 1px; align-self: stretch; background: var(--glass-kant); flex-shrink: 0; }
+.toppbar .navn {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 500; font-size: 13.5px; letter-spacing: -.02em; line-height: 1.2;
+  color: var(--blekk);
+}
+.toppbar .delestrek { width: 1px; align-self: stretch; background: var(--kant-linje); flex-shrink: 0; }
 .toppbar .vault { min-width: 0; }
-.toppbar .prikk { width: 6px; height: 6px; border-radius: 50%; background: var(--orb-glod); box-shadow: 0 0 7px var(--orb-glod); flex-shrink: 0; }
+.toppbar .prikk {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  background: var(--puls);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--puls) 15%, transparent);
+}
 .toppbar .mer {
-  width: 28px; height: 28px; flex-shrink: 0; margin-left: auto;
+  width: 30px; height: 30px; flex-shrink: 0; margin-left: auto;
   display: flex; align-items: center; justify-content: center;
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--glass-kant) 70%, transparent);
+  border: 1px solid var(--kant-linje);
   background: var(--glass-tynn);
   color: var(--blekk-2);
   cursor: pointer;
   font-size: 15px; line-height: 1;
 }
+.toppbar .mer:hover { border-color: var(--kant-sterk); color: var(--blekk); }
 
-/* --- bento ------------------------------------------------- */
-.bento { display: grid; gap: 11px; }
-.bento--delt   { grid-template-columns: 1.35fr 1fr; align-items: start; }
-.bento--like   { grid-template-columns: 1fr 1fr; align-items: start; }
-/* Forskyvningen: høyre kort starter lavere enn venstre. */
-.forskjov { margin-top: 36px; }
-
-.kort--liten { padding: 13px; border-radius: 20px; }
-
-.korttittel {
-  display: flex; align-items: center; gap: 8px;
-  margin: 0 0 10px;
-  font-family: "Space Grotesk", sans-serif;
-  font-weight: 600; font-size: 13px; letter-spacing: -.015em;
-  color: var(--blekk);
-}
-.korttittel svg { flex-shrink: 0; opacity: .85; }
-.korttittel .pil { margin-left: auto; opacity: .5; }
+.bento { display: grid; gap: var(--glipe); }
+.bento--delt { grid-template-columns: 1.3fr 1fr; align-items: stretch; }
+.bento--like { grid-template-columns: 1fr 1fr; align-items: stretch; }
+.kort--liten { padding: var(--kortluft); }
 
 /* --- liten fremdriftsring --------------------------------- */
 .ringlite { position: relative; width: 74px; height: 74px; flex-shrink: 0; }
@@ -671,97 +1196,122 @@ h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 500; font-size: 18px; letter-spacing: -.03em;
+  font-weight: 300; font-size: 19px; letter-spacing: -.035em;
   color: var(--blekk);
+  font-variant-numeric: tabular-nums;
 }
 
-/* --- tall i kort ------------------------------------------- */
 .storverdi {
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 300; font-size: 23px; letter-spacing: -.035em; line-height: 1;
+  font-weight: 200; font-size: 28px; letter-spacing: -.045em; line-height: 1;
   color: var(--blekk);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
-.storverdi small { font-size: 12px; font-weight: 400; letter-spacing: -.01em; color: var(--blekk-3); }
+.storverdi small {
+  font-size: 8.5px; font-weight: 500; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--blekk-3);
+}
 
-/* --- dagens plan ------------------------------------------- */
-.plan { display: flex; flex-direction: column; }
+/* --- dagens plan -------------------------------------------
+   Ingen skillelinje mellom radene. Avstanden holder dem fra
+   hverandre, og det er fire streker færre på skjermen. */
+.plan { display: flex; flex-direction: column; gap: 3px; }
 .plan li {
-  display: flex; align-items: center; gap: 10px;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--kant-linje);
-  font-size: 13px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 6px 0;
+  font-size: 14px;
   color: var(--blekk);
 }
-.plan li:last-child { border-bottom: 0; padding-bottom: 0; }
-.plan li:first-child { padding-top: 0; }
 .plan li > span:not(.rute):not(.maal) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.plan .maal { margin-left: auto; white-space: nowrap; font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .06em; color: var(--blekk-3); flex-shrink: 0; }
+.plan .maal {
+  margin-left: auto; white-space: nowrap; flex-shrink: 0;
+  font-family: Inter, sans-serif;
+  font-size: 9px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--blekk-3);
+}
 .plan .gjort { color: var(--blekk-3); }
 
+/* Avkryssingen: ring når den er tom, myk firkant med hake når den
+   er gjort — som i referansen. */
 .rute {
-  width: 21px; height: 21px; flex-shrink: 0;
-  border-radius: 7px;
-  border: 1.5px solid color-mix(in srgb, var(--blekk-3) 42%, transparent);
+  width: 20px; height: 20px; flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--kant-sterk);
   background: var(--glass-tynn);
   display: flex; align-items: center; justify-content: center;
+  color: transparent;
 }
 .rute--av {
+  border-radius: 7px;
   border-color: transparent;
-  background: linear-gradient(168deg,
-    color-mix(in srgb, var(--orb-glod) 86%, white), var(--orb-fyll));
-  box-shadow: 0 0 12px -2px color-mix(in srgb, var(--orb-glod) 72%, transparent);
-  color: #16203C;
+  background: #FFFFFF;
+  color: #101722;
+  box-shadow: 0 2px 6px -2px rgba(16,32,60,.3);
 }
+.skjerm[data-tema="lys"] .rute,
+.skjerm[data-tema="klar"] .rute { border-color: rgba(36,58,100,.28); }
+.skjerm[data-tema="lys"] .rute--av,
+.skjerm[data-tema="klar"] .rute--av { border-color: transparent; background: var(--blekk); color: #fff; }
 
-/* --- stattall --------------------------------------------- */
-.statrad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 11px; }
+.statrad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
 .statrad div { min-width: 0; }
 .statrad b {
   display: block;
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 400; font-size: 19px; letter-spacing: -.035em; line-height: 1.1;
+  font-weight: 300; font-size: 20px; letter-spacing: -.035em; line-height: 1.1;
   color: var(--blekk);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
-.statrad span { font-size: 10px; color: var(--blekk-3); white-space: nowrap; }
+.statrad span {
+  font-family: Inter, sans-serif;
+  font-size: 8.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--blekk-3); white-space: nowrap;
+}
 
 .sistnotat {
-  display: flex; align-items: flex-start; gap: 9px;
-  padding: 10px 11px;
-  border-radius: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 11px 12px;
+  border-radius: var(--r-knapp);
   background: var(--glass-tynn);
   border: 1px solid var(--kant-linje);
 }
-.sistnotat .sti { font-size: 12px; font-weight: 500; color: var(--blekk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sistnotat .lenker { font-size: 10.5px; color: var(--blekk-3); margin-top: 2px; }
+.sistnotat .sti { margin: 0; font-size: 12.5px; font-weight: 500; color: var(--blekk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sistnotat .lenker { margin: 3px 0 0; font-size: 11px; color: var(--blekk-3); }
 
 /* --- begrepskart ------------------------------------------ */
 .graf { width: 100%; height: auto; display: block; }
-.graf .kant  { stroke: var(--glass-kant); stroke-width: 1; opacity: .75; }
-.graf .node  { fill: var(--orb-fyll); stroke: var(--band-kjerne); stroke-width: 1; }
-.graf .node--stor { fill: url(#nodeglod); stroke-width: 1.5; }
+.graf .kant  { stroke: var(--kant-linje); stroke-width: 1; }
+.graf .node  { fill: var(--glass-tett); stroke: var(--blekk-3); stroke-width: 1.2; }
+.graf .node--stor { fill: var(--orb-glod); stroke: var(--blekk); stroke-width: 1.2; }
 
 .emner { display: flex; flex-wrap: wrap; gap: 6px; }
 .emne {
-  padding: 6px 12px;
+  padding: 6px 11px;
   border-radius: var(--r-pille);
   border: 1px solid var(--kant-linje);
   background: var(--glass-tynn);
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--blekk-2);
 }
 
-/* --- kua på hjemskjermen ----------------------------------- */
-img.kua-liten { image-rendering: pixelated; flex-shrink: 0; filter: drop-shadow(0 3px 5px rgba(16,24,58,.4)); }
+/* --- kua ---------------------------------------------------
+   Den eneste tingen i systemet som ikke er lys eller glass.
+   Derfor fungerer hun. Blir flere elementer «søte» forsvinner
+   effekten. */
+img.kua-liten {
+  image-rendering: pixelated; flex-shrink: 0;
+  filter: drop-shadow(0 3px 6px rgba(14,26,52,.3));
+}
+.skjerm[data-tema="lys"] img.kua-liten,
+.skjerm[data-tema="klar"] img.kua-liten {
+  filter: drop-shadow(0 1px 0 rgba(30,50,92,.5)) drop-shadow(0 4px 7px rgba(30,50,92,.22));
+}
 
-/* --- orben som svever ved overskriften --------------------- */
 .svev { position: absolute; }
 
-/* --- rullefeltet -------------------------------------------
-   Hjemskjermen har mer innhold enn 844 px. Toppbaren og tab-raden
-   står i ro; alt imellom ruller. Skillelinja skjules, for på
-   telefon er det ingen.                                        */
+/* --- rullefeltet ------------------------------------------- */
 .rull {
   flex: 1;
   min-height: 0;
@@ -770,19 +1320,16 @@ img.kua-liten { image-rendering: pixelated; flex-shrink: 0; filter: drop-shadow(
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding-bottom: 14px;
-  /* mykner kanten mot tab-raden */
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 12px, #000 calc(100% - 34px), transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 12px, #000 calc(100% - 34px), transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 30px), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 30px), transparent 100%);
 }
 .rull::-webkit-scrollbar { display: none; }
 
 /* ============================================================
    BORDET — bredt dashbord (1280 × 800)
-
-   Ett hovedpanel i midten, svevende sidepaneler utenfor, og tynne
-   koblingslinjer med lysende noder imellom. Linjene tegnes av
-   bord.js ut fra hvor panelene faktisk havner, ikke fra faste tall
-   — da treffer de selv om innholdet endrer høyde.
+   Koblingslinjene mellom panelene er tatt ut; de var tynne
+   streker tvers over flaten. Panelene flyter for seg selv nå,
+   som widgetene i referansen.
    ============================================================ */
 
 .skjerm--bord { width: 1280px; height: 800px; }
@@ -794,24 +1341,18 @@ img.kua-liten { image-rendering: pixelated; flex-shrink: 0; filter: drop-shadow(
   display: grid;
   grid-template-columns: 200px minmax(0, 1fr) 200px;
   gap: 38px;
-  padding: 34px 36px;
+  padding: 32px 36px;
 }
-
-/* koblingslinjene ligger bak panelene */
-.koblinger { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.koblinger path { fill: none; stroke: color-mix(in srgb, var(--band-kjerne) 46%, transparent); stroke-width: 1.2; }
-.koblinger .knute-ytre { fill: var(--orb-glod); opacity: .45; }
-.koblinger .knute      { fill: var(--band-kjerne); }
 
 .side { position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 10px 0 34px; }
 
 .sveve {
   position: relative;
-  border-radius: 20px;
-  padding: 14px;
+  border-radius: var(--r-kort);
+  padding: 15px;
   background: var(--glass);
-  -webkit-backdrop-filter: blur(24px) saturate(1.5);
-  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.1);
+  backdrop-filter: blur(28px) saturate(1.1);
   border: 1px solid var(--kant-linje);
   box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
 }
@@ -820,11 +1361,11 @@ img.kua-liten { image-rendering: pixelated; flex-shrink: 0; filter: drop-shadow(
   position: relative;
   display: flex;
   flex-direction: column;
-  border-radius: 26px;
+  border-radius: var(--r-stor);
   padding: 22px 24px 24px;
   background: var(--glass-tynn);
-  -webkit-backdrop-filter: blur(30px) saturate(1.5);
-  backdrop-filter: blur(30px) saturate(1.5);
+  -webkit-backdrop-filter: blur(34px) saturate(1.1);
+  backdrop-filter: blur(34px) saturate(1.1);
   border: 1px solid var(--kant-linje);
   box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
 }
@@ -834,25 +1375,26 @@ img.kua-liten { image-rendering: pixelated; flex-shrink: 0; filter: drop-shadow(
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-bottom: 16px;
+  padding-bottom: 18px;
 }
 .bordtopp h1 {
-  font-size: 25px;
-  font-weight: 500;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  font-size: 27px;
+  font-weight: 200;
+  letter-spacing: -.035em;
+  text-transform: none;
   text-shadow: none;
 }
 .bordtopp .verktoy { display: flex; gap: 8px; }
 .bordtopp .verktoy button {
-  width: 32px; height: 32px;
+  width: 34px; height: 34px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 10px;
+  border-radius: 50%;
   border: 1px solid var(--kant-linje);
   background: var(--glass-tynn);
   color: var(--blekk-2);
   cursor: pointer;
 }
+.bordtopp .verktoy button:hover { border-color: var(--kant-sterk); color: var(--blekk); }
 
 .rutenett {
   flex: 1;
@@ -867,57 +1409,47 @@ img.kua-liten { image-rendering: pixelated; flex-shrink: 0; filter: drop-shadow(
 .r-analyse   { grid-column: 2; grid-row: 2; }
 .r-hoyre     { grid-column: 3; grid-row: 1 / 3; display: flex; flex-direction: column; gap: 13px; min-height: 0; }
 
-/* --- målestokken til venstre i fremdriftskortet -------------- */
 .maaler { display: flex; align-items: flex-end; gap: 14px; height: 100%; min-height: 0; }
 .kurve  { flex: 1; min-width: 0; }
-.soyle {
-  width: 46px; flex-shrink: 0;
-  display: flex; flex-direction: column; align-items: center; gap: 7px;
-}
+.soyle { width: 46px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .soyle .roret {
   position: relative;
-  width: 15px; flex: 1; min-height: 0;
+  width: 14px; flex: 1; min-height: 0;
   border-radius: 999px;
-  background: var(--glass-tynn);
-  border: 1px solid var(--kant-linje);
+  background: color-mix(in srgb, var(--blekk-3) 18%, transparent);
   overflow: hidden;
 }
 .soyle .roret i {
   position: absolute; left: 0; right: 0; bottom: 0;
   border-radius: 999px;
-  background: linear-gradient(0deg, var(--orb-fyll), var(--orb-glod) 70%, var(--band-kjerne));
-  box-shadow: 0 0 14px -2px var(--orb-glod);
+  background: #fff;
+  opacity: .85;
 }
+.skjerm[data-tema="lys"] .soyle .roret i,
+.skjerm[data-tema="klar"] .soyle .roret i { background: var(--blekk); opacity: .8; }
 .soyle b {
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 400; font-size: 17px; letter-spacing: -.03em;
+  font-weight: 300; font-size: 17px; letter-spacing: -.035em;
   color: var(--blekk);
+  font-variant-numeric: tabular-nums;
 }
 
-/* --- loggen ------------------------------------------------- */
-.logg { display: flex; flex-direction: column; gap: 1px; overflow: hidden; min-height: 0; }
+.logg { display: flex; flex-direction: column; gap: 2px; overflow: hidden; min-height: 0; }
 .logg li {
-  display: flex; align-items: center; gap: 9px;
+  display: flex; align-items: center; gap: 10px;
   padding: 6px 0;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
-  letter-spacing: .02em;
+  font-size: 12px;
   color: var(--blekk-2);
 }
-.logg li i {
-  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
-  background: var(--orb-glod);
-  box-shadow: 0 0 6px var(--orb-glod);
-}
-.logg li .nar { margin-left: auto; color: var(--blekk-3); flex-shrink: 0; }
+.logg li i { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; background: var(--puls); }
+.logg li .nar { margin-left: auto; color: var(--blekk-3); flex-shrink: 0; font-size: 11px; font-variant-numeric: tabular-nums; }
 .logg li span:not(.nar) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.logg li.svak i { background: var(--blekk-3); box-shadow: none; opacity: .6; }
+.logg li.svak i { background: var(--blekk-3); opacity: .45; }
 
-/* --- notatflisene ------------------------------------------- */
 .flis {
   position: relative;
   flex: 1; min-height: 0;
-  border-radius: 14px;
+  border-radius: var(--r-knapp);
   overflow: hidden;
   border: 1px solid var(--kant-linje);
   background: var(--glass-tynn);
@@ -926,230 +1458,136 @@ img.kua-liten { image-rendering: pixelated; flex-shrink: 0; filter: drop-shadow(
 .flis svg { width: 100%; height: 100%; display: block; }
 .flis figcaption {
   position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 16px 10px 7px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 18px 12px 9px;
+  font-family: Inter, sans-serif;
+  font-size: 8.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
   color: var(--blekk);
   background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--glass-tett) 92%, transparent));
 }
 
-/* --- små tall ved siden av et diagram ------------------------ */
-.minirad { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.minirad { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .mini {
-  border-radius: 12px;
-  padding: 9px 10px;
+  border-radius: var(--r-knapp);
+  padding: 11px 12px;
   background: var(--glass-tynn);
   border: 1px solid var(--kant-linje);
 }
 .mini b {
   display: block;
   font-family: "Space Grotesk", sans-serif;
-  font-weight: 400; font-size: 18px; letter-spacing: -.03em; line-height: 1.1;
+  font-weight: 300; font-size: 20px; letter-spacing: -.035em; line-height: 1.1;
   color: var(--blekk);
+  font-variant-numeric: tabular-nums;
 }
-.mini span { font-size: 9.5px; color: var(--blekk-3); }
+.mini span {
+  font-family: Inter, sans-serif;
+  font-size: 8.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--blekk-3);
+}
 
-/* --- sidepanelenes små ting ---------------------------------- */
 .signal { display: flex; align-items: flex-end; gap: 3px; height: 16px; }
-.signal i { width: 4px; border-radius: 1px; background: var(--orb-glod); box-shadow: 0 0 6px -1px var(--orb-glod); }
+.signal i { width: 4px; border-radius: 2px; background: var(--blekk-2); }
 .signal i:nth-child(1) { height: 5px }
 .signal i:nth-child(2) { height: 8px }
 .signal i:nth-child(3) { height: 11px }
 .signal i:nth-child(4) { height: 14px }
-.signal i.av { background: var(--blekk-3); box-shadow: none; opacity: .4 }
+.signal i.av { background: var(--blekk-3); opacity: .3 }
 
 .boble {
   position: relative;
-  border-radius: 13px 13px 13px 4px;
-  padding: 8px 11px;
+  border-radius: var(--r-knapp) var(--r-knapp) var(--r-knapp) 5px;
+  padding: 10px 12px;
   background: var(--glass-tynn);
   border: 1px solid var(--kant-linje);
-  font-size: 11.5px;
-  line-height: 1.4;
+  font-size: 12px;
+  line-height: 1.45;
   color: var(--blekk-2);
 }
 
-/* ============================================================
-   FUTURISME-LAGET
-   Fem tillegg som gjør systemet mer instrument og mindre app.
-   Alle er dekorative og tåler å bli slått av.
-   ============================================================ */
-
-/* 1 · PRISMEKANT
-   Lysstripa på toppen av glasset splittes i fargene fra båndene.
-   Det er denne som binder kortene til lyset bak dem. */
-.kort::after, .pille::after, .tab::after, .sveve::after, .hovedpanel::after {
-  content: "";
-  position: absolute;
-  left: 14%; right: 14%; top: 0;
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    var(--frynse-1) 20%,
-    var(--band-kjerne) 50%,
-    var(--frynse-2) 80%,
-    transparent 100%);
-}
-
-/* 2 · LYSSVEIP
-   Et smalt lysfelt som passerer over glasset med lange mellomrom.
-   Sjelden nok til at det leses som en refleksjon, ikke en animasjon. */
-.kort, .sveve { overflow: hidden; }
-.kort::before, .sveve::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(104deg,
-    transparent 40%,
-    color-mix(in srgb, var(--band-kjerne) 22%, transparent) 48%,
-    transparent 56%);
-  transform: translateX(-130%);
-  animation: sveip 11s cubic-bezier(.45,0,.15,1) infinite;
-}
-.kort:nth-of-type(2)::before, .sveve:nth-of-type(2)::before { animation-delay: 2.6s; }
-.kort:nth-of-type(3)::before, .sveve:nth-of-type(3)::before { animation-delay: 5.2s; }
-.kort:nth-of-type(4)::before { animation-delay: 7.8s; }
-
-@keyframes sveip {
-  0%, 74%   { transform: translateX(-130%) }
-  93%, 100% { transform: translateX(130%) }
-}
-
-/* 3 · HJØRNEMERKER
-   Fire tynne vinkler som rammer inn uten å lage en boks. Herfra
-   kommer målestokk-preget. Brukes bare på skjermens hovedflate. */
-.hjorne { position: absolute; width: 11px; height: 11px; pointer-events: none; opacity: .7; }
-.hjorne::before, .hjorne::after { content: ""; position: absolute; background: var(--band-kjerne); }
-.hjorne::before { top: 0; left: 0; width: 100%; height: 1px; }
-.hjorne::after  { top: 0; left: 0; width: 1px;  height: 100%; }
-.hjorne--tv { top: 9px;  left: 9px; }
-.hjorne--th { top: 9px;  right: 9px; transform: scaleX(-1); }
-.hjorne--bv { bottom: 9px; left: 9px;  transform: scaleY(-1); }
-.hjorne--bh { bottom: 9px; right: 9px; transform: scale(-1); }
-
-/* 4 · MÅLERAIL OG TELEMETRISTRIPE */
-.rail {
-  height: 7px;
-  background-image: repeating-linear-gradient(90deg, var(--kant-linje) 0 1px, transparent 1px 7px);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
-}
-.telemetri { display: flex; align-items: center; gap: 9px; padding: 11px 20px 0; }
-.telemetri .strek { flex: 1; height: 1px; background: linear-gradient(90deg, var(--kant-linje), transparent); }
-
-/* Nivåmerket, i flyt-drakt. */
-.nivaa {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--kant-linje);
-  background: var(--glass-tynn);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 9.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--blekk);
-  flex-shrink: 0;
-}
-.nivaa::before {
-  content: ""; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--orb-glod); box-shadow: 0 0 8px var(--orb-glod);
-}
-
-/* 5 · TRYKKRING
-   Lyset sprer seg fra fingeren. Settes inn av flyt-ui.js. */
+/* Trykkringen. Settes inn av flyt-ui.js. */
 .ring {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, color-mix(in srgb, var(--band-kjerne) 60%, transparent), transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, white 40%, transparent), transparent 70%);
   transform: translate(-50%, -50%) scale(0);
-  animation: ringut .62s cubic-bezier(.22,.61,.36,1) forwards;
+  animation: ringut .55s cubic-bezier(.16,.84,.26,1) forwards;
 }
-@keyframes ringut {
-  to { transform: translate(-50%, -50%) scale(1); opacity: 0 }
-}
+@keyframes ringut { to { transform: translate(-50%, -50%) scale(1); opacity: 0 } }
 
 /* ============================================================
    ØVELSESSKJERMENE
    ============================================================ */
 
-/* Fremdriftsstripa i toppen. Segmentert, ikke glatt. */
+/* Fremdriftsstripa. Glatt, ikke segmentert — segmentene var tjue
+   små striper på rad. */
 .fremdrift {
-  position: relative; flex: 1; height: 7px;
+  position: relative; flex: 1; height: 5px;
   border-radius: 999px; overflow: hidden;
-  border: 1px solid var(--kant-linje);
-  background:
-    repeating-linear-gradient(90deg, color-mix(in srgb, var(--blekk-3) 40%, transparent) 0 1px, transparent 1px 6px),
-    var(--glass-tynn);
+  background: color-mix(in srgb, var(--blekk-3) 20%, transparent);
 }
 .fremdrift > i {
   display: block; height: 100%; border-radius: 999px;
-  background: linear-gradient(90deg, var(--orb-fyll), var(--orb-glod) 60%, var(--band-kjerne));
-  box-shadow: 0 0 12px -1px var(--orb-glod);
+  background: #fff;
+  box-shadow: 0 0 10px -2px rgba(255,255,255,.7);
 }
+.skjerm[data-tema="lys"] .fremdrift > i,
+.skjerm[data-tema="klar"] .fremdrift > i { background: var(--blekk); box-shadow: none; opacity: .86; }
 
-/* Spørsmålet. */
-.sporsmaal { font-family: "Space Grotesk", sans-serif; font-weight: 400; font-size: 22px; line-height: 1.34; letter-spacing: -.028em; margin: 0; color: var(--blekk); }
+.sporsmaal { font-family: "Space Grotesk", sans-serif; font-weight: 300; font-size: 22px; line-height: 1.38; letter-spacing: -.025em; margin: 0; color: var(--blekk); }
 
-/* Svaralternativ: venstrestilt, med indeksmerke. */
 .svar {
   width: 100%; min-height: 56px;
   justify-content: flex-start;
-  border-radius: 18px;
-  font-size: 16px; font-weight: 500;
-  gap: 12px;
+  border-radius: var(--r-knapp);
+  font-size: 15.5px; font-weight: 400;
+  gap: 13px;
 }
 .svar .nr {
-  flex-shrink: 0; min-width: 20px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 9.5px; font-weight: 500; letter-spacing: .1em;
+  flex-shrink: 0; min-width: 18px;
+  font-family: Inter, sans-serif;
+  font-size: 10px; font-weight: 500; letter-spacing: .14em;
   color: var(--blekk-3);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Skrivefelt og kode: tettest mulig glass, det er her du leser. */
 .felt {
   width: 100%;
   border: 1px solid var(--kant-linje);
-  border-radius: 18px;
+  border-radius: var(--r-knapp);
   background: var(--glass-tett);
-  -webkit-backdrop-filter: blur(26px) saturate(1.4);
-  backdrop-filter: blur(26px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px);
   padding: 16px;
   font-family: Inter, sans-serif;
   font-size: 16px; line-height: 1.5;
   color: var(--blekk);
   resize: none;
-  box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
+  box-shadow: inset 0 1px 0 var(--glass-topp);
 }
 .felt::placeholder { color: var(--blekk-3); }
-.felt--kode { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 19px; min-height: 54px; padding: 0 16px; }
+.felt--kode { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 18px; min-height: 54px; padding: 0 16px; }
 
 .kodeblokk {
   position: relative; margin: 0;
-  border-radius: 18px;
+  border-radius: var(--r-knapp);
   border: 1px solid var(--kant-linje);
   background: var(--glass-tett);
-  -webkit-backdrop-filter: blur(26px) saturate(1.4);
-  backdrop-filter: blur(26px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px);
   padding: 18px 16px;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 14px; line-height: 1.75;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 13.5px; line-height: 1.8;
   color: var(--blekk);
   overflow-x: auto;
-  box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
+  box-shadow: inset 0 1px 0 var(--glass-topp);
 }
 .kodeblokk .v { color: var(--kode-v); }
 .kodeblokk .t { color: var(--kode-t); }
 .kodeblokk .f { color: var(--kode-f); }
 
-/* Linje for linje gjennom koden. */
-.spor { display: flex; flex-direction: column; gap: 6px; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--blekk-2); }
-.spor > div { display: flex; gap: 10px; align-items: baseline; }
-.spor .n { min-width: 13px; color: var(--orb-glod); font-weight: 700; }
+.spor { display: flex; flex-direction: column; gap: 7px; font-family: "JetBrains Mono", Menlo, monospace; font-size: 12.5px; color: var(--blekk-2); }
+.spor > div { display: flex; gap: 11px; align-items: baseline; }
+.spor .n { min-width: 13px; color: var(--puls); font-weight: 700; }
 
 /* ============================================================
    TILSTANDSBRIKKER
@@ -1158,42 +1596,601 @@ img.kua-liten { image-rendering: pixelated; flex-shrink: 0; filter: drop-shadow(
    ============================================================ */
 .brikker { display: flex; flex-wrap: wrap; gap: 6px; }
 .brikke {
-  display: inline-flex; align-items: center; gap: 7px;
+  display: inline-flex; align-items: center; gap: 8px;
   padding: 7px 12px;
-  border-radius: 999px;
+  border-radius: var(--r-pille);
   font-size: 12.5px;
   color: var(--blekk);
   border: 1px solid var(--kant-linje);
 }
 .brikke i { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.brikke--sitter { background: color-mix(in srgb, var(--orb-glod) 20%, transparent); }
-.brikke--sitter i { background: var(--orb-glod); box-shadow: 0 0 7px var(--orb-glod); }
-.brikke--paavei { background: color-mix(in srgb, var(--frynse-2) 18%, transparent); }
-.brikke--paavei i { background: linear-gradient(90deg, var(--frynse-2) 50%, transparent 50%); box-shadow: inset 0 0 0 1px var(--frynse-2); }
-.brikke--urort { background: none; border-style: dashed; color: var(--blekk-3); }
-.brikke--urort i { box-shadow: inset 0 0 0 1.5px var(--blekk-3); opacity: .8; }
+.brikke--sitter { background: var(--glass-tynn); border-color: var(--kant-sterk); }
+.brikke--sitter i { background: var(--blekk); }
+.brikke--paavei i { background: linear-gradient(90deg, var(--blekk-2) 50%, transparent 50%); box-shadow: inset 0 0 0 1px var(--blekk-2); }
+.brikke--urort { border-style: dashed; color: var(--blekk-3); }
+.brikke--urort i { box-shadow: inset 0 0 0 1.3px var(--blekk-3); opacity: .8; }
 
-.tegnforklaring { display: flex; flex-wrap: wrap; gap: 14px; }
-.tegnforklaring span { display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--blekk-2); }
-.tegnforklaring i { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.tegnforklaring { display: flex; flex-wrap: wrap; gap: 15px; }
+.tegnforklaring span {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: Inter, sans-serif;
+  font-size: 9.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--blekk-3);
+  text-shadow: var(--tekstskygge, none);
+}
+.tegnforklaring i { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 
-/* Sorteringsfeltene på nivå 3. */
 .felle {
   position: relative;
   min-height: 150px;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  padding: 14px 10px;
-  border: 1.5px dashed color-mix(in srgb, var(--blekk-3) 55%, transparent);
-  border-radius: 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  padding: 16px 10px;
+  border: 1.5px dashed var(--kant-sterk);
+  border-radius: var(--r-kort);
   background: var(--glass-tynn);
   color: var(--blekk);
   cursor: pointer;
   font-family: inherit;
-  transition: border-color .18s, background .18s;
+  transition: border-color .16s, background .16s;
 }
-.felle:hover { border-color: var(--orb-glod); background: color-mix(in srgb, var(--orb-glod) 12%, transparent); }
+.felle:hover { border-color: var(--puls); background: color-mix(in srgb, var(--puls) 8%, transparent); }
 
-/* Fargene i kodeblokka må byttes per tema. */
-.skjerm[data-tema="lys"]  { --kode-v: #2F6E80; --kode-t: #8A5A33; --kode-f: #4B4CA0; }
-.skjerm[data-tema="mork"] { --kode-v: #7FE3F5; --kode-t: #F0C987; --kode-f: #B3C2FF; }
-.skjerm[data-tema="glo"]  { --kode-v: #C8F2FF; --kode-t: #FFE2B8; --kode-f: #DCE4FF; }
+/* Syntaksfarging med lav metning — farger som roper hører ikke
+   hjemme i en palett som ellers er lys og luft. */
+.skjerm[data-tema="lys"],  .skjerm[data-tema="klar"]  { --kode-v: #2B6B7A; --kode-t: #6E5A3C; --kode-f: #3E4D96; }
+.skjerm[data-tema="mork"], .skjerm[data-tema="natt"]  { --kode-v: #85C8D8; --kode-t: #D4BC94; --kode-f: #A8B6E0; }
+.skjerm[data-tema="glo"],  .skjerm[data-tema="staal"] { --kode-v: #C8EAF4; --kode-t: #EEE0C8; --kode-f: #DCE4F4; }
+
+/* ============================================================
+   BEVEGELSE
+
+   Fire lag, og de gjør hver sin jobb. Alle fire er slått av under
+   prefers-reduced-motion, og alle fire er pynt: appen virker uten.
+
+     1  inngang    kortene legger seg på plass når de kommer til
+                   syne, forskjøvet nedenfra
+     2  dybde      scenen beveger seg saktere enn innholdet når du
+                   ruller — det er dette som gjør at glasset leser
+                   som noe som ligger foran noe annet
+     3  sideskift  skjermene bytter med view transitions, og
+                   menypilla glir mellom posisjonene sine
+     4  trykk      ringen av lys der fingeren treffer
+
+   Regelen for alle: ingenting skal kunne oppfattes som at det
+   «spiller». Lang varighet, kort utslag.
+   ============================================================ */
+
+/* --- 1 · INNGANGEN -----------------------------------------
+   Tilstanden ligger bak [data-liv], som skriptet setter. Uten
+   JS — eller med redusert bevegelse — settes attributtet aldri,
+   og da står alt synlig fra første frame. Det er med vilje: et
+   grensesnitt som er usynlig til et skript rekker fram er verre
+   enn et uten animasjon. */
+.skjerm[data-liv] .topp,
+.skjerm[data-liv] .toppbar,
+.skjerm[data-liv] .seksjon,
+.skjerm[data-liv] .telemetri,
+.skjerm[data-liv] .sokkel,
+.skjerm[data-liv] .fyll {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity   .6s var(--skarp) var(--vent, 0ms),
+    transform .78s var(--skarp) var(--vent, 0ms);
+}
+.skjerm[data-liv] .inne { opacity: 1; transform: none; }
+
+/* Kortene inni en seksjon kommer like etter seksjonen selv, slik
+   at en bento ikke lander som én kloss. */
+.skjerm[data-liv] .bento > *,
+.skjerm[data-liv] .fliser > * {
+  opacity: 0;
+  transform: translateY(14px) scale(.985);
+  transition:
+    opacity   .5s var(--skarp) var(--vent, 0ms),
+    transform .66s var(--skarp) var(--vent, 0ms);
+}
+.skjerm[data-liv] .inne > .bento > *,
+.skjerm[data-liv] .inne > .fliser > *,
+.skjerm[data-liv] .inne.bento > *,
+.skjerm[data-liv] .inne.fliser > * { opacity: 1; transform: none; }
+
+/* --- 2 · DYBDEN --------------------------------------------
+   --rull er rullehøyden i piksler, uten enhet, satt av skriptet.
+   Lagene flyttes med translate og ikke transform, fordi transform
+   allerede er opptatt av driften i scenen — de to egenskapene
+   legges sammen i stedet for å overskrive hverandre.
+
+   Tallene er bevisst små. Over cirka 0.2 slutter det å lese som
+   dybde og begynner å lese som at bakgrunnen sklir. */
+.scene .dis--1 { translate: 0 calc(var(--rull, 0) * -0.035px); }
+.scene .dis--2 { translate: 0 calc(var(--rull, 0) * -0.075px); }
+.scene .dis--3 { translate: 0 calc(var(--rull, 0) * -0.05px);  }
+.scene .bue    { translate: 0 calc(var(--rull, 0) * -0.06px);  }
+.scene .boble  { translate: 0 calc(var(--rull, 0) * -0.17px);  }
+.scene .dugg   { translate: 0 calc(var(--rull, 0) * -0.02px);  }
+
+/* --- 3 · SIDESKIFTET ---------------------------------------
+   Skjermene er egne dokumenter, så overgangen går via view
+   transitions. De navngitte elementene morfes i stedet for å
+   krysstone, og det er menypilla som bærer effekten: den glir
+   fra sin gamle plass til sin nye mens innholdet bytter. */
+@view-transition { navigation: auto; }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: .4s;
+  animation-timing-function: cubic-bezier(.16,.84,.26,1);
+}
+
+.statuslinje { view-transition-name: statuslinje; }
+.toppbar     { view-transition-name: toppbar; }
+.tab         { view-transition-name: menykapsel; }
+.hjemstrek   { view-transition-name: hjemstrek; }
+.scene       { view-transition-name: scene; }
+
+/* Bare én fane er aktiv om gangen, så navnet er unikt. */
+.tab a[aria-current="page"] { view-transition-name: menypille; }
+
+::view-transition-group(menypille) {
+  animation-duration: .52s;
+  animation-timing-function: cubic-bezier(.3,1.08,.45,1);
+}
+::view-transition-group(scene),
+::view-transition-group(statuslinje),
+::view-transition-group(hjemstrek) { animation-duration: .001ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+
+/* ============================================================
+   FAGVELGEREN
+
+   Skjermen over appen. Her velger du hvilket fag du går inn i,
+   og valget blir stående som en modus: faget legges på .skjerm
+   som data-fag, og appen henter tonen sin derfra.
+
+   Tonen er med vilje svak. Fire fag med hver sin sterke farge
+   ville vært fire konkurrerende systemer; her er den en flekk
+   lys i hjørnet av flisa og en dempet forskyvning av aksenten
+   inne i appen. Nok til at du vet hvor du er, ikke nok til at
+   paletten flytter seg.
+   ============================================================ */
+
+.fagrutenett { display: grid; grid-template-columns: 1fr 1fr; gap: var(--glipe); }
+
+.fagflis {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 162px;
+  padding: var(--kortluft);
+  border-radius: var(--r-kort);
+  border: 1px solid var(--kant-linje);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(32px) saturate(1.1);
+  backdrop-filter: blur(32px) saturate(1.1);
+  box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
+  color: var(--blekk);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform .2s var(--skarp), border-color .2s var(--skarp);
+}
+.fagflis:hover { border-color: var(--kant-sterk); transform: translateY(-2px); }
+.fagflis:active { transform: translateY(0); }
+
+/* Fagets egen tone: én uskarp flekk oppe til høyre. Samme språk
+   som scenen — lys, ingen kant. */
+.fagflis .tone {
+  position: absolute;
+  right: -26px; top: -30px;
+  width: 136px; height: 136px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--fag-tone), transparent 62%);
+  filter: blur(16px);
+  opacity: .5;
+  pointer-events: none;
+}
+
+.fagflis .merket {
+  position: relative;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--kant-sterk);
+  background: radial-gradient(circle at 32% 26%,
+    color-mix(in srgb, var(--fag-tone) 25%, white),
+    var(--fag-tone) 78%,
+    color-mix(in srgb, var(--fag-tone) 70%, black));
+  margin-bottom: 13px;
+  font-family: Inter, sans-serif;
+  font-size: 9.5px; font-weight: 600; letter-spacing: .08em;
+  color: #16203C;
+}
+
+.fagflis .kode {
+  font-family: Inter, sans-serif;
+  font-size: 9px; font-weight: 600; letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--blekk-3);
+}
+.fagflis .fagnavn {
+  margin: 5px 0 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 300; font-size: 17px; letter-spacing: -.03em; line-height: 1.2;
+  color: var(--blekk);
+}
+.fagflis .bunn { margin-top: auto; padding-top: 14px; }
+.fagflis .forfalt {
+  display: block;
+  margin-top: 7px;
+  font-family: Inter, sans-serif;
+  font-size: 9px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--blekk-3);
+}
+
+/* Det faget du var inne i sist. */
+.fagflis[data-sist] { border-color: var(--kant-sterk); }
+.fagflis[data-sist] .kode::after {
+  content: " · sist";
+  color: var(--blekk-2);
+}
+
+/* Legg til: samme form, men bare kant — den er ikke et fag ennå. */
+.fagflis--ny {
+  min-height: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  border-style: dashed;
+  border-color: var(--kant-sterk);
+  color: var(--blekk-3);
+  font-family: Inter, sans-serif;
+  font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+}
+.fagflis--ny:hover { color: var(--blekk); transform: none; }
+
+/* --- TONENE -------------------------------------------------
+   Fire kalde toner og én svakt varm. Den varme er INEC1821, som
+   er det eneste faget uten kode i seg — den skal kjennes litt
+   annerledes ut. */
+[data-fag]            { --fag-tone: rgba(150,180,220,.85); }
+[data-fag="in1020"]   { --fag-tone: rgba(74,132,224,.92); }
+[data-fag="in1000"]   { --fag-tone: rgba(36,170,172,.92); }
+[data-fag="inf0010"]  { --fag-tone: rgba(124,116,216,.92); }
+[data-fag="inec1821"] { --fag-tone: rgba(208,158,80,.92); }
+
+/* Inne i appen forskyver faget bare aksenten og gløden i orben.
+   Resten av paletten står. */
+.skjerm[data-fag="in1020"]   { --puls: #3F7FC8; --orb-glod: #CBDCF4; }
+.skjerm[data-fag="in1000"]   { --puls: #1F8E90; --orb-glod: #C6E6E6; }
+.skjerm[data-fag="inf0010"]  { --puls: #5F5BAE; --orb-glod: #D8D6F2; }
+.skjerm[data-fag="inec1821"] { --puls: #8A6B3C; --orb-glod: #EFE4D2; }
+
+.skjerm[data-tema="mork"][data-fag="in1020"],   .skjerm[data-tema="natt"][data-fag="in1020"]   { --puls: #8EB2EA; }
+.skjerm[data-tema="mork"][data-fag="in1000"],   .skjerm[data-tema="natt"][data-fag="in1000"]   { --puls: #7EC6C8; }
+.skjerm[data-tema="mork"][data-fag="inf0010"],  .skjerm[data-tema="natt"][data-fag="inf0010"]  { --puls: #AAA8DE; }
+.skjerm[data-tema="mork"][data-fag="inec1821"], .skjerm[data-tema="natt"][data-fag="inec1821"] { --puls: #D6C2A4; }
+.skjerm[data-tema="glo"][data-fag="in1020"],    .skjerm[data-tema="staal"][data-fag="in1020"]  { --puls: #B6D0F4; }
+.skjerm[data-tema="glo"][data-fag="in1000"],    .skjerm[data-tema="staal"][data-fag="in1000"]  { --puls: #AEDEDE; }
+.skjerm[data-tema="glo"][data-fag="inf0010"],   .skjerm[data-tema="staal"][data-fag="inf0010"] { --puls: #CBC9EE; }
+.skjerm[data-tema="glo"][data-fag="inec1821"],  .skjerm[data-tema="staal"][data-fag="inec1821"]{ --puls: #E6D7BE; }
+
+/* --- FAGET I TOPPBAREN --------------------------------------
+   Toppbaren på hjemskjermen er nå hele veien tilbake til
+   velgeren, så den er en lenke og ikke en div. */
+a.toppbar { text-decoration: none; color: inherit; }
+a.toppbar:hover { border-color: var(--kant-sterk); }
+.toppbar .fagmerke {
+  width: 30px; height: 30px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--kant-sterk);
+  background: radial-gradient(circle at 34% 28%,
+    var(--orb-kjerne), var(--fag-tone, var(--orb-fyll)) 72%, var(--orb-rim));
+  font-family: Inter, sans-serif;
+  font-size: 8.5px; font-weight: 700; letter-spacing: .04em;
+  color: #16203C;
+}
+.toppbar .bytt {
+  width: 30px; height: 30px; flex-shrink: 0; margin-left: auto;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--kant-linje);
+  background: var(--glass-tynn);
+  color: var(--blekk-2);
+}
+a.toppbar:hover .bytt { color: var(--blekk); border-color: var(--kant-sterk); }
+
+/* ============================================================
+   LANDINGEN · FORSLAG MED NEDTREKK
+
+   En annen vei inn enn rutenettet med fire fliser: skjermen tar
+   én avgjørelse av gangen. Du ser bildet, ett fag, to tall og én
+   knapp. Faget byttes i et nedtrekk.
+
+   Hva det koster og hva det gir: med fire fliser ser du alle
+   fagene samtidig og kan sammenligne dem. Med nedtrekk ser du ett,
+   og må åpne lista for å se resten — til gjengjeld får motivet
+   nesten hele flaten, og det er tross alt bakgrunnen som bærer
+   uttrykket her.
+   ============================================================ */
+
+.landing { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.landing .fyller { flex: 1; min-height: 0; }
+
+/* --- NEDTREKKET ------------------------------------------- */
+.nedtrekk { position: relative; }
+
+.nedtrekk-knapp {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 68px;
+  padding: 0 16px;
+  border: 1px solid var(--kant-linje);
+  border-radius: var(--r-stor);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4) brightness(1.04);
+  backdrop-filter: blur(40px) saturate(1.4) brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 var(--glass-topp),
+    inset 1px 1px 1px -1px var(--glass-topp),
+    inset 0 -10px 18px -14px rgba(8,16,32,.5),
+    var(--kast);
+  color: var(--blekk);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .18s var(--skarp);
+}
+.nedtrekk-knapp:hover { border-color: var(--kant-sterk); }
+
+.nedtrekk-knapp .merket {
+  width: 38px; height: 38px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--kant-sterk);
+  background: radial-gradient(circle at 32% 26%,
+    color-mix(in srgb, var(--fag-tone) 25%, white),
+    var(--fag-tone) 78%,
+    color-mix(in srgb, var(--fag-tone) 70%, black));
+  font-family: Inter, sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  color: #16203C;
+}
+.nedtrekk-knapp .tekst { min-width: 0; flex: 1; }
+.nedtrekk-knapp .kode {
+  display: block;
+  font-family: Inter, sans-serif;
+  font-size: 9px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--blekk-3);
+}
+.nedtrekk-knapp .navn {
+  display: block;
+  margin-top: 3px;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 400; font-size: 17px; letter-spacing: -.025em; line-height: 1.15;
+  color: var(--blekk);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.nedtrekk-knapp .pil {
+  flex-shrink: 0; color: var(--blekk-3);
+  transition: transform .3s var(--fjaer);
+}
+.nedtrekk[data-apen="true"] .pil { transform: rotate(180deg); }
+
+/* Lista. Den legger seg over innholdet under, ikke dytter det
+   nedover — en liste som skyver halve skjermen leser som en ny
+   side i stedet for som et valg. */
+.nedtrekk-liste {
+  position: absolute;
+  left: 0; right: 0; top: calc(100% + 8px);
+  z-index: 5;
+  margin: 0; padding: 7px;
+  list-style: none;
+  border-radius: var(--r-stor);
+  border: 1px solid var(--kant-linje);
+  background:
+    linear-gradient(var(--glass-tett), var(--glass-tett)),
+    linear-gradient(
+      color-mix(in srgb, var(--grunn-2) 88%, transparent),
+      color-mix(in srgb, var(--grunn-2) 88%, transparent));
+  -webkit-backdrop-filter: blur(40px) saturate(1.3);
+  backdrop-filter: blur(40px) saturate(1.3);
+  box-shadow: inset 0 1px 0 var(--glass-topp), var(--kast);
+  transform-origin: top center;
+  transform: translateY(-8px) scale(.97);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .22s var(--skarp), transform .3s var(--skarp), visibility .3s;
+}
+.nedtrekk[data-apen="true"] .nedtrekk-liste {
+  opacity: 1; visibility: visible; transform: none;
+}
+
+.nedtrekk-liste button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 11px;
+  border: 0;
+  border-radius: var(--r-knapp);
+  background: none;
+  color: var(--blekk);
+  cursor: pointer;
+  text-align: left;
+  transition: background .15s;
+}
+.nedtrekk-liste button:hover { background: var(--glass-tynn); }
+.nedtrekk-liste li[aria-selected="true"] button { background: var(--glass-tynn); }
+.nedtrekk-liste .kule {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--kant-sterk);
+  background: radial-gradient(circle at 32% 26%,
+    color-mix(in srgb, var(--fag-tone) 25%, white), var(--fag-tone) 80%);
+}
+.nedtrekk-liste .navn {
+  flex: 1; min-width: 0;
+  font-size: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.nedtrekk-liste .andel {
+  flex-shrink: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 13px; font-weight: 400; letter-spacing: -.02em;
+  color: var(--blekk-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- TO TALL OG EN KNAPP ----------------------------------- */
+.landing .tallpar { display: grid; grid-template-columns: 1fr 1fr; gap: var(--glipe); }
+.landing .tallpar > div {
+  padding: 15px 16px;
+  border-radius: var(--r-kort);
+  border: 1px solid var(--kant-linje);
+  background: var(--glass-tynn);
+  -webkit-backdrop-filter: blur(26px);
+  backdrop-filter: blur(26px);
+}
+.landing .tallpar b {
+  display: block;
+  white-space: nowrap;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 200; font-size: 30px; letter-spacing: -.045em; line-height: 1;
+  color: var(--blekk);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* Prosenttegnet er en enhet, ikke en del av tallet. */
+.landing .tallpar b small { font-size: 15px; font-weight: 300; letter-spacing: 0; }
+/* Noen av verdiene er ord og ikke siffer («8 oppgaver»). De får
+   mindre grad, ellers brekker de ut av ruta. */
+.landing .tallpar b[data-fag-venter] { font-size: 23px; font-weight: 300; letter-spacing: -.03em; }
+.landing .tallpar > div > span {
+  display: block; margin-top: 7px;
+  font-family: Inter, sans-serif;
+  font-size: 8.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--blekk-3);
+}
+
+/* ============================================================
+   UTSEENDE-ARKET
+
+   Et ark som kommer opp nedenfra når du trykker «···» i toppbaren.
+   To valg: hvilket bilde som ligger bak, og om temaet skal følge
+   klokka eller stå fast.
+
+   Arket er bygget av flyt-utseende.js, ikke av markup — det skal
+   kunne nås fra hvilken som helst skjerm uten at skjermen trenger
+   å vite om det.
+   ============================================================ */
+
+.arkbunn {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: rgba(6,12,22,.42);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .28s var(--skarp), visibility .28s;
+}
+.arkbunn[data-apen="true"] { opacity: 1; visibility: visible; }
+
+.ark {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 41;
+  padding: 10px var(--kant) calc(var(--kant) + 6px);
+  border-radius: 30px 30px 0 0;
+  border: 1px solid var(--kant-linje);
+  border-bottom: 0;
+  /* Som nedtrekkslista: to lag, der det nederste er grunnfargen.
+     Et ark som ligger over hele skjermen må være tett, ellers leser
+     det som enda et slør og ikke som noe foran. */
+  background:
+    linear-gradient(var(--glass-tett), var(--glass-tett)),
+    linear-gradient(
+      color-mix(in srgb, var(--grunn-2) 92%, transparent),
+      color-mix(in srgb, var(--grunn-2) 92%, transparent));
+  -webkit-backdrop-filter: blur(40px) saturate(1.3);
+  backdrop-filter: blur(40px) saturate(1.3);
+  box-shadow: inset 0 1px 0 var(--glass-topp), 0 -20px 50px -24px rgba(8,16,32,.6);
+  transform: translateY(100%);
+  transition: transform .34s var(--skarp);
+}
+.arkbunn[data-apen="true"] + .ark,
+.ark[data-apen="true"] { transform: none; }
+
+.ark .haandtak {
+  width: 38px; height: 4px; border-radius: 2px;
+  margin: 0 auto 16px;
+  background: var(--blekk-3);
+  opacity: .4;
+}
+.ark h2 { margin-bottom: 4px; }
+.ark .gruppe { margin-top: 20px; }
+.ark .gruppe > .etikett { display: block; margin-bottom: 10px; }
+
+/* Bildevalget viser de faktiske motivene, ikke navnene på dem. */
+.bildevalg { display: grid; grid-template-columns: 1fr 1fr; gap: var(--glipe); }
+.bildevalg button {
+  position: relative;
+  height: 92px;
+  padding: 0;
+  border: 1px solid var(--kant-linje);
+  border-radius: var(--r-kort);
+  background-size: cover;
+  background-position: 56% 38%;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color .18s var(--skarp), transform .18s var(--skarp);
+}
+.bildevalg button:hover { transform: translateY(-2px); }
+.bildevalg button[aria-pressed="true"] {
+  border-color: var(--kant-sterk);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--fag-tone) 60%, transparent);
+}
+.bildevalg button span {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 16px 10px 8px;
+  font-family: Inter, sans-serif;
+  font-size: 9px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,.7);
+  background: linear-gradient(180deg, transparent, rgba(6,12,22,.72));
+}
+
+/* Temavalget. Fire brikker på rad, der den første er «følg klokka». */
+.temavalg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+.temavalg button {
+  min-height: 46px;
+  padding: 0 4px;
+  border: 1px solid var(--kant-linje);
+  border-radius: var(--r-knapp);
+  background: var(--glass-tynn);
+  color: var(--blekk-3);
+  cursor: pointer;
+  font-family: Inter, sans-serif;
+  font-size: 9px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+  transition: color .16s, background .16s, border-color .16s;
+}
+.temavalg button:hover { color: var(--blekk); border-color: var(--kant-sterk); }
+.temavalg button[aria-pressed="true"] {
+  background: var(--glass-tett);
+  border-color: var(--kant-sterk);
+  color: var(--blekk);
+  box-shadow: inset 0 1px 0 var(--glass-topp);
+}

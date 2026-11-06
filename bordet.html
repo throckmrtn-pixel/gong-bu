@@ -8,8 +8,6 @@
 
 /* --- GLØD er standard. Alle tokens defineres her først. ------- */
 :root {
-  --bakgrunn: url("bg-lys-bred.webp");
-  --veil: rgba(40,46,102,.50);
   --grunn-1: #66729F;  --grunn-2: #74689E;  --grunn-3: #4F7694;
   --band-1: #DCE8FF;   --band-2: #F6DCF2;   --band-3: #CFF2F6;
   --band-kjerne: #FFFFFF;
@@ -34,8 +32,6 @@
 
 /* --- LYS ------------------------------------------------------ */
 :root[data-tema="lys"] {
-  --bakgrunn: url("bg-lys-bred.webp");
-  --veil: rgba(255,255,255,.30);
   --grunn-1: #E4EAFA;  --grunn-2: #E9E3F6;  --grunn-3: #F3F0FA;
   --band-1: #A9BFF5;   --band-2: #F0CFE4;   --band-3: #BCE6E8;
   --frynse-1: #B6D2FF; --frynse-2: #F6CBE2;
@@ -54,8 +50,6 @@
 
 /* --- MØRK ----------------------------------------------------- */
 :root[data-tema="mork"] {
-  --bakgrunn: url("bg-mork-bred.webp");
-  --veil: rgba(7,11,24,.34);
   --grunn-1: #0D1326;  --grunn-2: #151C38;  --grunn-3: #090D1C;
   --band-1: #5FD8F0;   --band-2: #D98FF0;   --band-3: #8FA0FF;
   --frynse-1: #6FE6FF; --frynse-2: #DE86F3;
@@ -75,8 +69,6 @@
 /* Før skriptet rekker å velge: følg maskinens innstilling. */
 @media (prefers-color-scheme: light) {
   :root:not([data-tema]) {
-    --bakgrunn: url("bg-lys-bred.webp");
-    --veil: rgba(255,255,255,.30);
     --grunn-1: #E4EAFA;  --grunn-2: #E9E3F6;  --grunn-3: #F3F0FA;
     --band-1: #A9BFF5;   --band-2: #F0CFE4;   --band-3: #BCE6E8;
     --frynse-1: #B6D2FF; --frynse-2: #F6CBE2;
@@ -112,25 +104,20 @@ body {
    SCENEN — strømmende lys bak glasset
    ============================================================ */
 .scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-.scene .foto {
-  position: absolute; inset: -3%;
-  background-image: var(--bakgrunn);
-  background-size: cover;
-  background-position: center;
-  animation: sig 46s ease-in-out infinite alternate;
-}
-@keyframes sig {
-  from { transform: scale(1)    translate(0, 0) }
-  to   { transform: scale(1.06) translate(-1.1%, .9%) }
-}
-.scene .skrim {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, var(--skrim), transparent 56%), var(--veil);
-}
+.scene svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.scene .skrim { position: absolute; inset: 0; background: linear-gradient(180deg, var(--skrim), transparent 56%); }
 .scene .korn {
   position: absolute; inset: 0; mix-blend-mode: overlay; opacity: .16;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+.band-a { animation: drift-a 23s ease-in-out infinite alternate; }
+.band-b { animation: drift-b 31s ease-in-out infinite alternate; }
+.band-c { animation: drift-c 19s ease-in-out infinite alternate; }
+@keyframes drift-a { from { transform: translate(0,0) } to { transform: translate(-22px, 14px) } }
+@keyframes drift-b { from { transform: translate(0,0) } to { transform: translate(18px, -16px) } }
+@keyframes drift-c { from { transform: translate(0,0) scale(1) } to { transform: translate(-12px, 9px) scale(1.03) } }
+.gnist { animation: loep 11s linear infinite; }
+@keyframes loep { from { stroke-dashoffset: 900 } to { stroke-dashoffset: 0 } }
 
 /* ============================================================
    SIDA
@@ -412,7 +399,7 @@ body {
     <div class="temavelger" role="group" aria-label="Velg tema">
       <button type="button" data-tema="lys"  aria-pressed="false">Lys</button>
       <button type="button" data-tema="mork" aria-pressed="false">Mørk</button>
-      <button type="button" data-tema="glo"  aria-pressed="true">Glød</button>
+      <button type="button" data-tema="staal"  aria-pressed="true">Glød</button>
     </div>
   </header>
 
@@ -639,12 +626,68 @@ body {
 
   /* ==========================================================
      2 · SCENEN
-     Bakgrunnen er fotoet; temaet bestemmer hvilket. Over det
-     ligger en flat demping som gjør teksten lesbar, og et korn
-     som tar bort det digitale preget.
+     Hvert bånd er fem streker: glød, kropp, to fargefrynser
+     forskjøvet opp og ned, mykt indre lys, og en hårtynn
+     spekulær strek på toppkanten. Det er frynsene og den
+     spekulære streken som skiller tykt glass fra en farget linje.
      ========================================================== */
+  var BAAND = [
+    { d: "M-70 126 C 250 46, 500 212, 770 112 S 1160 38, 1350 134", g: "g1", takt: "a" },
+    { d: "M-70 304 C 230 196, 520 396, 790 284 S 1180 198, 1350 310", g: "g2", takt: "b", gnist: 1 },
+    { d: "M-70 486 C 270 376, 540 602, 810 486 S 1190 400, 1350 504", g: "g3", takt: "c" },
+    { d: "M-70 664 C 210 560, 490 782, 780 660 S 1180 596, 1350 688", g: "g1", takt: "b" }
+  ];
+
+  function strek(d, farge, bredde, ekstra) {
+    return '<path d="' + d + '" fill="none" stroke="' + farge + '" stroke-width="' + bredde
+         + '" stroke-linecap="round" ' + (ekstra || '') + '/>';
+  }
+  function grad(id, a, b, c) {
+    return '<linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="0.35">'
+      + '<stop offset="0" stop-color="var(' + a + ')" stop-opacity="0"/>'
+      + '<stop offset=".26" stop-color="var(' + a + ')"/>'
+      + '<stop offset=".62" stop-color="var(' + b + ')"/>'
+      + '<stop offset="1" stop-color="var(' + c + ')" stop-opacity="0"/></linearGradient>';
+  }
+
+  var deler = '';
+  BAAND.forEach(function (b) {
+    var nr = b.g.slice(1);
+    deler += '<g class="band-' + b.takt + '">'
+      + strek(b.d, 'var(--band-' + nr + ')', 44, 'opacity="var(--band-glod)" filter="url(#uskarp)"')
+      + strek(b.d, 'url(#' + b.g + ')', 22, 'opacity="var(--band-styrke)"')
+      + '<g opacity="var(--band-styrke)">'
+      +   '<g transform="translate(0,-4.6)">' + strek(b.d, 'var(--frynse-1)', 2.6, 'opacity=".85"') + '</g>'
+      +   '<g transform="translate(0,5.2)">'  + strek(b.d, 'var(--frynse-2)', 3.2, 'opacity=".7"')  + '</g>'
+      + '</g>'
+      + strek(b.d, 'var(--band-kjerne)', 7, 'opacity=".4" filter="url(#mykkjerne)"')
+      + '<g transform="translate(0,-1.4)">' + strek(b.d, 'var(--band-kjerne)', 2.2, 'opacity=".95"') + '</g>'
+      + (b.gnist ? strek(b.d, 'var(--band-kjerne)', 5, 'class="gnist" stroke-dasharray="26 874"') : '')
+      + '</g>';
+  });
+
   document.querySelector('.scene').innerHTML =
-    '<div class="foto"></div><div class="skrim"></div><div class="korn"></div>';
+    '<svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>'
+    + grad('g1', '--band-1', '--band-2', '--band-3')
+    + grad('g2', '--band-2', '--band-1', '--band-1')
+    + grad('g3', '--band-3', '--band-2', '--band-2')
+    + '<filter id="uskarp" x="-30%" y="-140%" width="160%" height="380%"><feGaussianBlur stdDeviation="17"/></filter>'
+    + '<filter id="mykkjerne" x="-20%" y="-120%" width="140%" height="340%"><feGaussianBlur stdDeviation="3.6"/></filter>'
+    + '<filter id="krusning" x="-10%" y="-10%" width="120%" height="140%">'
+    +   '<feTurbulence type="fractalNoise" baseFrequency="0.011 0.06" numOctaves="2" seed="7" result="t"/>'
+    +   '<feDisplacementMap in="SourceGraphic" in2="t" scale="22" xChannelSelector="R" yChannelSelector="G"/>'
+    +   '<feGaussianBlur stdDeviation="2.4"/></filter>'
+    + '<linearGradient id="fade" gradientUnits="userSpaceOnUse" x1="0" y1="800" x2="0" y2="1130">'
+    +   '<stop offset="0" stop-color="#fff" stop-opacity=".62"/>'
+    +   '<stop offset=".5" stop-color="#fff" stop-opacity=".22"/>'
+    +   '<stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+    + '<mask id="gulvmaske" maskUnits="userSpaceOnUse" x="-80" y="800" width="1500" height="340">'
+    +   '<rect x="-80" y="800" width="1500" height="340" fill="url(#fade)"/></mask>'
+    + '<g id="baand">' + deler + '</g></defs>'
+    + '<use href="#baand"/>'
+    + '<g transform="translate(0,1600) scale(1,-1)" mask="url(#gulvmaske)" filter="url(#krusning)">'
+    +   '<use href="#baand"/></g></svg>'
+    + '<div class="skrim"></div><div class="korn"></div>';
 
   /* ==========================================================
      3 · ORBEN

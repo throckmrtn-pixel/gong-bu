@@ -1,0 +1,1058 @@
+/* ============================================================
+   gong-bu · designsystem v2 «sollys gjennom glass»
+
+   Kald pastellgrunn, varmt sollys ovenfra høyre. Alt som er glass
+   fanger lyset på den øvre høyre kanten og kaster en varm kaustikk
+   ned mot venstre. Lysretningen brytes aldri — det er den som gjør
+   at flatene leses som fysisk glass og ikke som gjennomsiktige bokser.
+
+   Alt visuelt bor her. Sidene inneholder bare struktur.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root {
+
+  /* --- LYSET ------------------------------------------------
+     Én sol, øverst til høyre. 203° er «nedover mot venstre» og
+     brukes på hver eneste gradient i systemet. Endrer du den,
+     endrer du den overalt.                                     */
+  --lysvinkel: 203deg;
+
+  --sol-kjerne:  #FFF1D2;
+  --sol-spill:   #FFDEC4;
+  --sol-kant:    #FFE2AA;
+
+  /* --- KALDE PASTELLER (iriserende sett) -------------------- */
+  --is-1: #ABC0F6;   /* dypest periwinkle — bare til aksenter   */
+  --is-2: #C7D6F7;
+  --is-3: #D5D9F2;
+  --is-4: #E4E2F8;
+  --is-5: #E1EDF6;   /* is                                       */
+  --mint: #D6F0EA;
+  --rosa: #F8DCE6;
+
+  /* --- GRUNN ------------------------------------------------ */
+  --grunn:   #F2F4FB;
+  --grunn-v: #FBF8F3;   /* varm ende, mot sola                   */
+  --grunn-k: #E9EDF9;   /* kald ende, i skyggen                  */
+  --hvit:    #FFFFFF;
+
+  /* --- BLEKK (alle ≥ 4.5:1 mot sin egen grunn) --------------- */
+  --blekk:   #191D2B;
+  --blekk-2: #343B52;
+  --blekk-3: #4F5770;   /* grensen. Ikke lysere enn denne.        */
+  --aksent:  #44489C;   /* lenker, tall, nivåmerker               */
+  --gull:    #7A5E31;   /* varm etikett, brukes sparsomt          */
+
+  /* --- TILSTAND (oversikten) -------------------------------- */
+  --sitter-a:  #DCE0FA;
+  --sitter-b:  #D3EEF2;
+  --prikk-a:   #8E9BE0;
+  --prikk-b:   #6FBFD2;
+  --paavei:    #FDF1E2;
+  --paavei-k:  #D5B388;
+  --paavei-f:  #EFC79C;
+  --kontur:    #BCC2D8;
+  --kontur-s:  #9AA2BE;
+
+  /* --- FORM -------------------------------------------------
+     Squircle-aktig: store radier, lite variasjon.              */
+  --r-pille: 999px;
+  --r-kort:  26px;
+  --r-felt:  20px;
+  --r-knapp: 18px;
+  --r-liten: 14px;
+
+  /* --- KANTER -----------------------------------------------
+     Kanten mot sola er nesten hvit, kanten bort fra den er
+     kjølig og svak. To linjer, ikke én ramme.                  */
+  --kant-sol:    rgba(255,255,255,.98);
+  --kant-halv:   rgba(255,255,255,.62);
+  --kant-skygge: rgba(255,255,255,.26);
+
+  /* --- KAST (skygge faller ned mot venstre) ----------------- */
+  --kast-1: 0 1px 1px -1px rgba(74,86,140,.16),
+            -4px 10px 18px -12px rgba(74,86,140,.40);
+  --kast-2: 0 1px 2px -1px rgba(74,86,140,.18),
+            -6px 16px 26px -14px rgba(74,86,140,.44),
+            -12px 30px 46px -30px rgba(74,86,140,.40);
+  --kast-3: 0 2px 3px -1px rgba(74,86,140,.18),
+            -8px 22px 32px -16px rgba(74,86,140,.46),
+            -18px 44px 64px -34px rgba(74,86,140,.44);
+
+  /* --- BEVEGELSE -------------------------------------------- */
+  --mykt: cubic-bezier(.22,.61,.36,1);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  color: var(--blekk);
+  background: var(--grunn);
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+a { color: var(--aksent); }
+
+:focus-visible {
+  outline: 2px solid var(--aksent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ============================================================
+   SKJERMEN
+   Tre lag: atmosfære (gradientene), sollyset (::before) og
+   kornet (::after). Alt innhold legger seg over.
+   ============================================================ */
+
+.skjerm {
+  position: relative;
+  width: 390px;
+  min-height: 844px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    /* solkjernen, utenfor rammen oppe til høyre */
+    radial-gradient(44% 26% at 96% -6%,  rgba(255,241,210,.98) 0%, rgba(255,241,210,0) 72%),
+    radial-gradient(74% 40% at 80%  4%,  rgba(255,222,196,.70) 0%, rgba(255,222,196,0) 74%),
+    /* kalde skyer i skyggesiden */
+    radial-gradient(58% 30% at  2% 22%,  rgba(199,214,247,.90) 0%, rgba(199,214,247,0) 76%),
+    radial-gradient(64% 32% at -2% 82%,  rgba(171,192,246,.58) 0%, rgba(171,192,246,0) 78%),
+    radial-gradient(52% 26% at 90% 70%,  rgba(214,240,234,.70) 0%, rgba(214,240,234,0) 78%),
+    radial-gradient(48% 22% at 52% 46%,  rgba(255,255,255,.92) 0%, rgba(255,255,255,0) 80%),
+    linear-gradient(var(--lysvinkel), var(--grunn-v) 0%, var(--grunn) 46%, var(--grunn-k) 100%);
+}
+
+/* Sollyset: ett bredt, mykt belte på tvers. Dette er «solen som
+   treffer glasset» — uten det er paletten bare pastell. */
+.skjerm::before {
+  content: "";
+  position: absolute;
+  inset: -24% -14%;
+  pointer-events: none;
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,247,228,0)   18%,
+    rgba(255,245,221,.85) 31%,
+    rgba(255,252,243,.34) 42%,
+    rgba(255,255,255,0)   54%);
+  filter: blur(16px);
+}
+
+/* Papirkorn. Uten dette ser gradientene digitale ut. */
+.skjerm::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: .04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.skjerm > * { position: relative; z-index: 1; }
+
+.fyll { flex-grow: 1; min-height: 0; }
+
+/* ============================================================
+   MATERIALER
+   Tre tettheter. Jo mer tekst, jo tettere glass.
+
+     .panel          rammeverk  — tynt, slipper bakgrunnen gjennom
+     .panel--lese    innhold    — nesten tett, trygt å lese i
+     .panel--hinne   antydning  — bare en hinne, til sitater o.l.
+   ============================================================ */
+
+.panel {
+  position: relative;
+  border-radius: var(--r-kort);
+  padding: 18px;
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.92)  0%,
+    rgba(255,252,244,.60) 20%,
+    rgba(255,255,255,.42) 44%,
+    rgba(221,229,250,.46) 78%,
+    rgba(234,233,252,.62) 100%);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  box-shadow:
+    inset 0 1px 0 var(--kant-sol),
+    inset -1px 0 0 var(--kant-halv),
+    inset 1px 0 0 var(--kant-skygge),
+    inset 0 -16px 24px -22px rgba(130,144,196,.55),
+    var(--kast-2);
+}
+
+/* Prismekanten: sola treffer øvre fas og splittes i gull → hvitt →
+   periwinkle. Én piksel. Det er dette øyet leser som «glass». */
+.panel::after,
+.pille::after,
+.felt::after,
+.kode::after,
+.nav::after {
+  content: "";
+  position: absolute;
+  left: 13%; right: 5%; top: 0;
+  height: 1px;
+  border-radius: 1px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0)   0%,
+    rgba(255,226,170,.92) 20%,
+    rgba(255,255,255,1)   52%,
+    rgba(190,206,250,.95) 80%,
+    rgba(255,255,255,0)   100%);
+  pointer-events: none;
+}
+
+/* Leseflate. Glass er fint på rammeverk, ikke under brødtekst. */
+.panel--lese {
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.98) 0%,
+    rgba(255,254,250,.95) 34%,
+    rgba(250,251,255,.94) 72%,
+    rgba(246,248,255,.96) 100%);
+}
+
+/* Bare en hinne — «du skrev», sitater, bisetninger. */
+.panel--hinne {
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.52) 0%,
+    rgba(255,255,255,.26) 52%,
+    rgba(219,228,250,.34) 100%);
+  box-shadow:
+    inset 0 1px 0 var(--kant-halv),
+    inset 0 -10px 18px -18px rgba(130,144,196,.5),
+    var(--kast-1);
+}
+
+/* Kjølig variant til medhold/retting. */
+.panel--is {
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.80) 0%,
+    rgba(228,226,248,.72) 40%,
+    rgba(211,238,242,.70) 100%);
+}
+
+/* Varm variant — brukes der noe er «ikke helt». */
+.panel--varm {
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,252,244,.96) 0%,
+    rgba(253,241,226,.92) 46%,
+    rgba(252,235,222,.90) 100%);
+}
+
+/* ============================================================
+   LYS PÅ GLASSET
+   Fire byggeklosser. De er alltid dekorative — aldri under tekst,
+   aldri klikkbare. Legg dem som første barn i en relativ forelder.
+   ============================================================ */
+
+/* KAUSTIKK — den varme lysflekken glasset kaster på flaten bak.
+   Forskjøvet ned og mot venstre, fordi sola står oppe til høyre.
+   Dette er den viktigste av de fire. */
+.kaust {
+  position: absolute;
+  left: -6%; right: 6%; bottom: -13px;
+  height: 38px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(58% 100% at 64% 36%,
+    rgba(255,228,176,.95) 0%,
+    rgba(255,214,200,.70) 32%,
+    rgba(198,212,250,.58) 64%,
+    rgba(198,212,250,0)   100%);
+  filter: blur(12px);
+}
+.kaust--tett  { left: 6%;  right: 14%; bottom: -8px;  height: 24px; filter: blur(8px); }
+.kaust--bred  { left: -12%; right: 0;  bottom: -18px; height: 52px; filter: blur(17px); }
+
+/* IRIS — prismeglød rundt hele elementet. Nå retningsbestemt:
+   gull på solsiden, periwinkle i skyggen. Brukes på hovedknappen
+   og på ting som skal se ut som de lyser innenfra. */
+.iris {
+  position: absolute;
+  left: -7px; right: -7px; top: -5px; bottom: -12px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,203,120,.95)  0%,
+    rgba(255,237,196,.98) 20%,
+    rgba(255,255,255,1)   44%,
+    rgba(164,189,250,.98) 72%,
+    rgba(203,183,245,.95) 100%);
+  filter: blur(11px);
+}
+.iris--tett { left: -4px; right: -4px; top: -3px; bottom: -7px; filter: blur(7px); }
+
+/* GLANS — den hvite refleksen langs øvre kant. */
+.glans {
+  position: absolute;
+  left: 6%; right: 10%; top: 4%; height: 38%;
+  border-radius: var(--r-pille);
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,.95) 0%,
+    rgba(255,255,255,.22) 62%,
+    rgba(255,255,255,0) 100%);
+  filter: blur(2px);
+}
+
+/* GLIMT — brytningen nede i skyggesiden. Kjølig, ikke varm. */
+.glimt {
+  position: absolute;
+  left: 2%; bottom: 6%; width: 38%; height: 32%;
+  border-radius: var(--r-pille);
+  pointer-events: none;
+  background: linear-gradient(68deg,
+    rgba(171,192,246,.55) 0%,
+    rgba(214,240,234,.42) 52%,
+    rgba(255,255,255,0) 100%);
+  filter: blur(8px);
+}
+
+/* HJØRNEMERKER — målestokken. Fire tynne vinkler som rammer inn
+   noe uten å lage en boks. Det tekniske preget kommer herfra. */
+.hjorne {
+  position: absolute;
+  width: 10px; height: 10px;
+  pointer-events: none;
+  opacity: .55;
+}
+.hjorne::before,
+.hjorne::after {
+  content: "";
+  position: absolute;
+  background: var(--aksent);
+}
+.hjorne::before { top: 0; left: 0; width: 100%; height: 1px; }
+.hjorne::after  { top: 0; left: 0; width: 1px;  height: 100%; }
+.hjorne--tv { top: -5px;  left: -5px; }
+.hjorne--th { top: -5px;  right: -5px; transform: scaleX(-1); }
+.hjorne--bv { bottom: -5px; left: -5px;  transform: scaleY(-1); }
+.hjorne--bh { bottom: -5px; right: -5px; transform: scale(-1); }
+
+/* ============================================================
+   KNAPPER
+   Alltid <button> eller <a>. Minste trykkflate 44px.
+   ============================================================ */
+
+.pille {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--kant-halv);
+  border-radius: var(--r-pille);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.96)  0%,
+    rgba(255,251,241,.74) 22%,
+    rgba(255,255,255,.52) 46%,
+    rgba(219,228,250,.56) 80%,
+    rgba(232,230,251,.72) 100%);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+  backdrop-filter: blur(14px) saturate(1.5);
+  color: var(--blekk);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -.01em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 var(--kant-sol),
+    inset -1px 0 0 var(--kant-halv),
+    inset 0 -14px 20px -18px rgba(130,144,196,.55),
+    var(--kast-2);
+  transition: transform .18s var(--mykt), box-shadow .18s var(--mykt);
+}
+/* Teksten må ligge over glansen — men glans og glimt skal bli
+   liggende absolutt plassert, ellers havner de i flex-flyten og
+   dytter teksten ut av midten. */
+.pille > span:not(.glans):not(.glimt) { position: relative; z-index: 1; }
+
+.pille:active {
+  transform: translateY(1px) scale(.994);
+  box-shadow:
+    inset 0 1px 0 var(--kant-halv),
+    inset 0 2px 10px -4px rgba(110,126,186,.42),
+    var(--kast-1);
+}
+
+/* Hovedhandlingen. Én per skjerm. */
+.pille--stor {
+  width: 100%;
+  min-height: 62px;
+  font-size: 19px;
+  border-radius: var(--r-pille);
+}
+
+/* Stillere valg: ingen flate, bare mono-tekst. */
+.pille--stille {
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: transparent;
+  box-shadow: none;
+  color: var(--blekk-3);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.pille--stille::after { display: none; }
+.pille--stille:active { transform: none; box-shadow: none; }
+
+/* Nøytralt sidestilt valg. */
+.pille--svak {
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.66) 0%,
+    rgba(255,255,255,.34) 54%,
+    rgba(219,228,250,.44) 100%);
+  box-shadow: inset 0 1px 0 var(--kant-halv), var(--kast-1);
+}
+
+/* Svaralternativ: venstrestilt, full bredde. */
+.svar {
+  width: 100%;
+  min-height: 58px;
+  justify-content: flex-start;
+  border-radius: var(--r-knapp);
+  font-size: 17px;
+  font-weight: 500;
+}
+/* Et lite indeksmerke foran hvert svar — mono, dempet. */
+.svar .nr {
+  flex-shrink: 0;
+  min-width: 22px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  color: var(--blekk-3);
+}
+
+/* Rund ikonknapp — den lille sirkelen med pil, som i referansen. */
+.rund {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.96) 0%,
+    rgba(255,255,255,.52) 50%,
+    rgba(214,224,250,.62) 100%);
+  color: var(--blekk);
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-1);
+  cursor: pointer;
+}
+.rund--stor { width: 44px; height: 44px; }
+
+/* Flytende lenkebrikke: rund pil + to linjer tekst. */
+.brikkelenke {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 7px 16px 7px 7px;
+  border-radius: var(--r-pille);
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.88) 0%,
+    rgba(255,255,255,.44) 52%,
+    rgba(219,228,250,.54) 100%);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-2);
+  text-decoration: none;
+  color: var(--blekk);
+}
+.brikkelenke b {
+  display: block;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+}
+
+/* ============================================================
+   SEGMENTVELGER (fagene)
+   ============================================================ */
+
+.segment {
+  position: relative;
+  display: inline-flex;
+  padding: 4px;
+  border-radius: var(--r-pille);
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.62) 0%,
+    rgba(255,255,255,.28) 54%,
+    rgba(216,226,250,.42) 100%);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-1);
+}
+.segment button {
+  min-height: 42px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: var(--r-pille);
+  background: none;
+  color: var(--blekk-3);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+}
+.segment .valgt { position: relative; display: inline-flex; }
+.segment .valgt button {
+  position: relative;
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.98) 0%,
+    rgba(255,252,244,.82) 28%,
+    rgba(255,255,255,.72) 56%,
+    rgba(222,230,251,.80) 100%);
+  color: var(--blekk);
+  font-weight: 600;
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-1);
+}
+
+/* ============================================================
+   TYPOGRAFI
+   Space Grotesk = overskrifter og knapper.
+   Inter          = brødtekst.
+   JetBrains Mono = merkelapper, tall, statuslinjer.
+   ============================================================ */
+
+h1, h2, .tittel {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  letter-spacing: -.025em;
+  color: var(--blekk);
+}
+h1 { font-size: 28px; letter-spacing: -.035em; }
+h2 { font-size: 18px; }
+.sporsmaal { font-size: 23px; line-height: 1.34; letter-spacing: -.028em; }
+
+.brod  { margin: 0; font-size: 16px; line-height: 1.52; color: var(--blekk); }
+.hjelp { margin: 0; font-size: 15px; line-height: 1.5; color: var(--blekk-3); }
+
+/* Det store tallet. Tett tracking, mono-sifre. */
+.tall {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  letter-spacing: -.05em;
+  font-variant-numeric: tabular-nums;
+  line-height: .9;
+}
+
+/* Merkelappen. Her bor det tekniske preget. */
+.lapp {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--blekk-3);
+}
+.lapp--aksent { color: var(--aksent); font-weight: 700; }
+.lapp--gull   { color: var(--gull);   font-weight: 700; }
+
+/* Nivåmerket. */
+.nivaa {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--r-pille);
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.90) 0%,
+    rgba(255,255,255,.44) 54%,
+    rgba(219,228,250,.58) 100%);
+  -webkit-backdrop-filter: blur(10px) saturate(1.4);
+  backdrop-filter: blur(10px) saturate(1.4);
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-1);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: var(--aksent);
+  text-transform: uppercase;
+}
+/* Liten lysende prikk foran nivåmerket. */
+.nivaa::before {
+  content: "";
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--aksent);
+  box-shadow: 0 0 0 3px rgba(68,72,156,.14);
+}
+
+/* Tynn delestrek. */
+.strek {
+  flex-grow: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(90,102,160,.34), rgba(90,102,160,.07));
+}
+
+/* Målestokk: en rad bittesmå hakk. Rent ornament, men det er
+   dette som gjør at skjermen leses som et instrument. */
+.hakk {
+  height: 7px;
+  background-image: repeating-linear-gradient(90deg,
+    rgba(90,102,160,.34) 0 1px, transparent 1px 7px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+/* ============================================================
+   FREMDRIFT — segmentert, ikke glatt.
+   ============================================================ */
+
+.fremdrift {
+  position: relative;
+  flex-grow: 1;
+  height: 8px;
+  border-radius: var(--r-pille);
+  overflow: hidden;
+  border: 1px solid var(--kant-halv);
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(90,102,160,.26) 0 1px, transparent 1px 6px),
+    rgba(255,255,255,.52);
+  box-shadow: inset 0 1px 2px rgba(110,126,186,.14);
+}
+.fremdrift > i {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pille);
+  background: linear-gradient(90deg, var(--is-1), var(--is-5) 60%, var(--sol-kant));
+  box-shadow: 0 0 12px rgba(255,255,255,.95), inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+/* ============================================================
+   TILSTANDSBRIKKER (oversikten)
+
+   VIKTIG: når hele paletten er lys kan ikke farge alene bære tre
+   tilstander. Hver brikke har derfor også et merke:
+   hel prikk / halv prikk / tom ring. Ikke fjern prikken.
+   ============================================================ */
+
+.brikker { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.brikke {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: var(--r-pille);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--blekk);
+}
+.brikke i { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+.brikke--sitter {
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.72), var(--sitter-a) 56%, var(--sitter-b));
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-1);
+}
+.brikke--sitter i {
+  background: linear-gradient(135deg, var(--prikk-a), var(--prikk-b));
+  box-shadow: 0 0 0 2px rgba(255,255,255,.9);
+}
+
+.brikke--paavei {
+  border: 1px solid rgba(255,255,255,.8);
+  background: var(--paavei);
+  box-shadow: inset 0 1px 0 var(--kant-sol);
+}
+.brikke--paavei i {
+  background: linear-gradient(90deg, var(--paavei-f) 50%, rgba(255,255,255,.75) 50%);
+  box-shadow: inset 0 0 0 1px var(--paavei-k);
+}
+
+.brikke--urort {
+  background: none;
+  border: 1px dashed var(--kontur);
+  color: var(--blekk-3);
+}
+.brikke--urort i { box-shadow: inset 0 0 0 1.5px var(--kontur-s); }
+
+/* ============================================================
+   GLASSKULER — pynt. Flyter i bakgrunnen og driver sakte.
+   ============================================================ */
+
+.kule {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,.88);
+  background: radial-gradient(circle at 68% 24%,
+    rgba(255,252,240,.98)  0%,
+    rgba(255,255,255,.60) 26%,
+    rgba(214,224,250,.62) 58%,
+    rgba(224,214,248,.58) 80%,
+    rgba(255,255,255,.80) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98),
+    inset -7px -9px 16px rgba(150,166,216,.40),
+    inset 5px 6px 12px rgba(255,240,214,.55),
+    -4px 12px 20px -10px rgba(74,86,140,.40);
+  animation: drift 14s ease-in-out infinite alternate;
+}
+.kule--b { animation-duration: 19s; animation-delay: -6s; }
+
+@keyframes drift {
+  from { transform: translate3d(0,0,0); }
+  to   { transform: translate3d(-5px, 8px, 0); }
+}
+
+/* ============================================================
+   SKRIVEFELT OG KODE
+   Det eneste stedet glasset er nesten tett. Teksten du skriver
+   skal ikke kjempe mot bakgrunnen.
+   ============================================================ */
+
+.felt {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--kant-halv);
+  border-radius: var(--r-felt);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.99) 0%, rgba(252,253,255,.97) 60%, rgba(248,250,255,.97) 100%);
+  padding: 17px;
+  font-family: Inter, sans-serif;
+  font-size: 17px;
+  line-height: 1.52;
+  color: var(--blekk);
+  resize: none;
+  box-shadow:
+    inset 0 1px 0 var(--kant-sol),
+    inset 0 2px 8px -6px rgba(110,126,186,.35),
+    var(--kast-2);
+}
+.felt::placeholder { color: #8A90A8; }
+.felt--kode {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 20px;
+  min-height: 58px;
+  padding: 0 18px;
+}
+
+/* Kodeblokk. Lys, ikke mørk — ingen svarte flater i dette systemet. */
+.kode {
+  position: relative;
+  margin: 0;
+  border-radius: var(--r-felt);
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.99) 0%, rgba(251,252,255,.97) 58%, rgba(246,249,255,.97) 100%);
+  padding: 20px 18px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--blekk);
+  overflow-x: auto;
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-2);
+}
+.kode .v { color: #2F6E80; }   /* variabel          */
+.kode .t { color: #8A5A33; }   /* tall              */
+.kode .f { color: #4B4CA0; }   /* innebygd funksjon */
+
+/* ============================================================
+   BUNNMENY
+   ============================================================ */
+
+.nav {
+  position: relative;
+  flex-shrink: 0;
+  margin: 0 16px 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 10px 4px;
+  border-radius: 24px;
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.84) 0%,
+    rgba(255,255,255,.44) 50%,
+    rgba(217,227,250,.58) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-2);
+}
+.nav a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-height: 48px;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--blekk-3);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: .14em;
+}
+.nav a[aria-current="page"] { color: var(--aksent); font-weight: 700; }
+/* Den aktive fanen får et lite lyspunkt under seg, ikke en pille. */
+.nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 16px; height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--sol-kant), var(--is-1));
+  box-shadow: 0 0 8px rgba(171,192,246,.9);
+}
+
+/* ============================================================
+   KUA — den eneste tingen her som ikke er glass.
+   Det er hele poenget: alt annet er lys og presisjon, og så står
+   det en pikselku midt i det. Den rusler litt.
+   ============================================================ */
+
+.ku { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+img.kua, .ku img, .ku svg { image-rendering: pixelated; }
+img.kua, .ku img, .ku svg { animation: rusle 3.4s steps(2, jump-none) infinite alternate; }
+
+/* Kua står i det samme lyset som alt annet: liten kjølig skygge
+   ned mot venstre, ingen glass. */
+img.kua { filter: drop-shadow(-2px 4px 3px rgba(74,86,140,.26)); }
+
+@keyframes rusle {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-2px); }
+}
+
+/* ============================================================
+   TOPPLINJE OG LAYOUT-HJELPERE
+   ============================================================ */
+
+.topp {
+  padding: 24px 22px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.merke { display: flex; align-items: baseline; gap: 7px; }
+.merke .ko {
+  font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-size: 16px; font-weight: 700; color: var(--aksent);
+}
+.merke .navn {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600; font-size: 18px; letter-spacing: -.03em; color: var(--blekk);
+}
+
+.tilbake {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; flex-shrink: 0;
+  border-radius: var(--r-liten);
+  border: 1px solid var(--kant-halv);
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.92) 0%, rgba(255,255,255,.42) 54%, rgba(217,227,250,.58) 100%);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  color: var(--blekk);
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 var(--kant-sol), var(--kast-1);
+}
+
+.rad     { display: flex; align-items: center; gap: 10px; }
+.kolonne { display: flex; flex-direction: column; }
+.pad     { padding-left: 22px; padding-right: 22px; }
+.midt    { display: flex; align-items: center; justify-content: center; }
+.spred   { justify-content: space-between; }
+
+/* ============================================================
+   SEKSJONER
+   Faste rytmer, så sidene slipper inline-stiler.
+   ============================================================ */
+
+/* Statuslinja rett under toppen: nivåmerke — strek — kode. */
+.statuslinje { padding: 18px 22px 0; display: flex; align-items: center; gap: 9px; }
+
+/* Vanlig innholdsblokk. */
+.seksjon { padding: 18px 22px 0; }
+.seksjon--tett { padding-top: 12px; }
+.seksjon--luft { padding-top: 26px; }
+
+/* Stabel med jevn avstand. */
+.stabel     { display: flex; flex-direction: column; gap: 13px; }
+.stabel--tett { gap: 10px; }
+.stabel--luft { gap: 18px; }
+
+/* Sokkelen — tommelsonen. Alt man trykker på bor her. */
+.sokkel {
+  flex-shrink: 0;
+  padding: 16px 22px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.sokkel--lav { padding-bottom: 18px; }
+
+/* To like knapper side om side. */
+.par { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.tre { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+
+/* Flytende brikker nederst i en hero, som overlapper kanten. */
+.flytrad {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 18px;
+}
+
+/* ============================================================
+   BEREDSKAPSDIALEN (hjem)
+   ============================================================ */
+
+.dial { position: relative; width: 248px; height: 248px; }
+.dial svg { position: absolute; inset: 0; }
+
+.dial-lense {
+  position: absolute;
+  left: 32px; top: 32px;
+  width: 184px; height: 184px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--kant-sol);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.99)  0%,
+    rgba(255,250,238,.80) 22%,
+    rgba(255,255,255,.72) 46%,
+    rgba(222,230,251,.72) 76%,
+    rgba(233,231,252,.86) 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.99),
+    inset -12px -14px 26px rgba(150,166,216,.34),
+    inset 10px 12px 22px rgba(255,238,206,.50),
+    -6px 20px 32px -16px rgba(74,86,140,.48);
+}
+
+/* Lyset bak lensa — det glasset «samler». */
+.dial-glo {
+  position: absolute;
+  left: 13%; top: 13%; width: 74%; height: 74%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(from 185deg,
+    var(--rosa), var(--sol-kjerne), #FFFFFF, var(--mint), var(--is-3), var(--rosa));
+  filter: blur(15px);
+  opacity: .92;
+}
+
+.dial .tall { font-size: 64px; }
+.dial .tall sup { font-size: 24px; letter-spacing: 0; top: -.55em; }
+
+/* ============================================================
+   SORTERINGSFELT (nivå 3)
+   ============================================================ */
+
+.felle {
+  position: relative;
+  min-height: 178px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 12px;
+  border: 1.5px dashed rgba(154,162,190,.55);
+  border-radius: 22px;
+  background: linear-gradient(var(--lysvinkel),
+    rgba(255,255,255,.52) 0%, rgba(255,255,255,.22) 56%, rgba(216,226,250,.34) 100%);
+  box-shadow: inset 0 1px 0 var(--kant-halv);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color .18s var(--mykt), background .18s var(--mykt);
+}
+.felle:hover { border-color: rgba(68,72,156,.5); }
+
+/* ============================================================
+   SPORET (kode) — linje for linje
+   ============================================================ */
+
+.spor {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  color: var(--blekk-2);
+}
+.spor > div { display: flex; gap: 11px; align-items: baseline; }
+.spor .n { min-width: 14px; color: var(--gull); font-weight: 700; }
+
+/* Tegnforklaring i oversikten. */
+.tegnforklaring { display: flex; flex-wrap: wrap; gap: 15px; }
+.tegnforklaring span { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--blekk-2); }
+.tegnforklaring i { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+
+/* ============================================================
+   RESPONSIVT
+   Designet er laget for telefon. På bredere skjerm sentreres
+   skjermen i stedet for å strekkes.
+   ============================================================ */
+
+@media (min-width: 430px) {
+  body {
+    padding: 28px 0;
+    background:
+      radial-gradient(50% 32% at 78% 0%, #F5EADA 0%, rgba(245,234,218,0) 70%),
+      radial-gradient(60% 40% at 10% 90%, #DDE3F4 0%, rgba(221,227,244,0) 74%),
+      #E6E9F2;
+  }
+  .skjerm {
+    border-radius: 38px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.9),
+      -10px 40px 70px -34px rgba(74,86,140,.55);
+  }
+}
+
+/* ============================================================
+   REDUSERT BEVEGELSE
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}

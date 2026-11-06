@@ -1,5 +1,9 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>gong-bu designsystem</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
 
 <style>
@@ -259,9 +263,9 @@ footer { margin-top: 40px; border-top: 1px solid var(--linje); padding-top: 18px
       <div class="temarad" id="temarad">
         <span class="merkelapp">Tema</span>
         <div class="velger" role="group" aria-label="Velg tema" id="temavelger">
-          <button type="button" data-tema="lys"  aria-pressed="false">Lys</button>
-          <button type="button" data-tema="mork" aria-pressed="false">Mørk</button>
-          <button type="button" data-tema="glo"  aria-pressed="true">Glød</button>
+          <button type="button" data-tema="klar"  aria-pressed="false">Klar</button>
+          <button type="button" data-tema="staal" aria-pressed="true">Stål</button>
+          <button type="button" data-tema="natt"  aria-pressed="false">Natt</button>
         </div>
       </div>
 
@@ -421,7 +425,7 @@ footer { margin-top: 40px; border-top: 1px solid var(--linje); padding-top: 18px
 
   var temarad   = document.getElementById('temarad');
   var temaknapper = Array.prototype.slice.call(document.querySelectorAll('#temavelger button'));
-  var tema      = 'glo';
+  var tema      = 'staal';
   var stotter   = true;
 
   function settTema(t) {
