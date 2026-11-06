@@ -1,0 +1,39 @@
+# gong-bu · NorMistral 7B instruct
+#
+# Instruksjonstrent variant fra Språkteknologigruppa ved UiO. Mindre enn
+# 11B-thinking, men med et format vi vet stemmer: ren ChatML.
+#
+# Lag modellen:
+#     ollama create normistral7 -f verktoy/normistral7.Modelfile
+#
+# Så i .env:
+#     GONGBU_MODELL=normistral7
+
+FROM hf.co/norallm/normistral-7b-warm-instruct:Q4_K_M
+
+TEMPLATE """{{ if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+{{ .Response }}"""
+
+PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|im_start|>"
+
+# Verdiene modellkortet selv anbefaler. Kortet advarer eksplisitt mot
+# repetisjonsstraff for NETTOPP denne modellen — den gir veldig dårlige
+# svar med straff på. Derfor 1.0, altså av.
+PARAMETER temperature 0.3
+PARAMETER top_k 64
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.0
+
+# Men med straffen av kan en modell løkke. Det skjedde med 11B-thinking:
+# «token repeat limit reached» etter flere minutter. Taket her gjør at en
+# løkke stopper av seg selv i stedet for å henge.
+PARAMETER num_predict 1600
+
+# Modellen er trent med 4096 tokens kontekst. Vi sender 8000 tegn
+# materiale, som er rundt 2500 tokens, pluss systemtekst og svar.
+PARAMETER num_ctx 8192

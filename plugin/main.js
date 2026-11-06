@@ -20,11 +20,22 @@
 
 "use strict";
 
-const { Plugin, ItemView, Notice, TFile } = require("obsidian");
+const { Plugin, ItemView, Notice, TFile, PluginSettingTab, Setting,
+        requestUrl } = require("obsidian");
 
 const VISNING = "gong-bu-visning";
 const ROT = "20 Begreper";
 const KORTROT = "50 Kort";
+
+/* Hjelperen er et tillegg, aldri en forutsetning. Står modellen stille,
+   skal hver eneste skjerm virke som før — du retter bare selv. Derfor
+   er standarden «av», og derfor har hvert kall en kort tidsfrist. */
+const STANDARD = {
+  hjelperPaa: false,
+  endepunkt: "http://localhost:11434/v1/chat/completions",
+  modell: "normistral7",
+  nokkel: "",            // tom for en lokal modell
+};
 
 const SJANGER = {
   scenario:   "Scenario · hvilket begrep?",
@@ -321,19 +332,27 @@ class Framdrift {
     this.plugin = plugin;
     this.kort = {};          /* id -> { trinn, neste, sett, riktig } */
     this.bunke = "alt";      /* alt | begreper | laget */
+    this.nivaa = 1;          /* 1 = kjenne igjen · 2 = forklare */
+    this.innst = { ...STANDARD };
   }
 
   async last() {
     const lagret = (await this.plugin.loadData()) || {};
     this.kort = lagret.kort || {};
     this.bunke = lagret.bunke || "alt";
+    this.nivaa = lagret.nivaa || 1;
+    this.innst = { ...STANDARD, ...(lagret.innst || {}) };
   }
 
   lagre() {
-    return this.plugin.saveData({ versjon: 2, bunke: this.bunke, kort: this.kort });
+    return this.plugin.saveData({
+      versjon: 3, bunke: this.bunke, nivaa: this.nivaa,
+      innst: this.innst, kort: this.kort,
+    });
   }
 
   async settBunke(b) { this.bunke = b; await this.lagre(); }
+  async settNivaa(n) { this.nivaa = n; await this.lagre(); }
 
   for(id) {
     return this.kort[id] || { trinn: 0, neste: 0, sett: 0, riktig: 0 };
@@ -367,6 +386,109 @@ class Framdrift {
   }
 
   async nullstill() { this.kort = {}; await this.lagre(); }
+}
+
+
+/* ============================================================
+   HJELPEREN
+
+   En språkmodell som leser svaret ditt og sier hva du manglet.
+   Den er et tillegg, ikke en forutsetning: er den av, utilgjengelig
+   eller treg, faller nivå 2 tilbake til at du retter selv — og det
+   er uansett den avgjørelsen framdriften bygger på.
+
+   Kjører modellen lokalt (Ollama), forlater svaret ditt aldri
+   maskinen. På telefonen finnes det ingen lokal modell, så der er
+   hjelperen stille med mindre du har satt opp et endepunkt du når.
+   ============================================================ */
+
+class Hjelper {
+  constructor(plugin) {
+    this.plugin = plugin;
+    this._svarte = 0;        /* siste gang vi fikk kontakt */
+    this._feilet = 0;        /* siste gang vi ikke fikk det */
+  }
+
+  get innst() { return this.plugin.innst; }
+  get paa() { return !!this.innst.hjelperPaa && !!this.innst.endepunkt; }
+
+  /** Har vi nettopp fått en feil, lar vi det ligge et minutt. */
+  get hviler() { return Date.now() - this._feilet < 60000; }
+
+  async kall(system, bruker, frist = 45000) {
+    if (!this.paa || this.hviler) return null;
+
+    const styr = new AbortController();
+    const klokke = setTimeout(() => styr.abort(), frist);
+    try {
+      const svar = await requestUrl({
+        url: this.innst.endepunkt,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.innst.nokkel ? { Authorization: "Bearer " + this.innst.nokkel } : {}),
+        },
+        body: JSON.stringify({
+          model: this.innst.modell,
+          messages: [
+            { role: "system", content: system },
+            { role: "user", content: bruker },
+          ],
+          stream: false,
+        }),
+        throw: false,
+      });
+      if (svar.status >= 400) throw new Error("status " + svar.status);
+      const t = svar.json?.choices?.[0]?.message?.content;
+      if (!t) throw new Error("tomt svar");
+      this._svarte = Date.now();
+      return t;
+    } catch (e) {
+      this._feilet = Date.now();
+      console.log("gong-bu: hjelperen svarte ikke —", e.message);
+      return null;
+    } finally {
+      clearTimeout(klokke);
+    }
+  }
+
+  /**
+   * Retter et fritekstsvar mot notatet ditt.
+   *
+   * Formatet er med vilje ikke JSON. En liten lokal modell bommer ofte
+   * på syntaks, og da mister vi hele svaret. To merkede linjer tåler
+   * at det står litt rot rundt.
+   */
+  async rett(begrep, mittSvar, soesken) {
+    const naboer = soesken.slice(0, 6).map((b) => b.navn).join(", ");
+    const system =
+      "Du retter en students forklaring mot studentens egne notater. "
+      + "Vær kort, konkret og vennlig. Skryt ikke uten grunn, men si klart "
+      + "hva som sitter. Svar på norsk bokmål.\n\n"
+      + "Svar i nøyaktig dette formatet, to linjer, ingenting annet:\n"
+      + "RETTING: <to til tre setninger: hva som sitter, og hva som manglet>\n"
+      + "BLANDET: <navnet på et nabobegrep studenten har blandet inn, eller - >";
+
+    const bruker =
+      `## Begrepet\n${begrep.navn}\n\n`
+      + `## Notatet til studenten\nDefinisjon: ${begrep.definisjon}\n`
+      + (begrep.hensikt ? `Hensikt: ${begrep.hensikt.slice(0, 600)}\n` : "")
+      + (begrep.eksempel ? `Eksempel: ${begrep.eksempel.slice(0, 400)}\n` : "")
+      + (naboer ? `\n## Nabobegreper det er lett å blande inn\n${naboer}\n` : "")
+      + `\n## Svaret studenten skrev\n${mittSvar}`;
+
+    const raa = await this.kall(system, bruker);
+    if (!raa) return null;
+
+    const r = /RETTING:\s*([\s\S]*?)(?:\n\s*BLANDET:|$)/i.exec(raa);
+    const b = /BLANDET:\s*(.+)/i.exec(raa);
+    const retting = rens(r ? r[1] : raa).trim();
+    if (!retting) return null;
+
+    let blandet = b ? rens(b[1]).trim() : "";
+    if (/^[-–—]?$|^ingen$|^nei$/i.test(blandet)) blandet = "";
+    return { retting, blandet };
+  }
 }
 
 
@@ -471,16 +593,28 @@ class GongbuVisning extends ItemView {
   }
 
   get bunke() { return this.plugin.framdrift.bunke; }
+  get nivaa() { return this.plugin.framdrift.nivaa; }
 
   nesteKort() {
-    this.kort = velgKort(this.plugin.indeks, this.plugin.stokk,
-      this.plugin.framdrift, this.bunke);
+    /* «Øv på skillet» setter et bestemt begrep som neste kort. */
+    if (this.tvunget) {
+      this.kort = { slag: "begrep", data: this.tvunget };
+      this.tvunget = null;
+    } else {
+      this.kort = velgKort(this.plugin.indeks, this.plugin.stokk,
+        this.plugin.framdrift, this.bunke);
+    }
     this.svart = false;
     this.tegn();
   }
 
   async settBunke(b) {
     await this.plugin.framdrift.settBunke(b);
+    this.nesteKort();
+  }
+
+  async settNivaa(n) {
+    await this.plugin.framdrift.settNivaa(n);
     this.nesteKort();
   }
 
@@ -527,13 +661,27 @@ class GongbuVisning extends ItemView {
       }
     }
 
+    /* --- nivåvalg, bare der det betyr noe --- */
+    if (this.bunke !== "laget" && begrepskort(indeks).length) {
+      const rad = rot.createDiv({ cls: "gongbu-bunker gongbu-nivaarad" });
+      for (const [n, merke] of [[1, "Nivå 1 · kjenne igjen"], [2, "Nivå 2 · forklare"]]) {
+        const kn = rad.createEl("button", { cls: "gongbu-bunke", text: merke });
+        if (this.nivaa === n) kn.addClass("gongbu-bunke-paa");
+        kn.onclick = () => this.settNivaa(n);
+      }
+    }
+
     if (!this.kort) {
       rot.createDiv({ cls: "gongbu-tomt" }).setText("Ingen kort i denne bunken ennå.");
       return;
     }
 
-    if (this.kort.slag === "begrep") this.tegnBegrep(rot, this.kort.data);
-    else this.tegnLaget(rot, this.kort.data);
+    if (this.kort.slag === "begrep") {
+      if (this.nivaa === 2) this.tegnNivaa2(rot, this.kort.data);
+      else this.tegnBegrep(rot, this.kort.data);
+    } else {
+      this.tegnLaget(rot, this.kort.data);
+    }
 
     this.tegnBunn(rot, this.kort.data.sti);
   }
@@ -553,6 +701,74 @@ class GongbuVisning extends ItemView {
       kn.createSpan({ text: alt.navn });
       kn.onclick = () => this.svarBegrep(alt, kn, valg, k);
     });
+  }
+
+  /* --- nivå 2: du forklarer selv, og retter etterpå --- */
+  tegnNivaa2(rot, k) {
+    const kortEl = rot.createDiv({ cls: "gongbu-kort" });
+    kortEl.createDiv({ cls: "gongbu-etikett", text: "Nivå 02 · forklaring" });
+    kortEl.createDiv({ cls: "gongbu-sporsmaal", text: `Forklar ${k.navn} med dine egne ord.` });
+    kortEl.createDiv({ cls: "gongbu-hint", text: "To–tre setninger holder." });
+
+    const felt = rot.createEl("textarea", { cls: "gongbu-felt" });
+    felt.setAttr("placeholder", "Skriv det du husker.");
+    felt.focus();
+
+    const vis = rot.createEl("button", { cls: "gongbu-videre", text: "Vis fasit" });
+    vis.onclick = () => this.visNivaa2(rot, k, felt.value.trim());
+  }
+
+  async visNivaa2(rot, k, mittSvar) {
+    if (this.svart) return;
+    this.svart = true;
+    rot.querySelectorAll(".gongbu-videre").forEach((el) => el.remove());
+
+    /* Notatet ditt først. Det er fasiten, uansett hva en modell måtte mene. */
+    const fasit = rot.createDiv({ cls: "gongbu-fasit" });
+    fasit.createDiv({ cls: "gongbu-etikett", text: "Fra notatet ditt" });
+    fasit.createDiv({ text: k.definisjon });
+    if (k.hensikt) {
+      fasit.createDiv({ cls: "gongbu-hensikt", text: k.hensikt.split("\n")[0] });
+    }
+
+    /* Dommen din er alltid der. Rettingen er et tillegg som kanskje kommer. */
+    const dom = rot.createDiv({ cls: "gongbu-dom" });
+    for (const [merke, verdi] of [["Satt", "satt"], ["Delvis", "delvis"], ["Bomma", "bomma"]]) {
+      dom.createEl("button", { cls: "gongbu-domknapp gongbu-dom-" + verdi, text: merke })
+        .onclick = async () => {
+          await this.plugin.framdrift.svar(k.id, verdi);
+          this.nesteKort();
+        };
+    }
+
+    if (!mittSvar || !this.plugin.hjelper.paa) return;
+
+    const venter = rot.createDiv({ cls: "gongbu-venter", text: "Hjelperen leser svaret ditt …" });
+    const soesken = k.soesken.map((id) => this.plugin.indeks.hent(id)).filter(Boolean);
+    const r = await this.plugin.hjelper.rett(k, mittSvar, soesken);
+    venter.remove();
+    if (!r) return;                      /* stille. Du retter selv, som før. */
+
+    const boks = rot.createDiv({ cls: "gongbu-retting" });
+    boks.createDiv({ cls: "gongbu-etikett", text: "Retting" });
+    boks.createDiv({ text: r.retting });
+
+    const nabo = r.blandet && this.plugin.indeks.etterNavn.get(r.blandet);
+    if (nabo && nabo.id !== k.id) {
+      const rad = boks.createDiv({ cls: "gongbu-blandet" });
+      rad.createSpan({ text: "Blandet du inn " });
+      rad.createEl("strong", { text: nabo.navn });
+      rad.createSpan({ text: "? " });
+      const lenke = rad.createEl("a", { text: "Øv på skillet →" });
+      lenke.onclick = (e) => {
+        e.preventDefault();
+        this.tvunget = nabo;
+        this.plugin.framdrift.settNivaa(1).then(() => this.nesteKort());
+      };
+    }
+
+    boks.createDiv({ cls: "gongbu-merknad", text:
+      "Skrevet av en modell. Notatet ditt over er fasiten." });
   }
 
   /* --- et generert kort: flervalg eller skriv --- */
@@ -705,13 +921,99 @@ class GongbuVisning extends ItemView {
    PLUGINEN
    ============================================================ */
 
+/* ============================================================
+   INNSTILLINGER
+   ============================================================ */
+
+class GongbuInnstillinger extends PluginSettingTab {
+  constructor(app, plugin) { super(app, plugin); this.plugin = plugin; }
+
+  display() {
+    const { containerEl: c } = this;
+    c.empty();
+
+    c.createEl("p", { cls: "gongbu-innledning", text:
+      "Hjelperen er en språkmodell som leser forklaringen din på nivå 2 og "
+      + "sier hva du manglet. Den er valgfri: er den av, retter du selv, og "
+      + "alt annet i pluginen virker likt." });
+
+    new Setting(c)
+      .setName("Hjelper")
+      .setDesc("Av som standard. Slå på når du har en modell å snakke med.")
+      .addToggle((t) => t
+        .setValue(this.plugin.innst.hjelperPaa)
+        .onChange(async (v) => { this.plugin.innst.hjelperPaa = v; await this.lagre(); }));
+
+    new Setting(c)
+      .setName("Endepunkt")
+      .setDesc("Et OpenAI-kompatibelt chat-endepunkt. Ollama lokalt er standard. "
+             + "Telefonen når ikke Mac-ens localhost — der trengs en adresse "
+             + "begge enhetene deler, for eksempel over Tailscale.")
+      .addText((t) => t
+        .setPlaceholder(STANDARD.endepunkt)
+        .setValue(this.plugin.innst.endepunkt)
+        .onChange(async (v) => { this.plugin.innst.endepunkt = v.trim(); await this.lagre(); }));
+
+    new Setting(c)
+      .setName("Modell")
+      .addText((t) => t
+        .setPlaceholder(STANDARD.modell)
+        .setValue(this.plugin.innst.modell)
+        .onChange(async (v) => { this.plugin.innst.modell = v.trim(); await this.lagre(); }));
+
+    new Setting(c)
+      .setName("Nøkkel")
+      .setDesc("La stå tom for en lokal modell. Fylles den ut, havner nøkkelen i "
+             + "plugin-ens data.json inne i vaulten — og vaulten synkes.")
+      .addText((t) => {
+        t.inputEl.type = "password";
+        t.setPlaceholder("tom for Ollama")
+          .setValue(this.plugin.innst.nokkel)
+          .onChange(async (v) => { this.plugin.innst.nokkel = v.trim(); await this.lagre(); });
+      });
+
+    new Setting(c)
+      .setName("Prøv tilkoblingen")
+      .setDesc("Sender én kort melding og sier hva som kom tilbake.")
+      .addButton((b) => b.setButtonText("Prøv").onClick(async () => {
+        b.setButtonText("…").setDisabled(true);
+        const foer = this.plugin.innst.hjelperPaa;
+        this.plugin.innst.hjelperPaa = true;      /* prøv selv om den er av */
+        this.plugin.hjelper._feilet = 0;
+        const t0 = Date.now();
+        const svar = await this.plugin.hjelper.kall(
+          "Svar med nøyaktig ordet: klar", "Si klar.", 30000);
+        this.plugin.innst.hjelperPaa = foer;
+        b.setButtonText("Prøv").setDisabled(false);
+        new Notice(svar
+          ? `gong-bu: svar på ${((Date.now() - t0) / 1000).toFixed(1)} s — «${
+              svar.trim().slice(0, 40)}»`
+          : "gong-bu: ingen kontakt. Kjører modellen, og stemmer adressen?", 8000);
+      }));
+
+    c.createEl("h3", { text: "Framdrift" });
+    new Setting(c)
+      .setName("Nullstill all framdrift")
+      .setDesc("Sletter hva som sitter og hva som er forfalt. Notatene dine røres ikke.")
+      .addButton((b) => b.setWarning().setButtonText("Nullstill").onClick(async () => {
+        await this.plugin.framdrift.nullstill();
+        new Notice("gong-bu: framdriften er nullstilt");
+      }));
+  }
+
+  lagre() { return this.plugin.framdrift.lagre(); }
+}
+
+
 module.exports = class GongbuPlugin extends Plugin {
   async onload() {
     this.indeks = new Indeks(this.app);
     this.stokk = new Kortstokk(this.app);
     this.framdrift = new Framdrift(this);
+    this.hjelper = new Hjelper(this);
 
     this.registerView(VISNING, (leaf) => new GongbuVisning(leaf, this));
+    this.addSettingTab(new GongbuInnstillinger(this.app, this));
 
     this.addRibbonIcon("graduation-cap", "gong-bu", () => this.aapne());
     this.addCommand({ id: "aapne", name: "Åpne gong-bu", callback: () => this.aapne() });
@@ -743,6 +1045,9 @@ module.exports = class GongbuPlugin extends Plugin {
       }
     }));
   }
+
+  /** Innstillingene bor i framdriftens data.json, så alt lagres ett sted. */
+  get innst() { return this.framdrift.innst; }
 
   lesAlt() {
     return Promise.all([this.indeks.bygg(), this.stokk.bygg()]);

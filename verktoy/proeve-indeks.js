@@ -21,7 +21,11 @@ const PLUGIN = path.resolve(process.argv[3]);   // require() krever absolutt sti
 
 class TFile { constructor(p, parent) { this.path = p; this.parent = parent; } }
 class Plugin { constructor() {} registerView(){} addRibbonIcon(){} addCommand(){}
-  registerEvent(){} loadData(){return {};} saveData(){return Promise.resolve();} }
+  registerEvent(){} addSettingTab(){} loadData(){return {};} saveData(){return Promise.resolve();} }
+class PluginSettingTab { constructor(app, plugin){ this.app=app; this.plugin=plugin; } }
+class Setting { constructor(){} setName(){return this;} setDesc(){return this;}
+  addToggle(){return this;} addText(){return this;} addButton(){return this;} }
+const requestUrl = async () => { throw new Error("ingen nettverk i prøven"); };
 class ItemView { constructor(){ this.containerEl = { children: [null, null] }; } }
 class Notice { constructor(m){ console.log("[notice]", m); } }
 
@@ -80,7 +84,8 @@ const app = {
 
 const ekte = Module._load;
 Module._load = function (req, ...rest) {
-  if (req === "obsidian") return { Plugin, ItemView, Notice, TFile };
+  if (req === "obsidian") return { Plugin, ItemView, Notice, TFile,
+                                   PluginSettingTab, Setting, requestUrl };
   return ekte.call(this, req, ...rest);
 };
 

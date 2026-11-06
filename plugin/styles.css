@@ -219,3 +219,64 @@
   font-size: 12.5px; line-height: 1.5; color: var(--text-muted);
 }
 .gongbu-godkjenn a { cursor: pointer; }
+
+
+/* ============================================================
+   NIVÅ 2  ·  du forklarer, og retter etterpå
+   ============================================================ */
+
+.gongbu-nivaarad { margin-top: -6px; }
+
+.gongbu-hint {
+  margin-top: 8px;
+  font-size: 12.5px; color: var(--text-faint);
+}
+
+.gongbu-hensikt {
+  margin-top: 9px; padding-top: 9px;
+  border-top: 1px solid var(--gb-kant);
+  font-size: 13.5px; color: var(--text-faint);
+}
+
+.gongbu-venter {
+  margin-top: 13px;
+  font-family: var(--font-monospace);
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-faint);
+  animation: gongbu-pust 1.8s ease-in-out infinite;
+}
+@keyframes gongbu-pust { 0%, 100% { opacity: .45 } 50% { opacity: 1 } }
+@media (prefers-reduced-motion: reduce) {
+  .gongbu-venter { animation: none; opacity: .7 }
+}
+
+/* Rettingen står visuelt under notatet, aldri over det. Notatet er
+   fasiten; dette er en modells lesning av svaret ditt. */
+.gongbu-retting {
+  margin-top: 12px; padding: 14px 15px;
+  border-radius: 13px;
+  border: 1px solid var(--gb-kant);
+  border-left: 2px solid var(--interactive-accent);
+  background: var(--background-primary-alt);
+  font-size: 14px; line-height: 1.5; color: var(--text-normal);
+}
+
+.gongbu-blandet {
+  margin-top: 11px; padding-top: 11px;
+  border-top: 1px solid var(--gb-kant);
+  font-size: 13.5px; color: var(--text-muted);
+}
+.gongbu-blandet strong { color: var(--text-normal); }
+.gongbu-blandet a { cursor: pointer; white-space: nowrap; }
+
+.gongbu-merknad {
+  margin-top: 10px;
+  font-size: 11.5px; line-height: 1.45; color: var(--text-faint);
+}
+
+/* --- innstillinger --- */
+.gongbu-innledning {
+  margin: 4px 0 18px;
+  font-size: 13.5px; line-height: 1.55; color: var(--text-muted);
+  max-width: 54ch;
+}
