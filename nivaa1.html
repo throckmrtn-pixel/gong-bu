@@ -4,14 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#51688A">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="apple-mobile-web-app-title" content="gong-bu">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Nivå 1 · Gjenkjenning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,34 +37,26 @@
   <div class="telemetri">
     <span class="nivaa">Nivå 01 · Gjenkjenning</span>
     <span class="strek"></span>
-    <span class="etikett" style="font-size:8.5px">KRYPT_004</span>
+    <span class="etikett" style="font-size:8.5px" data-teller>—</span>
   </div>
 
   <!-- Spørsmålet. Tettest glass på skjermen — det er her du leser. -->
   <div class="seksjon">
     <div class="kort kort--tett">
       <p class="etikett">Hvilket begrep?</p>
-      <p class="sporsmaal">
-        Kryptering der avsender og mottaker bruker én felles hemmelig nøkkel,
-        både til å kryptere og dekryptere.
-      </p>
+      <p class="sporsmaal" data-definisjon></p>
     </div>
   </div>
 
   <div class="fyll"></div>
 
   <!-- Ingen av svarene gløder. Fire like glorier blir et fargebelte. -->
-  <div class="seksjon stabel" style="gap:10px">
-    <button type="button" class="pille svar"><span class="nr">01</span><span>Symmetrisk kryptering</span></button>
-    <button type="button" class="pille svar"><span class="nr">02</span><span>Asymmetrisk kryptering</span></button>
-    <button type="button" class="pille svar"><span class="nr">03</span><span>Hashfunksjon</span></button>
-    <button type="button" class="pille svar"><span class="nr">04</span><span>Digital signatur</span></button>
-  </div>
+  <div class="seksjon stabel" style="gap:10px" data-valg></div>
 
   <div class="sokkel sokkel--lav">
     <div class="rad spred">
-      <span class="hjelp" style="font-size:12.5px">Fra <a href="#kilde" style="color:var(--blekk)">Sikkerhet / Kryptering</a></span>
-      <button type="button" class="pille pille--stille"><span>HOPP OVER</span></button>
+      <span class="hjelp" style="font-size:12.5px">Fra <span data-kilde></span></span>
+      <button type="button" class="pille pille--stille" data-hopp><span>HOPP OVER</span></button>
     </div>
   </div>
 
@@ -103,5 +87,7 @@ window.addEventListener('message', function (e) {
 });
 </script>
 
+<script src="flyt-data.js"></script>
+<script src="flyt-nivaa1.js"></script>
 </body>
 </html>

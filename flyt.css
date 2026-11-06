@@ -2228,3 +2228,61 @@ a.toppbar:hover .bytt { color: var(--blekk); border-color: var(--kant-sterk); }
     height: max(8px, env(safe-area-inset-bottom, 0px));
   }
 }
+
+
+/* ============================================================
+   SVARTILSTANDER
+
+   Mockupen hadde ingen — den trengte dem ikke. Regelen fra resten av
+   systemet gjelder her også: ingen strek, bare lys og volum. Derfor
+   er rett og feil en glød, ikke en ramme.
+
+   Og kommentaren i nivaa1.html sier at ingen av svarene gløder før du
+   har valgt. Det er nettopp derfor gløden fungerer som belønning: den
+   er den eneste på skjermen.
+   ============================================================ */
+
+.skjerm {
+  --rett: #86DCB4;
+  --feil: #E9A3B6;
+}
+.skjerm[data-tema="klar"] {
+  --rett: #2B7F5E;
+  --feil: #AC4A64;
+}
+
+/* Det du ikke valgte trekker seg tilbake, så blikket lander på svaret. */
+.svar.laast {
+  opacity: .40;
+  cursor: default;
+  transition: opacity .25s var(--skarp);
+}
+.svar.laast.rett,
+.svar.laast.feil { opacity: 1; }
+
+.svar.rett,
+.svar.feil {
+  border-color: color-mix(in srgb, var(--merke) 55%, transparent);
+  background: color-mix(in srgb, var(--merke) 15%, var(--glass));
+  box-shadow:
+    inset 0 1px 0 var(--glass-topp),
+    0 0 0 1px color-mix(in srgb, var(--merke) 22%, transparent),
+    0 12px 36px -18px var(--merke);
+}
+.svar.rett { --merke: var(--rett); }
+.svar.feil { --merke: var(--feil); }
+
+.svar.rett .nr,
+.svar.feil .nr { color: color-mix(in srgb, var(--merke) 80%, var(--blekk)); }
+
+/* Den ene knappen som skal dra deg videre. */
+.pille--sterk {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 4px;
+  background: color-mix(in srgb, var(--blekk) 13%, var(--glass-tett, var(--glass)));
+  border-color: color-mix(in srgb, var(--blekk) 26%, transparent);
+  font-weight: 500;
+  letter-spacing: .04em;
+  font-size: 13px;
+}

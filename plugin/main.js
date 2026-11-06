@@ -1018,6 +1018,10 @@ module.exports = class GongbuPlugin extends Plugin {
     this.addRibbonIcon("graduation-cap", "gong-bu", () => this.aapne());
     this.addCommand({ id: "aapne", name: "Åpne gong-bu", callback: () => this.aapne() });
     this.addCommand({
+      id: "eksporter", name: "Eksporter til gong-bu.json",
+      callback: () => this.eksporter(),
+    });
+    this.addCommand({
       id: "bygg-indeks", name: "Les begrepene på nytt",
       callback: async () => {
         await this.lesAlt();
@@ -1048,6 +1052,55 @@ module.exports = class GongbuPlugin extends Plugin {
 
   /** Innstillingene bor i framdriftens data.json, så alt lagres ett sted. */
   get innst() { return this.framdrift.innst; }
+
+  /**
+   * Skriver hele indeksen til gong-bu.json i rota av vaulten.
+   *
+   * Dette er den ene fila nettsiden leser. Den ligger i vaulten, så
+   * OneDrive tar den med til telefonen av seg selv — og derfra henter
+   * du den inn i nettsiden med filvelgeren. Ingenting publiseres.
+   *
+   * Framdrift er IKKE med. Den eies av den appen du faktisk øver i.
+   */
+  async eksporter() {
+    await this.klar;
+    await this.lesAlt();
+
+    const data = {
+      versjon: 1,
+      laget: new Date().toISOString(),
+      vault: this.app.vault.getName(),
+      begreper: this.indeks.begreper.map((b) => ({
+        id: b.id, navn: b.navn, aliaser: b.aliaser,
+        gruppe: b.gruppe, delAv: b.delAv, soesken: b.soesken,
+        fag: b.fag, status: b.status,
+        definisjon: b.definisjon, hensikt: b.hensikt, eksempel: b.eksempel,
+        sti: b.sti,
+      })),
+      kort: this.stokk.kort.map((k) => ({
+        id: k.id, slag: k.slag, sjanger: k.sjanger,
+        handlerOm: k.handlerOm, kilde: k.kilde, godkjent: k.godkjent,
+        sporsmaal: k.sporsmaal, alternativer: k.alternativer,
+        begrunnelse: k.begrunnelse, fasit: k.fasit, kriterier: k.kriterier,
+        sti: k.sti,
+      })),
+    };
+
+    const sti = "gong-bu.json";
+    const tekst = JSON.stringify(data, null, 1);
+    const fil = this.app.vault.getAbstractFileByPath(sti);
+    try {
+      if (fil instanceof TFile) await this.app.vault.modify(fil, tekst);
+      else await this.app.vault.create(sti, tekst);
+    } catch (e) {
+      new Notice("gong-bu: fikk ikke skrevet " + sti + " — " + e.message, 8000);
+      return;
+    }
+
+    new Notice(
+      `gong-bu: ${data.begreper.length} begreper og ${data.kort.length} kort `
+      + `skrevet til ${sti} (${Math.round(tekst.length / 1024)} kB)`, 7000);
+  }
 
   lesAlt() {
     return Promise.all([this.indeks.bygg(), this.stokk.bygg()]);
