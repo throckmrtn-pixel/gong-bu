@@ -1,0 +1,19 @@
+{
+  "name": "gong-bu",
+  "short_name": "gong-bu",
+  "description": "Øving på egne begreper, bygget av notatene i vaulten.",
+  "lang": "nb",
+  "dir": "ltr",
+  "start_url": "index.html",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#51688A",
+  "background_color": "#46617F",
+  "icons": [
+    { "src": "favicon.svg",            "sizes": "any",   "type": "image/svg+xml" },
+    { "src": "ikon-192.png",           "sizes": "192x192", "type": "image/png" },
+    { "src": "ikon-512.png",           "sizes": "512x512", "type": "image/png" },
+    { "src": "ikon-maskable-512.png",  "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

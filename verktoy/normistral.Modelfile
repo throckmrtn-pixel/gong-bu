@@ -1,0 +1,35 @@
+# gong-bu · NorMistral med egen chat-mal
+#
+# Malen som følger med den HF-konverterte GGUF-en får Ollama til å si
+#     Parser Error: Expected }} (Got eq)
+# fordi den er oversatt til Go-syntaks som Ollamas parser ikke godtar.
+# Her legger vi en ren ChatML-mal over i stedet. Vektene er de samme —
+# det er bare innpakningen rundt meldingene som byttes.
+#
+# Lag modellen:
+#     ollama create normistral -f verktoy/normistral.Modelfile
+#
+# Så står den som «normistral» i .env.
+
+FROM hf.co/ltg/normistral-11b-thinking-gguf:Q6_K
+
+TEMPLATE """{{ if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+{{ .Response }}"""
+
+PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|im_start|>"
+
+# Fra modellkortet til NorMistral: lav temperatur, og repetisjonsstraff
+# slått av — den gir veldig dårlige svar med straff på.
+PARAMETER temperature 0.3
+PARAMETER top_k 64
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.0
+
+# Vi sender omtrent 8000 tegn materiale, pluss systemtekst og svar.
+# Standardvinduet er for lite til det.
+PARAMETER num_ctx 8192
